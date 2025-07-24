@@ -13,9 +13,6 @@ public class PlantItem : MonoBehaviour
     private MeshRenderer meshRenderer;
     private Material plantMaterial;
     
-    // 静态变量记录研究点数
-    public static int researchPoints = 0;
-    
     // 静态变量记录所有植物数量和环境食物数值
     public static int totalPlantCount = 0;
     public static int environmentalFood = 0;
@@ -276,9 +273,9 @@ public class BlueSphereClickHandler : MonoBehaviour
     void OnMouseDown()
     {
         // 增加研究点数
-        PlantItem.researchPoints++;
+        ResearchManager.researchPoints++;
         
-        Debug.Log($"研究点数+1，当前研究点数: {PlantItem.researchPoints}");
+        Debug.Log($"研究点数+1，当前研究点数: {ResearchManager.researchPoints}");
         
         // 销毁小球
         Destroy(gameObject);

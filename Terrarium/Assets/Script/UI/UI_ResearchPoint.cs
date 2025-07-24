@@ -21,10 +21,10 @@ public class UI_ResearchPoint : MonoBehaviour
     void Update()
     {
         // 检查研究点数是否发生变化
-        if (PlantItem.researchPoints != lastResearchPoints)
+        if (ResearchManager.researchPoints != lastResearchPoints)
         {
             UpdateResearchPointDisplay();
-            lastResearchPoints = PlantItem.researchPoints;
+            lastResearchPoints = ResearchManager.researchPoints;
         }
     }
     
@@ -32,7 +32,7 @@ public class UI_ResearchPoint : MonoBehaviour
     {
         if (researchPointText != null)
         {
-            researchPointText.text = "研究点数: " + PlantItem.researchPoints;
+            researchPointText.text = "研究点数: " + ResearchManager.researchPoints;
         }
         else
         {
