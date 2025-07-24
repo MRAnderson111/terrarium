@@ -15,8 +15,16 @@ public class PlantItem : MonoBehaviour
     // 静态变量记录研究点数
     public static int researchPoints = 0;
     
+    // 静态变量记录所有植物数量和环境食物数值
+    public static int totalPlantCount = 0;
+    public static int environmentalFood = 0;
+    
     void Start()
     {
+        // 植物生成时增加总数量
+        totalPlantCount++;
+        UpdateEnvironmentalFood();
+        
         // 确保有MeshRenderer和MeshFilter组件
         if (GetComponent<MeshRenderer>() == null)
         {
@@ -144,9 +152,10 @@ public class PlantItem : MonoBehaviour
         plantMaterial.color = targetColor;
         
         Debug.Log("PlantItem生长完成：体积膨胀到两倍，颜色变深");
+        Debug.Log($"植物总数量: {totalPlantCount}, 环境食物数值: {environmentalFood}");
         
-        // 90%几率生成蓝色小球
-        if (Random.Range(0f, 1f) < 0.9f)
+        // 60%几率生成蓝色小球
+        if (Random.Range(0f, 1f) < 0.6f)
         {
             SpawnBlueSphere();
         }
@@ -204,17 +213,36 @@ public class PlantItem : MonoBehaviour
         blueMaterial.color = Color.blue;
         sphereRenderer.material = blueMaterial;
         
-        // 移除刚体但保留碰撞器用于点击检测
+        // 移除所有物理组件
         Rigidbody sphereRb = blueSphere.GetComponent<Rigidbody>();
         if (sphereRb != null)
         {
             DestroyImmediate(sphereRb);
         }
         
+        Collider sphereCollider = blueSphere.GetComponent<Collider>();
+        if (sphereCollider != null)
+        {
+            DestroyImmediate(sphereCollider);
+        }
+        
         // 添加点击脚本
         blueSphere.AddComponent<BlueSphereClickHandler>();
         
         Debug.Log($"在位置 {spherePosition} 生成了浮空蓝色小球");
+    }
+    
+    static void UpdateEnvironmentalFood()
+    {
+        environmentalFood = totalPlantCount * 2;
+    }
+    
+    void OnDestroy()
+    {
+        // 植物被销毁时减少总数量
+        totalPlantCount--;
+        UpdateEnvironmentalFood();
+        Debug.Log($"植物被销毁，剩余植物数量: {totalPlantCount}, 环境食物数值: {environmentalFood}");
     }
 }
 
