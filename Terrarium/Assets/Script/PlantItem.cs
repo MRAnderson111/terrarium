@@ -9,6 +9,7 @@ public class PlantItem : MonoBehaviour
     private bool isGrowing = false;   // 是否正在生长
     private bool hasReplicated = false; // 是否已经复制过
     private bool canReplicate = false; // 是否可以复制（只有1键生成的才能复制）
+    private bool isOnBarrenGround = false; // 记录是否在贫瘠土地上
     private MeshRenderer meshRenderer;
     private Material plantMaterial;
     
@@ -105,11 +106,23 @@ public class PlantItem : MonoBehaviour
         // 检查是否接触到地面（通过标签或名称判断）
         if (!hasGrounded && (collision.gameObject.CompareTag("Ground") || 
             collision.gameObject.name.Contains("Ground") || 
-            collision.gameObject.name.Contains("Plane")))
+            collision.gameObject.name.Contains("Plane") ||
+            collision.gameObject.name.Contains("BarrenGround")))
         {
             hasGrounded = true;
+            
+            // 检测是否在贫瘠土地上
+            isOnBarrenGround = collision.gameObject.name.Contains("BarrenGround");
+            
+            // 完全固定植物位置，移除刚体组件
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                DestroyImmediate(rb);
+            }
+            
             StartCoroutine(GrowAfterDelay());
-            Debug.Log("PlantItem接触到地面，2秒后开始生长");
+            Debug.Log($"PlantItem接触到地面，完全固定位置，2秒后开始生长 (贫瘠土地: {isOnBarrenGround})");
         }
     }
     
@@ -130,9 +143,20 @@ public class PlantItem : MonoBehaviour
         Vector3 originalScale = transform.localScale;
         Vector3 targetScale = originalScale * 2f; // 膨胀到两倍
         Color originalColor = plantMaterial.color;
-        Color targetColor = new Color(originalColor.r * 0.5f, originalColor.g * 0.5f, originalColor.b * 0.5f); // 变深
+        Color targetColor;
         
-        float growthTime = 1f; // 生长动画时间
+        if (isOnBarrenGround)
+        {
+            // 在贫瘠土地上，颜色变得更深
+            targetColor = new Color(originalColor.r * 0.3f, originalColor.g * 0.3f, originalColor.b * 0.3f);
+        }
+        else
+        {
+            // 正常土地，颜色变深
+            targetColor = new Color(originalColor.r * 0.5f, originalColor.g * 0.5f, originalColor.b * 0.5f);
+        }
+        
+        float growthTime = isOnBarrenGround ? 10f : 1f; // 贫瘠土地生长时间10秒，正常1秒
         float elapsedTime = 0f;
         
         while (elapsedTime < growthTime)
@@ -151,7 +175,7 @@ public class PlantItem : MonoBehaviour
         transform.localScale = targetScale;
         plantMaterial.color = targetColor;
         
-        Debug.Log("PlantItem生长完成：体积膨胀到两倍，颜色变深");
+        Debug.Log($"PlantItem生长完成：体积膨胀到两倍，颜色变深 (贫瘠土地: {isOnBarrenGround})");
         Debug.Log($"植物总数量: {totalPlantCount}, 环境食物数值: {environmentalFood}");
         
         // 60%几率生成蓝色小球
@@ -181,9 +205,9 @@ public class PlantItem : MonoBehaviour
     {
         // 在附近随机位置生成新的PlantItem
         Vector3 replicatePosition = transform.position + new Vector3(
-            Random.Range(-5f, 5f), // X轴随机偏移
+            Random.Range(-8f, 8f), // X轴随机偏移
             3f,                    // Y轴稍微抬高
-            Random.Range(-5f, 5f)  // Z轴随机偏移
+            Random.Range(-8f, 8f)  // Z轴随机偏移
         );
         
         // 创建新的PlantItem对象
