@@ -8,7 +8,7 @@ public class AnimalItem : MonoBehaviour
     private bool hasGrounded = false; // 是否已经接触地面
     private bool isMovingToPlant = false; // 是否正在向植物移动
     private Transform targetPlant = null; // 目标植物
-    private float moveSpeed = 5f; // 移动速度
+    private float moveSpeed = 10f; // 移动速度
     private bool hasEaten = false; // 是否已经吃过植物
     private bool isAdult = false; // 是否为成年体
     
