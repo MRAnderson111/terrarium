@@ -181,6 +181,10 @@ public class Date_EnvironmentalFactory : MonoBehaviour
             
             Debug.Log($"灯光强度更新为: {targetIntensity}");
         }
+        else
+        {
+            Debug.LogWarning("sunlightSource 引用为空，无法更新灯光强度！");
+        }
     }
     
     void UpdateTemperatureLight()
@@ -205,6 +209,69 @@ public class Date_EnvironmentalFactory : MonoBehaviour
         else
         {
             Debug.LogWarning("temperatureLight 引用为空，无法更新灯光颜色！");
+        }
+    }
+    
+    // 公共方法用于UI更新环境数据
+    public static void SetSunlight(float value)
+    {
+        if (instance != null)
+        {
+            instance.sunlight = Mathf.Clamp(value, 0f, 100f);
+            Sunlight = instance.sunlight;
+            instance.UpdateSunlightIntensity();
+            Debug.Log($"阳光强度设置为: {value}");
+        }
+        else
+        {
+            Debug.LogWarning("Date_EnvironmentalFactory instance 为空！");
+        }
+    }
+    
+    public static void SetHumidity(float value)
+    {
+        if (instance != null)
+        {
+            instance.humidity = Mathf.Clamp(value, 0f, 100f);
+            Humidity = instance.humidity;
+        }
+    }
+    
+    public static void SetWaterSource(float value)
+    {
+        if (instance != null)
+        {
+            instance.waterSource = Mathf.Clamp(value, 0f, 100f);
+            WaterSource = instance.waterSource;
+        }
+    }
+    
+    public static void SetTemperature(float value)
+    {
+        if (instance != null)
+        {
+            instance.temperature = Mathf.Clamp(value, 0f, 40f);
+            Temperature = instance.temperature;
+            instance.UpdateTemperatureLight();
+        }
+    }
+    
+    // 单例实例
+    private static Date_EnvironmentalFactory instance;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); // 防止场景切换时被销毁
+            Debug.Log("Date_EnvironmentalFactory 单例初始化完成");
+        }
+        else if (instance != this)
+        {
+            Debug.LogWarning("发现重复的 Date_EnvironmentalFactory，销毁多余实例");
+            Destroy(this); // 只销毁脚本组件，不销毁整个GameObject
+            return;
         }
     }
 }

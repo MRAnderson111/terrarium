@@ -64,9 +64,12 @@ public class PlantItem : MonoBehaviour
         if (GetComponent<MeshFilter>() == null)
             gameObject.AddComponent<MeshFilter>();
         
-        // 添加碰撞器
+        // 添加碰撞器（确保不是触发器）
         if (GetComponent<Collider>() == null)
-            gameObject.AddComponent<BoxCollider>();
+        {
+            BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
+            boxCollider.isTrigger = false; // 保持物理碰撞
+        }
         
         // 添加刚体使其可以物理交互
         if (GetComponent<Rigidbody>() == null)
@@ -185,10 +188,25 @@ public class PlantItem : MonoBehaviour
     
     void FixPosition()
     {
-        // 完全固定植物位置，移除刚体组件
+        // 移除刚体组件但保留碰撞器
         Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
-            DestroyImmediate(rb);
+            Destroy(rb);
+        
+        // 确保碰撞器存在且不是触发器（保持物理碰撞）
+        Collider collider = GetComponent<Collider>();
+        if (collider != null)
+        {
+            collider.isTrigger = false; // 确保不是触发器，保持物理碰撞
+            Debug.Log("植物碰撞器已保留，可以被动物碰撞");
+        }
+        else
+        {
+            // 如果碰撞器不存在，重新添加一个
+            BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
+            boxCollider.isTrigger = false;
+            Debug.Log("植物重新添加了碰撞器");
+        }
     }
     
     IEnumerator GrowAfterDelay()
@@ -323,14 +341,15 @@ public class PlantItem : MonoBehaviour
         blueMaterial.color = Color.blue;
         sphereRenderer.material = blueMaterial;
         
-        // 移除所有物理组件
+        // 移除刚体组件（保留碰撞器用于点击检测）
         Rigidbody sphereRb = blueSphere.GetComponent<Rigidbody>();
         if (sphereRb != null)
             DestroyImmediate(sphereRb);
         
+        // 保留碰撞器但设置为触发器
         Collider sphereCollider = blueSphere.GetComponent<Collider>();
         if (sphereCollider != null)
-            DestroyImmediate(sphereCollider);
+            sphereCollider.isTrigger = true;
         
         // 添加点击脚本
         blueSphere.AddComponent<BlueSphereClickHandler>();
@@ -386,9 +405,9 @@ public class BlueSphereClickHandler : MonoBehaviour
     void OnMouseDown()
     {
         // 增加研究点数
-        ResearchManager.researchPoints++;
+        UI_ResearchPoint.AddResearchPoints(1);
         
-        Debug.Log($"研究点数+1，当前研究点数: {ResearchManager.researchPoints}");
+        Debug.Log($"研究点数+1，当前研究点数: {UI_ResearchPoint.ResearchPoints}");
         
         // 销毁小球
         Destroy(gameObject);

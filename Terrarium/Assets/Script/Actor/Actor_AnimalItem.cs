@@ -12,6 +12,27 @@ public class AnimalItem : MonoBehaviour
     private bool hasEaten = false; // 是否已经吃过植物
     private bool isAdult = false; // 是否为成年体
     
+    // 新增游荡相关变量
+    private bool isWandering = false;
+    private Vector3 wanderTarget;
+    private float wanderSpeed = 5f;
+    private float wanderRadius = 15f;
+    private float wanderTimer = 0f;
+    private float wanderInterval = 3f; // 每3秒选择新的游荡目标
+    
+    // 新增饥饿状态相关变量
+    private float hungerTimer = 0f;
+    private float hungerInterval = 5f; // 游荡5秒后重新饥饿
+    private bool isHungry = false;
+    
+    // 繁衍相关变量
+    private bool isLookingForMate = false;
+    private Transform targetMate = null;
+    private float mateSearchRadius = 20f;
+    private bool isReproducing = false; // 新增：防止重复繁衍的标志
+    private float reproductionCooldown = 0f; // 繁衍冷却时间
+    private float cooldownDuration = 2f; // 冷却持续时间
+
     // 静态变量记录所有动物数量
     public static int totalAnimalCount = 0;
     
@@ -66,6 +87,12 @@ public class AnimalItem : MonoBehaviour
 
     void Update()
     {
+        // 更新繁衍冷却时间
+        if (reproductionCooldown > 0f)
+        {
+            reproductionCooldown -= Time.deltaTime;
+        }
+        
         // 重置帧标记
         if (!Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -98,6 +125,137 @@ public class AnimalItem : MonoBehaviour
                 Debug.Log("AnimalItem未找到新的植物目标，停止移动");
             }
         }
+        // 寻找配偶进行繁衍
+        else if (isLookingForMate && targetMate != null)
+        {
+            MoveTowardsMate();
+        }
+        // 成年动物游荡行为
+        else if (isWandering && isAdult)
+        {
+            HandleWandering();
+            HandleHunger();
+            
+            // 如果不饥饿且不在冷却期，尝试寻找配偶
+            if (!isHungry && !isLookingForMate && reproductionCooldown <= 0f)
+            {
+                TryFindMate();
+            }
+        }
+    }
+    
+    void TryFindMate()
+    {
+        // 只有成年体且场景中至少有2个动物且不在繁衍冷却期才能繁衍
+        if (!isAdult || totalAnimalCount < 2 || reproductionCooldown > 0f) return;
+        
+        // 查找所有其他成年动物
+        AnimalItem[] allAnimals = FindObjectsOfType<AnimalItem>();
+        AnimalItem suitableMate = null;
+        float nearestDistance = float.MaxValue;
+        
+        foreach (AnimalItem animal in allAnimals)
+        {
+            // 排除自己，只找成年体且不饥饿且不在冷却期的动物
+            if (animal != this && animal.isAdult && !animal.isHungry && animal.reproductionCooldown <= 0f)
+            {
+                float distance = Vector3.Distance(transform.position, animal.transform.position);
+                if (distance <= mateSearchRadius && distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    suitableMate = animal;
+                }
+            }
+        }
+        
+        if (suitableMate != null)
+        {
+            targetMate = suitableMate.transform;
+            isLookingForMate = true;
+            isWandering = false;
+            Debug.Log($"AnimalItem找到配偶，开始接近进行繁衍，距离: {nearestDistance:F2}");
+        }
+    }
+    
+    void MoveTowardsMate()
+    {
+        if (targetMate == null) return;
+        
+        // 计算移动方向
+        Vector3 targetPosition = new Vector3(targetMate.position.x, transform.position.y, targetMate.position.z);
+        Vector3 direction = (targetPosition - transform.position).normalized;
+        
+        // 移动
+        transform.position += direction * moveSpeed * Time.deltaTime;
+        
+        // 检查是否到达配偶附近（距离小于2米）
+        float distance = Vector3.Distance(transform.position, targetPosition);
+        if (distance < 2f)
+        {
+            // 尝试繁衍
+            AttemptReproduction();
+        }
+    }
+    
+    void AttemptReproduction()
+    {
+        // 防止重复繁衍 - 多重检查
+        if (isReproducing || reproductionCooldown > 0f) return;
+        
+        AnimalItem mate = targetMate.GetComponent<AnimalItem>();
+        
+        // 确保配偶仍然符合所有条件
+        if (mate != null && mate.isAdult && !mate.isHungry && !isHungry && 
+            !mate.isReproducing && mate.reproductionCooldown <= 0f)
+        {
+            // 设置繁衍标志和冷却时间，防止重复触发
+            isReproducing = true;
+            mate.isReproducing = true;
+            reproductionCooldown = cooldownDuration;
+            mate.reproductionCooldown = cooldownDuration;
+            
+            // 在两个动物中间位置生成幼年体
+            Vector3 reproductionPosition = (transform.position + targetMate.position) / 2f;
+            reproductionPosition.y += 2f;
+            
+            SpawnOffspring(reproductionPosition);
+            
+            // 繁衍完成，双方结束寻找配偶状态
+            CompleteMating();
+            mate.CompleteMating();
+            
+            Debug.Log("AnimalItem繁衍成功，生成了幼年体");
+        }
+        else
+        {
+            // 配偶状态不符合，停止寻找配偶
+            isLookingForMate = false;
+            targetMate = null;
+            isWandering = true;
+            Debug.Log("配偶状态不符合繁衍条件，停止寻找配偶");
+        }
+    }
+    
+    void SpawnOffspring(Vector3 position)
+    {
+        // 创建新的幼年体AnimalItem
+        GameObject offspring = new GameObject("AnimalItem_Offspring");
+        offspring.transform.position = position;
+        
+        // 添加AnimalItem组件
+        AnimalItem offspringComponent = offspring.AddComponent<AnimalItem>();
+        
+        Debug.Log($"在位置 {position} 繁衍了新的幼年体动物");
+    }
+    
+    void CompleteMating()
+    {
+        isLookingForMate = false;
+        targetMate = null;
+        isReproducing = false;
+        isWandering = true;
+        
+        RestoreNormalColor();
     }
     
     void SpawnAnimalAtPosition(Vector3 position)
@@ -200,8 +358,13 @@ public class AnimalItem : MonoBehaviour
         {
             isMovingToPlant = false;
             
-            // 如果还没有吃过植物，则吃掉植物并成长
-            if (!hasEaten)
+            // 幼年体：如果还没有吃过植物，则吃掉植物并成长
+            if (!isAdult && !hasEaten)
+            {
+                EatPlant();
+            }
+            // 成年体：如果处于饥饿状态，则吃掉植物
+            else if (isAdult && isHungry)
             {
                 EatPlant();
             }
@@ -212,10 +375,8 @@ public class AnimalItem : MonoBehaviour
     
     void EatPlant()
     {
-        if (targetPlant != null && !hasEaten)
+        if (targetPlant != null)
         {
-            hasEaten = true;
-            
             // 销毁植物
             PlantItem plantComponent = targetPlant.GetComponent<PlantItem>();
             if (plantComponent != null)
@@ -224,8 +385,30 @@ public class AnimalItem : MonoBehaviour
                 Destroy(targetPlant.gameObject);
             }
             
-            // 动物成长为成年体
-            StartCoroutine(GrowToAdult());
+            // 如果是幼年体，成长为成年体
+            if (!isAdult)
+            {
+                hasEaten = true; // 只有幼年体需要设置hasEaten标记
+                StartCoroutine(GrowToAdult());
+            }
+            else
+            {
+                // 成年体进食后进入吃饱状态（不饥饿）
+                isHungry = false;
+                hungerTimer = 0f;
+                isWandering = true;
+                
+                // 恢复正常颜色
+                RestoreNormalColor();
+                
+                // 60%几率生成蓝色小球
+                if (Random.Range(0f, 1f) < 0.6f)
+                {
+                    SpawnBlueSphere();
+                }
+                
+                Debug.Log("成年AnimalItem进食完毕，进入吃饱状态，可以繁衍");
+            }
         }
     }
     
@@ -269,6 +452,102 @@ public class AnimalItem : MonoBehaviour
         {
             SpawnBlueSphere();
         }
+        
+        // 开始游荡行为
+        StartWandering();
+    }
+    
+    void StartWandering()
+    {
+        isWandering = true;
+        isHungry = false;
+        hungerTimer = 0f;
+        
+        // 恢复正常颜色
+        RestoreNormalColor();
+        
+        ChooseNewWanderTarget();
+        Debug.Log("AnimalItem开始游荡行为");
+    }
+    
+    void HandleWandering()
+    {
+        wanderTimer += Time.deltaTime;
+        
+        // 每隔一定时间选择新的游荡目标
+        if (wanderTimer >= wanderInterval)
+        {
+            ChooseNewWanderTarget();
+            wanderTimer = 0f;
+        }
+        
+        // 向游荡目标移动
+        MoveTowardsWanderTarget();
+    }
+    
+    void HandleHunger()
+    {
+        hungerTimer += Time.deltaTime;
+        
+        // 游荡5秒后重新饥饿
+        if (hungerTimer >= hungerInterval && !isHungry)
+        {
+            isHungry = true;
+            isWandering = false; // 停止游荡
+            isLookingForMate = false; // 停止寻找配偶
+            targetMate = null;
+            hungerTimer = 0f; // 重置计时器
+            
+            // 变成鲜红色表示饥饿状态
+            ChangeToHungryColor();
+            
+            Debug.Log("AnimalItem重新进入饥饿状态，开始寻找食物");
+            
+            // 寻找最近的植物
+            FindNearestPlant();
+            if (targetPlant != null)
+            {
+                isMovingToPlant = true;
+                Debug.Log($"AnimalItem找到新的食物目标: {targetPlant.name}");
+            }
+            else
+            {
+                Debug.Log("AnimalItem未找到食物，继续游荡");
+                // 如果没找到食物，继续游荡
+                isWandering = true;
+                isHungry = false;
+                RestoreNormalColor(); // 恢复正常颜色
+            }
+        }
+    }
+    
+    void ChooseNewWanderTarget()
+    {
+        // 在当前位置周围随机选择一个目标点
+        Vector2 randomDirection = Random.insideUnitCircle * wanderRadius;
+        wanderTarget = new Vector3(
+            transform.position.x + randomDirection.x,
+            transform.position.y,
+            transform.position.z + randomDirection.y
+        );
+        
+        Debug.Log($"AnimalItem选择新的游荡目标: {wanderTarget}");
+    }
+    
+    void MoveTowardsWanderTarget()
+    {
+        // 计算移动方向（只在水平面移动，保持Y轴不变）
+        Vector3 direction = (wanderTarget - transform.position).normalized;
+        
+        // 移动
+        transform.position += direction * wanderSpeed * Time.deltaTime;
+        
+        // 检查是否接近目标点（距离小于2米时选择新目标）
+        float distance = Vector3.Distance(transform.position, wanderTarget);
+        if (distance < 2f)
+        {
+            ChooseNewWanderTarget();
+        }
     }
     
     void SpawnBlueSphere()
@@ -288,19 +567,15 @@ public class AnimalItem : MonoBehaviour
         blueMaterial.color = Color.blue;
         sphereRenderer.material = blueMaterial;
         
-        // 移除刚体组件
+        // 移除刚体组件（保留碰撞器用于点击检测）
         Rigidbody sphereRb = blueSphere.GetComponent<Rigidbody>();
         if (sphereRb != null)
-        {
-            DestroyImmediate(sphereRb);
-        }
+            Destroy(sphereRb); // 改为Destroy
         
-        // 移除碰撞器组件
+        // 保留碰撞器但设置为触发器
         Collider sphereCollider = blueSphere.GetComponent<Collider>();
         if (sphereCollider != null)
-        {
-            DestroyImmediate(sphereCollider);
-        }
+            sphereCollider.isTrigger = true;
         
         // 添加点击脚本
         blueSphere.AddComponent<AnimalBlueSphereClickHandler>();
@@ -314,6 +589,35 @@ public class AnimalItem : MonoBehaviour
         totalAnimalCount--;
         Debug.Log($"动物被销毁，剩余动物数量: {totalAnimalCount}");
     }
+
+    void ChangeToHungryColor()
+    {
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        if (meshRenderer != null && meshRenderer.material != null)
+        {
+            meshRenderer.material.color = new Color(1f, 0f, 0f, 1f); // 鲜红色
+            Debug.Log("AnimalItem变成鲜红色，表示饥饿状态");
+        }
+    }
+
+    void RestoreNormalColor()
+    {
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        if (meshRenderer != null && meshRenderer.material != null)
+        {
+            if (isAdult)
+            {
+                // 成年体恢复为暗红色
+                meshRenderer.material.color = new Color(0.5f, 0f, 0f, 1f);
+            }
+            else
+            {
+                // 幼年体恢复为正常红色
+                meshRenderer.material.color = Color.red;
+            }
+            Debug.Log("AnimalItem恢复正常颜色");
+        }
+    }
 }
 
 // 动物蓝色小球点击处理脚本
@@ -322,9 +626,9 @@ public class AnimalBlueSphereClickHandler : MonoBehaviour
     void OnMouseDown()
     {
         // 增加研究点数
-        ResearchManager.researchPoints++;
+        UI_ResearchPoint.AddResearchPoints(1);
         
-        Debug.Log($"研究点数+1，当前研究点数: {ResearchManager.researchPoints}");
+        Debug.Log($"研究点数+1，当前研究点数: {UI_ResearchPoint.ResearchPoints}");
         
         // 销毁小球
         Destroy(gameObject);
