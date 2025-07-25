@@ -157,7 +157,9 @@ public class AnimalItem : MonoBehaviour
         foreach (AnimalItem animal in allAnimals)
         {
             // 排除自己，只找成年体且不饥饿且不在冷却期的动物
-            if (animal != this && animal.isAdult && !animal.isHungry && animal.reproductionCooldown <= 0f)
+            // 添加空引用检查
+            if (animal != null && animal != this && animal.isAdult && !animal.isHungry &&
+                animal.reproductionCooldown <= 0f && animal.transform != null)
             {
                 float distance = Vector3.Distance(transform.position, animal.transform.position);
                 if (distance <= mateSearchRadius && distance < nearestDistance)
@@ -168,7 +170,7 @@ public class AnimalItem : MonoBehaviour
             }
         }
         
-        if (suitableMate != null)
+        if (suitableMate != null && suitableMate.transform != null)
         {
             targetMate = suitableMate.transform;
             isLookingForMate = true;
@@ -201,11 +203,20 @@ public class AnimalItem : MonoBehaviour
     {
         // 防止重复繁衍 - 多重检查
         if (isReproducing || reproductionCooldown > 0f) return;
-        
+
+        // 检查targetMate是否为空
+        if (targetMate == null)
+        {
+            Debug.Log("targetMate为空，停止繁衍尝试");
+            isLookingForMate = false;
+            isWandering = true;
+            return;
+        }
+
         AnimalItem mate = targetMate.GetComponent<AnimalItem>();
-        
+
         // 确保配偶仍然符合所有条件
-        if (mate != null && mate.isAdult && !mate.isHungry && !isHungry && 
+        if (mate != null && mate.isAdult && !mate.isHungry && !isHungry &&
             !mate.isReproducing && mate.reproductionCooldown <= 0f)
         {
             // 设置繁衍标志和冷却时间，防止重复触发
@@ -213,17 +224,17 @@ public class AnimalItem : MonoBehaviour
             mate.isReproducing = true;
             reproductionCooldown = cooldownDuration;
             mate.reproductionCooldown = cooldownDuration;
-            
+
             // 在两个动物中间位置生成幼年体
             Vector3 reproductionPosition = (transform.position + targetMate.position) / 2f;
             reproductionPosition.y += 2f;
-            
+
             SpawnOffspring(reproductionPosition);
-            
+
             // 繁衍完成，双方结束寻找配偶状态
             CompleteMating();
             mate.CompleteMating();
-            
+
             Debug.Log("AnimalItem繁衍成功，生成了幼年体");
         }
         else
@@ -270,40 +281,37 @@ public class AnimalItem : MonoBehaviour
         Debug.Log($"在位置 {position} 生成了红色动物正方形");
     }
     
+
+    
     void OnCollisionEnter(Collision collision)
     {
-        // 检查是否接触到地面（通过标签或名称判断）
-        if (!hasGrounded && (collision.gameObject.CompareTag("Ground") || 
-            collision.gameObject.name.Contains("Ground") || 
-            collision.gameObject.name.Contains("Plane") ||
-            collision.gameObject.name.Contains("BarrenGround")))
+        // 简化地面检测：只要碰撞到任何物体就视为落地
+        if (!hasGrounded)
         {
             hasGrounded = true;
-            
+
             // 完全固定动物位置，移除刚体组件
             Rigidbody rb = GetComponent<Rigidbody>();
             if (rb != null)
             {
                 DestroyImmediate(rb);
             }
-            
-            Debug.Log("AnimalItem接触到地面，完全固定位置");
-            
-            // 移除落地时生成蓝色小球的代码
-            
+
+            Debug.Log("AnimalItem落地，完全固定位置");
+
             // 2秒后开始寻找植物
             StartCoroutine(StartMovingToPlantAfterDelay());
         }
     }
-    
+
     System.Collections.IEnumerator StartMovingToPlantAfterDelay()
     {
         // 等待2秒
         yield return new WaitForSeconds(2f);
-        
+
         // 寻找最近的植物
         FindNearestPlant();
-        
+
         if (targetPlant != null)
         {
             isMovingToPlant = true;
@@ -539,7 +547,7 @@ public class AnimalItem : MonoBehaviour
         // 计算移动方向（只在水平面移动，保持Y轴不变）
         Vector3 direction = (wanderTarget - transform.position).normalized;
         
-        // 移动
+        // 移动植物多颜色bug
         transform.position += direction * wanderSpeed * Time.deltaTime;
         
         // 检查是否接近目标点（距离小于2米时选择新目标）

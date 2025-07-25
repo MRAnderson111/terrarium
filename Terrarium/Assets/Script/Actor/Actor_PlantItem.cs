@@ -36,7 +36,18 @@ public class PlantItem : MonoBehaviour
     // 静态变量记录所有植物数量和环境食物数值
     public static int totalPlantCount = 0;
     public static int environmentalFood = 0;
-    
+
+    void Awake()
+    {
+        // 在场景开始时重置静态变量（只在第一个实例时执行）
+        if (FindObjectsOfType<PlantItem>().Length == 1)
+        {
+            totalPlantCount = 0;
+            environmentalFood = 0;
+            Debug.Log("PlantItem静态变量已重置");
+        }
+    }
+
     void Start()
     {
         InitializePlant();
@@ -44,9 +55,16 @@ public class PlantItem : MonoBehaviour
     
     void InitializePlant()
     {
-        // 植物生成时增加总数量
-        totalPlantCount++;
-        UpdateEnvironmentalFood();
+        Debug.Log($"PlantItem初始化前 - 总数量: {totalPlantCount}, 环境食物: {environmentalFood}");
+        
+        // 只有不是"PlantFirst"的植物才计入总数量
+        if (gameObject.name != "PlantFirst")
+        {
+            totalPlantCount++;
+            UpdateEnvironmentalFood();
+        }
+        
+        Debug.Log($"PlantItem初始化后 - 总数量: {totalPlantCount}, 环境食物: {environmentalFood}");
         
         // 初始化组件
         InitializeComponents();
@@ -344,7 +362,7 @@ public class PlantItem : MonoBehaviour
         // 移除刚体组件（保留碰撞器用于点击检测）
         Rigidbody sphereRb = blueSphere.GetComponent<Rigidbody>();
         if (sphereRb != null)
-            DestroyImmediate(sphereRb);
+            Destroy(sphereRb);
         
         // 保留碰撞器但设置为触发器
         Collider sphereCollider = blueSphere.GetComponent<Collider>();
@@ -361,6 +379,17 @@ public class PlantItem : MonoBehaviour
     {
         environmentalFood = totalPlantCount * 2;
     }
+
+    // 公共静态方法供UI访问
+    public static int GetTotalPlantCount()
+    {
+        return totalPlantCount;
+    }
+
+    public static int GetEnvironmentalFood()
+    {
+        return environmentalFood;
+    }
     
     void OnDestroy()
     {
@@ -368,9 +397,13 @@ public class PlantItem : MonoBehaviour
         if (plantType == PlantType.Sub && parentPlant != null)
             parentPlant.OnChildDestroyed(this);
         
-        // 植物被销毁时减少总数量
-        totalPlantCount--;
-        UpdateEnvironmentalFood();
+        // 只有不是"PlantFirst"的植物被销毁时才减少总数量
+        if (gameObject.name != "PlantFirst")
+        {
+            totalPlantCount--;
+            UpdateEnvironmentalFood();
+        }
+        
         Debug.Log($"植物被销毁，剩余植物数量: {totalPlantCount}, 环境食物数值: {environmentalFood}");
     }
     

@@ -12,7 +12,6 @@ public class UI_EnvironmentalFactor : MonoBehaviour
     [Header("环境因素滑块")]
     [SerializeField] private Slider sunlightSlider;
     [SerializeField] private Slider humiditySlider;
-    [SerializeField] private Slider waterSourceSlider;
     [SerializeField] private Slider temperatureSlider;
     
     [Header("显示文本")]
@@ -44,13 +43,6 @@ public class UI_EnvironmentalFactor : MonoBehaviour
             humiditySlider.value = Date_EnvironmentalFactory.Humidity;
         }
         
-        if (waterSourceSlider != null)
-        {
-            waterSourceSlider.minValue = 0f;
-            waterSourceSlider.maxValue = 100f;
-            waterSourceSlider.value = Date_EnvironmentalFactory.WaterSource;
-        }
-        
         if (temperatureSlider != null)
         {
             temperatureSlider.minValue = 0f;
@@ -70,9 +62,6 @@ public class UI_EnvironmentalFactor : MonoBehaviour
             
         if (humiditySlider != null)
             humiditySlider.onValueChanged.AddListener(OnHumidityChanged);
-            
-        if (waterSourceSlider != null)
-            waterSourceSlider.onValueChanged.AddListener(OnWaterSourceChanged);
             
         if (temperatureSlider != null)
             temperatureSlider.onValueChanged.AddListener(OnTemperatureChanged);
@@ -96,7 +85,18 @@ public class UI_EnvironmentalFactor : MonoBehaviour
     {
         Date_EnvironmentalFactory.SetWaterSource(value);
         if (waterSourceText != null)
-            waterSourceText.text = $"水源: {value:F0}%";
+        {
+            // 检查场景中是否有名为"Water"的对象
+            GameObject waterObject = GameObject.Find("Water");
+            if (waterObject != null)
+            {
+                waterSourceText.text = "水源: 充足";
+            }
+            else
+            {
+                waterSourceText.text = $"水源: {value:F0}%";
+            }
+        }
     }
     
     void OnTemperatureChanged(float value)
@@ -124,11 +124,6 @@ public class UI_EnvironmentalFactor : MonoBehaviour
             humiditySlider.value = Date_EnvironmentalFactory.Humidity;
         }
         
-        if (waterSourceSlider != null && waterSourceSlider.value != Date_EnvironmentalFactory.WaterSource)
-        {
-            waterSourceSlider.value = Date_EnvironmentalFactory.WaterSource;
-        }
-        
         if (temperatureSlider != null && temperatureSlider.value != Date_EnvironmentalFactory.Temperature)
         {
             temperatureSlider.value = Date_EnvironmentalFactory.Temperature;
@@ -147,8 +142,19 @@ public class UI_EnvironmentalFactor : MonoBehaviour
             humidityText.text = $"湿度: {Date_EnvironmentalFactory.Humidity:F0}%";
             
         if (waterSourceText != null)
-            waterSourceText.text = $"水源: {Date_EnvironmentalFactory.WaterSource:F0}%";
-            
+        {
+            // 检查场景中是否有名为"Water"的对象
+            GameObject waterObject = GameObject.Find("Water");
+            if (waterObject != null)
+            {
+                waterSourceText.text = "水源: 充足";
+            }
+            else
+            {
+                waterSourceText.text = $"水源: {Date_EnvironmentalFactory.WaterSource:F0}%";
+            }
+        }
+        
         if (temperatureText != null)
             temperatureText.text = $"温度: {Date_EnvironmentalFactory.Temperature:F0}°C";
     }
