@@ -44,17 +44,23 @@ public class AnimalItem : MonoBehaviour
     private Transform myHabitat = null; // 自己的居住地
     private bool isBuildingHabitat = false; // 是否正在建立居住地
     private bool isInHabitat = false; // 是否在居住地内
-    private Transform sharedHabitat = null; // 共享居住地
 
     // 静态变量记录所有动物数量和共享居住地
     public static int totalAnimalCount = 0;
+    public static int environmentalAnimalValue = 0; // 环境动物数量（动物数量的两倍）
     public static Transform sharedHabitat = null; // 共享的居住地
     private static bool isCreatingHabitat = false; // 静态标志，防止同时创建多个居住地
+
+    // 生命周期相关变量
+    private float lifeTimer = 0f;
+    private float maxLifeTime = 30f; // 最大生存时间30秒
+    private bool isDying = false; // 是否正在死亡过程中
     
     void Start()
     {
         // 动物生成时增加总数量
         totalAnimalCount++;
+        UpdateEnvironmentalAnimalValue();
         
         // 检查是否为新生幼体（通过名称判断）
         if (gameObject.name.Contains("Offspring"))
@@ -98,6 +104,11 @@ public class AnimalItem : MonoBehaviour
             Rigidbody rb = gameObject.AddComponent<Rigidbody>();
             rb.mass = 1f;
         }
+
+        // 初始化生命计时器
+        lifeTimer = 0f;
+        Debug.Log($"AnimalItem开始生命周期，将在{maxLifeTime}秒后死亡");
+        Debug.Log($"动物数量: {totalAnimalCount}, 环境动物数量: {environmentalAnimalValue}");
     }
     
     Mesh CreateCubeMesh()
@@ -111,6 +122,19 @@ public class AnimalItem : MonoBehaviour
 
     void Update()
     {
+        // 生命周期检查
+        if (!isDying)
+        {
+            lifeTimer += Time.deltaTime;
+            
+            // 检查是否到达生命终点
+            if (lifeTimer >= maxLifeTime)
+            {
+                StartCoroutine(Die());
+                return; // 开始死亡过程后不执行其他逻辑
+            }
+        }
+        
         // 新生幼体等待逻辑
         if (isWaiting && isNewborn)
         {
@@ -471,6 +495,9 @@ public class AnimalItem : MonoBehaviour
                     SpawnBlueSphere();
                 }
                 
+                // 成年体吃饱后也应该调用StartWandering来检查居住地
+                StartWandering();
+                
                 Debug.Log("成年AnimalItem进食完毕，进入吃饱状态，可以繁衍");
             }
         }
@@ -478,46 +505,24 @@ public class AnimalItem : MonoBehaviour
     
     System.Collections.IEnumerator GrowToAdult()
     {
-        if (isAdult) yield break; // 如果已经是成年体，直接返回
+        Debug.Log("AnimalItem开始成长为成年体");
         
+        // 等待2秒成长时间
+        yield return new WaitForSeconds(2f);
+        
+        // 设置为成年体
         isAdult = true;
         
-        Vector3 originalScale = transform.localScale;
-        Vector3 targetScale = originalScale * 2f; // 体型变大到两倍
-        
+        // 改变颜色为暗红色表示成年
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        Material animalMaterial = meshRenderer.material;
-        Color originalColor = animalMaterial.color;
-        Color targetColor = new Color(originalColor.r * 0.5f, originalColor.g * 0.5f, originalColor.b * 0.5f); // 颜色变暗
-        
-        float growthTime = 1f; // 成长时间1秒
-        float elapsedTime = 0f;
-        
-        while (elapsedTime < growthTime)
+        if (meshRenderer != null && meshRenderer.material != null)
         {
-            elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / growthTime;
-            
-            // 平滑插值缩放和颜色
-            transform.localScale = Vector3.Lerp(originalScale, targetScale, progress);
-            animalMaterial.color = Color.Lerp(originalColor, targetColor, progress);
-            
-            yield return null;
+            meshRenderer.material.color = new Color(0.5f, 0f, 0f, 1f); // 暗红色
         }
         
-        // 确保最终值准确
-        transform.localScale = targetScale;
-        animalMaterial.color = targetColor;
+        Debug.Log("AnimalItem成长为成年体，开始游荡和寻找配偶");
         
-        Debug.Log("AnimalItem成长为成年体：体型变大，颜色变暗");
-        
-        // 成长为成年体后，60%几率生成蓝色小球
-        if (Random.Range(0f, 1f) < 0.6f)
-        {
-            SpawnBlueSphere();
-        }
-        
-        // 开始游荡行为
+        // 成年后开始游荡（这里会触发居住地创建逻辑）
         StartWandering();
     }
     
@@ -925,6 +930,7 @@ public class AnimalItem : MonoBehaviour
     {
         // 动物被销毁时减少总数量
         totalAnimalCount--;
+        UpdateEnvironmentalAnimalValue();
         
         // 如果这是最后一个动物且有共享居住地，清理居住地引用
         if (totalAnimalCount <= 0 && sharedHabitat != null)
@@ -938,7 +944,7 @@ public class AnimalItem : MonoBehaviour
             Debug.Log("最后一个动物被销毁，清理共享居住地");
         }
         
-        Debug.Log($"动物被销毁，剩余动物数量: {totalAnimalCount}");
+        Debug.Log($"动物被销毁，剩余动物数量: {totalAnimalCount}, 环境动物数量: {environmentalAnimalValue}");
     }
 
     void ChangeToHungryColor()
@@ -988,6 +994,67 @@ public class AnimalItem : MonoBehaviour
             isInHabitat = false;
             Debug.Log("AnimalItem离开了自己的居住地");
         }
+    }
+
+    System.Collections.IEnumerator Die()
+    {
+        if (isDying) yield break; // 防止重复执行死亡过程
+        
+        isDying = true;
+        
+        Debug.Log($"AnimalItem开始死亡过程，存活时间: {lifeTimer:F1}秒");
+        
+        // 停止所有行为
+        isMovingToPlant = false;
+        isWandering = false;
+        isLookingForMate = false;
+        targetPlant = null;
+        targetMate = null;
+        
+        // 获取渲染器和材质
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        if (meshRenderer != null && meshRenderer.material != null)
+        {
+            Material animalMaterial = meshRenderer.material;
+            Color originalColor = animalMaterial.color;
+            
+            // 1秒内逐渐变透明（消散效果）
+            float fadeTime = 1f;
+            float elapsedTime = 0f;
+            
+            while (elapsedTime < fadeTime)
+            {
+                elapsedTime += Time.deltaTime;
+                float alpha = Mathf.Lerp(originalColor.a, 0f, elapsedTime / fadeTime);
+                
+                // 设置透明度
+                Color newColor = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
+                animalMaterial.color = newColor;
+                
+                yield return null;
+            }
+        }
+        
+        Debug.Log("AnimalItem死亡消散完成");
+        
+        // 销毁对象
+        Destroy(gameObject);
+    }
+
+    static void UpdateEnvironmentalAnimalValue()
+    {
+        environmentalAnimalValue = totalAnimalCount * 2;
+    }
+
+    // 公共静态方法供UI访问
+    public static int GetTotalAnimalCount()
+    {
+        return totalAnimalCount;
+    }
+
+    public static int GetEnvironmentalAnimalValue()
+    {
+        return environmentalAnimalValue;
     }
 }
 

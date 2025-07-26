@@ -7,6 +7,8 @@ public class UI_Plant : MonoBehaviour
     [Header("植物库存UI组件")]
     [SerializeField] private TextMeshProUGUI plantCountText;
     [SerializeField] private TextMeshProUGUI environmentalFoodText;
+    [SerializeField] private TextMeshProUGUI animalCountText;
+    [SerializeField] private TextMeshProUGUI environmentalAnimalText;
     [SerializeField] private GameObject plantInventoryPanel;
 
     [Header("UI设置")]
@@ -30,10 +32,16 @@ public class UI_Plant : MonoBehaviour
         if (canvas == null) return;
 
         // 创建植物数量面板
-        CreateRoundedPanel("PlantCountPanel", "植物数量: 0", new Vector2(10f, 60f), new Vector2(120f, 30f), ref plantCountText);
+        CreateRoundedPanel("PlantCountPanel", "植物数量: 0", new Vector2(10f, 100f), new Vector2(120f, 30f), ref plantCountText);
         
         // 创建环境食物面板
-        CreateRoundedPanel("EnvironmentalFoodPanel", "环境食物: 0", new Vector2(10f, 20f), new Vector2(120f, 30f), ref environmentalFoodText);
+        CreateRoundedPanel("EnvironmentalFoodPanel", "环境食物: 0", new Vector2(10f, 60f), new Vector2(120f, 30f), ref environmentalFoodText);
+        
+        // 创建动物数量面板
+        CreateRoundedPanel("AnimalCountPanel", "动物数量: 0", new Vector2(10f, 20f), new Vector2(120f, 30f), ref animalCountText);
+        
+        // 创建环境动物数量面板
+        CreateRoundedPanel("EnvironmentalAnimalPanel", "环境动物数量: 0", new Vector2(140f, 20f), new Vector2(140f, 30f), ref environmentalAnimalText);
     }
 
     void CreateRoundedPanel(string panelName, string text, Vector2 position, Vector2 size, ref TextMeshProUGUI textComponent)
@@ -89,8 +97,12 @@ public class UI_Plant : MonoBehaviour
         // 获取植物数据
         int plantCount = GetTotalPlantCount();
         int environmentalFood = GetEnvironmentalFood();
+        
+        // 获取动物数据
+        int animalCount = GetTotalAnimalCount();
+        int environmentalAnimalValue = GetEnvironmentalAnimalValue();
 
-        Debug.Log($"UI更新 - 植物数量: {plantCount}, 环境食物: {environmentalFood}");
+        Debug.Log($"UI更新 - 植物数量: {plantCount}, 环境食物: {environmentalFood}, 动物数量: {animalCount}, 环境动物数量: {environmentalAnimalValue}");
 
         if (plantCountText != null)
         {
@@ -100,6 +112,16 @@ public class UI_Plant : MonoBehaviour
         if (environmentalFoodText != null)
         {
             environmentalFoodText.text = $"环境食物: {environmentalFood}";
+        }
+        
+        if (animalCountText != null)
+        {
+            animalCountText.text = $"动物数量: {animalCount}";
+        }
+
+        if (environmentalAnimalText != null)
+        {
+            environmentalAnimalText.text = $"环境动物数量: {environmentalAnimalValue}";
         }
     }
 
@@ -200,5 +222,51 @@ public class UI_Plant : MonoBehaviour
                 Debug.LogWarning($"重置植物数据失败: {e.Message}");
             }
         }
+    }
+
+    int GetTotalAnimalCount()
+    {
+        // 通过反射调用AnimalItem的静态方法
+        try
+        {
+            var animalItemType = System.Type.GetType("AnimalItem");
+            if (animalItemType != null)
+            {
+                var method = animalItemType.GetMethod("GetTotalAnimalCount", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                if (method != null)
+                {
+                    return (int)method.Invoke(null, null);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"获取动物数量失败: {e.Message}");
+        }
+
+        return 0;
+    }
+
+    int GetEnvironmentalAnimalValue()
+    {
+        // 通过反射调用AnimalItem的静态方法
+        try
+        {
+            var animalItemType = System.Type.GetType("AnimalItem");
+            if (animalItemType != null)
+            {
+                var method = animalItemType.GetMethod("GetEnvironmentalAnimalValue", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                if (method != null)
+                {
+                    return (int)method.Invoke(null, null);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"获取环境动物数量失败: {e.Message}");
+        }
+
+        return 0;
     }
 }
