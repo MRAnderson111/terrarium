@@ -22,7 +22,7 @@ public class AnimalItem : MonoBehaviour
     
     // 新增饥饿状态相关变量
     private float hungerTimer = 0f;
-    private float hungerInterval = 5f; // 游荡5秒后重新饥饿
+    private float hungerInterval = 15f; // 游荡15秒后重新饥饿
     private bool isHungry = false;
     
     // 繁衍相关变量
@@ -33,13 +33,37 @@ public class AnimalItem : MonoBehaviour
     private float reproductionCooldown = 0f; // 繁衍冷却时间
     private float cooldownDuration = 2f; // 冷却持续时间
 
-    // 静态变量记录所有动物数量
+    // 新增等待相关变量
+    private bool isWaiting = false; // 是否正在等待
+    private float waitTimer = 0f; // 等待计时器
+    private float waitDuration = 3f; // 等待时长
+    private bool isNewborn = false; // 是否为新生幼体
+
+    // 居住地相关变量
+    private bool hasHabitat = false; // 是否已经建立居住地
+    private Transform myHabitat = null; // 自己的居住地
+    private bool isBuildingHabitat = false; // 是否正在建立居住地
+    private bool isInHabitat = false; // 是否在居住地内
+    private Transform sharedHabitat = null; // 共享居住地
+
+    // 静态变量记录所有动物数量和共享居住地
     public static int totalAnimalCount = 0;
+    public static Transform sharedHabitat = null; // 共享的居住地
+    private static bool isCreatingHabitat = false; // 静态标志，防止同时创建多个居住地
     
     void Start()
     {
         // 动物生成时增加总数量
         totalAnimalCount++;
+        
+        // 检查是否为新生幼体（通过名称判断）
+        if (gameObject.name.Contains("Offspring"))
+        {
+            isNewborn = true;
+            isWaiting = true;
+            waitTimer = 0f;
+            Debug.Log("新生幼年体开始等待3秒");
+        }
         
         // 确保有MeshRenderer和MeshFilter组件
         if (GetComponent<MeshRenderer>() == null)
@@ -68,8 +92,8 @@ public class AnimalItem : MonoBehaviour
             gameObject.AddComponent<BoxCollider>();
         }
         
-        // 添加刚体使其可以物理交互
-        if (GetComponent<Rigidbody>() == null)
+        // 只有非新生幼体才添加刚体（新生幼体等待期间不需要物理交互）
+        if (!isNewborn && GetComponent<Rigidbody>() == null)
         {
             Rigidbody rb = gameObject.AddComponent<Rigidbody>();
             rb.mass = 1f;
@@ -87,6 +111,26 @@ public class AnimalItem : MonoBehaviour
 
     void Update()
     {
+        // 新生幼体等待逻辑
+        if (isWaiting && isNewborn)
+        {
+            waitTimer += Time.deltaTime;
+            if (waitTimer >= waitDuration)
+            {
+                isWaiting = false;
+                
+                // 等待结束后添加刚体，开始物理交互
+                if (GetComponent<Rigidbody>() == null)
+                {
+                    Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+                    rb.mass = 1f;
+                }
+                
+                Debug.Log("新生幼年体等待结束，开始正常行为");
+            }
+            return; // 等待期间不执行其他逻辑
+        }
+        
         // 更新繁衍冷却时间
         if (reproductionCooldown > 0f)
         {
@@ -146,8 +190,8 @@ public class AnimalItem : MonoBehaviour
     
     void TryFindMate()
     {
-        // 只有成年体且场景中至少有2个动物且不在繁衍冷却期才能繁衍
-        if (!isAdult || totalAnimalCount < 2 || reproductionCooldown > 0f) return;
+        // 只有成年体且有居住地且场景中至少有2个动物且不在繁衍冷却期才能繁衍
+        if (!isAdult || !hasHabitat || totalAnimalCount < 2 || reproductionCooldown > 0f) return;
         
         // 查找所有其他成年动物
         AnimalItem[] allAnimals = FindObjectsOfType<AnimalItem>();
@@ -156,10 +200,9 @@ public class AnimalItem : MonoBehaviour
         
         foreach (AnimalItem animal in allAnimals)
         {
-            // 排除自己，只找成年体且不饥饿且不在冷却期的动物
-            // 添加空引用检查
+            // 排除自己，只找成年体且不饥饿且不在冷却期且有居住地的动物
             if (animal != null && animal != this && animal.isAdult && !animal.isHungry &&
-                animal.reproductionCooldown <= 0f && animal.transform != null)
+                animal.reproductionCooldown <= 0f && animal.hasHabitat && animal.transform != null)
             {
                 float distance = Vector3.Distance(transform.position, animal.transform.position);
                 if (distance <= mateSearchRadius && distance < nearestDistance)
@@ -215,9 +258,9 @@ public class AnimalItem : MonoBehaviour
 
         AnimalItem mate = targetMate.GetComponent<AnimalItem>();
 
-        // 确保配偶仍然符合所有条件
+        // 确保配偶仍然符合所有条件（包括有居住地）
         if (mate != null && mate.isAdult && !mate.isHungry && !isHungry &&
-            !mate.isReproducing && mate.reproductionCooldown <= 0f)
+            !mate.isReproducing && mate.reproductionCooldown <= 0f && mate.hasHabitat)
         {
             // 设置繁衍标志和冷却时间，防止重复触发
             isReproducing = true;
@@ -225,9 +268,22 @@ public class AnimalItem : MonoBehaviour
             reproductionCooldown = cooldownDuration;
             mate.reproductionCooldown = cooldownDuration;
 
-            // 在两个动物中间位置生成幼年体
-            Vector3 reproductionPosition = (transform.position + targetMate.position) / 2f;
-            reproductionPosition.y += 2f;
+            // 在居住地内生成幼年体（优先选择自己的居住地）
+            Vector3 reproductionPosition;
+            if (myHabitat != null)
+            {
+                reproductionPosition = myHabitat.position + Vector3.up * 2f;
+            }
+            else if (mate.myHabitat != null)
+            {
+                reproductionPosition = mate.myHabitat.position + Vector3.up * 2f;
+            }
+            else
+            {
+                // 如果都没有居住地，在两个动物中间位置生成
+                reproductionPosition = (transform.position + targetMate.position) / 2f;
+                reproductionPosition.y += 2f;
+            }
 
             SpawnOffspring(reproductionPosition);
 
@@ -235,7 +291,7 @@ public class AnimalItem : MonoBehaviour
             CompleteMating();
             mate.CompleteMating();
 
-            Debug.Log("AnimalItem繁衍成功，生成了幼年体");
+            Debug.Log("AnimalItem在居住地内繁衍成功，生成了幼年体");
         }
         else
         {
@@ -474,8 +530,282 @@ public class AnimalItem : MonoBehaviour
         // 恢复正常颜色
         RestoreNormalColor();
         
-        ChooseNewWanderTarget();
+        // 成年体吃饱后优先建立或寻找居住地
+        if (isAdult && !hasHabitat && !isBuildingHabitat)
+        {
+            // 检查是否已经有共享居住地
+            if (sharedHabitat != null)
+            {
+                // 使用现有的共享居住地
+                myHabitat = sharedHabitat;
+                hasHabitat = true;
+                Debug.Log("AnimalItem使用现有的共享居住地");
+            }
+            else if (!isCreatingHabitat)
+            {
+                // 创建新的共享居住地（只有在没有其他动物正在创建时）
+                StartCoroutine(BuildHabitatAfterDelay());
+            }
+            else
+            {
+                // 有其他动物正在创建居住地，等待一段时间后再检查
+                StartCoroutine(WaitForHabitatCreation());
+            }
+        }
+        
+        if (!isBuildingHabitat)
+        {
+            ChooseNewWanderTarget();
+        }
+        
         Debug.Log("AnimalItem开始游荡行为");
+    }
+    
+    System.Collections.IEnumerator WaitForHabitatCreation()
+    {
+        // 等待其他动物创建居住地
+        float waitTime = 0f;
+        float maxWaitTime = 5f;
+        
+        while (sharedHabitat == null && isCreatingHabitat && waitTime < maxWaitTime)
+        {
+            yield return new WaitForSeconds(0.5f);
+            waitTime += 0.5f;
+        }
+        
+        // 检查是否有可用的居住地
+        if (sharedHabitat != null)
+        {
+            myHabitat = sharedHabitat;
+            hasHabitat = true;
+            Debug.Log("AnimalItem等待后使用了共享居住地");
+        }
+        else if (!isCreatingHabitat)
+        {
+            // 如果没有居住地且没有其他动物在创建，自己创建
+            StartCoroutine(BuildHabitatAfterDelay());
+        }
+    }
+    
+    System.Collections.IEnumerator BuildHabitatAfterDelay()
+    {
+        // 设置创建标志，防止其他动物同时创建
+        if (isCreatingHabitat)
+        {
+            yield break; // 如果已经有动物在创建，直接退出
+        }
+        
+        isCreatingHabitat = true;
+        isBuildingHabitat = true;
+        
+        // 等待2秒后建立居住地
+        yield return new WaitForSeconds(2f);
+        
+        // 再次检查是否已经有其他动物创建了居住地
+        if (sharedHabitat == null)
+        {
+            BuildHabitat();
+        }
+        else
+        {
+            // 使用现有的共享居住地
+            myHabitat = sharedHabitat;
+            hasHabitat = true;
+            Debug.Log("AnimalItem在等待期间发现了共享居住地，直接使用");
+        }
+        
+        isCreatingHabitat = false;
+        isBuildingHabitat = false;
+        ChooseNewWanderTarget();
+    }
+    
+    void BuildHabitat()
+    {
+        // 最后一次检查，确保没有重复创建
+        if (sharedHabitat != null)
+        {
+            myHabitat = sharedHabitat;
+            hasHabitat = true;
+            Debug.Log("AnimalItem发现居住地已存在，直接使用");
+            return;
+        }
+        
+        // 寻找最佳居住地位置
+        Vector3 bestPosition = FindBestHabitatPosition();
+        
+        // 创建居住地对象
+        GameObject habitat = new GameObject("AnimalHabitat_Shared");
+        habitat.transform.position = bestPosition;
+        
+        // 添加Actor_AnimalHabitat组件
+        try
+        {
+            var habitatType = System.Type.GetType("Actor_AnimalHabitat");
+            if (habitatType != null)
+            {
+                habitat.AddComponent(habitatType);
+                
+                // 设置为共享居住地
+                sharedHabitat = habitat.transform;
+                myHabitat = sharedHabitat;
+                hasHabitat = true;
+                
+                Debug.Log($"AnimalItem在最佳位置 {bestPosition} 建立了共享居住地");
+            }
+            else
+            {
+                Debug.LogWarning("未找到Actor_AnimalHabitat类");
+                Destroy(habitat);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"建立居住地失败: {e.Message}");
+            Destroy(habitat);
+        }
+    }
+    
+    Vector3 FindBestHabitatPosition()
+    {
+        Vector3 bestPosition = transform.position;
+        float bestScore = float.MinValue;
+        
+        // 在当前位置周围搜索多个候选位置
+        int searchAttempts = 20;
+        float searchRadius = 30f;
+        
+        for (int i = 0; i < searchAttempts; i++)
+        {
+            // 生成随机候选位置
+            Vector2 randomOffset = Random.insideUnitCircle * searchRadius;
+            Vector3 candidatePosition = transform.position + new Vector3(
+                randomOffset.x,
+                0f,
+                randomOffset.y
+            );
+            
+            // 评估这个位置的适宜性
+            float score = EvaluateHabitatPosition(candidatePosition);
+            
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestPosition = candidatePosition;
+            }
+        }
+        
+        Debug.Log($"居住地选址完成，最佳评分: {bestScore:F2}");
+        return bestPosition;
+    }
+    
+    float EvaluateHabitatPosition(Vector3 position)
+    {
+        float score = 0f;
+        
+        // 1. 靠近植物（食物）加分
+        float foodScore = CalculateFoodProximityScore(position);
+        score += foodScore * 3f; // 食物权重为3
+        
+        // 2. 靠近水源加分（基于环境湿度和水源数据）
+        float waterScore = CalculateWaterProximityScore(position);
+        score += waterScore * 2f; // 水源权重为2
+        
+        // 3. 远离捕食者加分
+        float predatorScore = CalculatePredatorDistanceScore(position);
+        score += predatorScore * 4f; // 远离捕食者权重为4（最重要）
+        
+        return score;
+    }
+    
+    float CalculateFoodProximityScore(Vector3 position)
+    {
+        // 查找所有植物
+        PlantItem[] allPlants = FindObjectsOfType<PlantItem>();
+        
+        if (allPlants.Length == 0)
+            return 0f;
+        
+        float totalScore = 0f;
+        int plantCount = 0;
+        
+        foreach (PlantItem plant in allPlants)
+        {
+            if (plant != null && plant.transform != null)
+            {
+                float distance = Vector3.Distance(position, plant.transform.position);
+                // 距离越近分数越高，最大有效距离为50米
+                float plantScore = Mathf.Max(0f, (50f - distance) / 50f);
+                totalScore += plantScore;
+                plantCount++;
+            }
+        }
+        
+        return plantCount > 0 ? totalScore / plantCount : 0f;
+    }
+    
+    float CalculateWaterProximityScore(Vector3 position)
+    {
+        // 基于环境工厂的水源和湿度数据
+        try
+        {
+            var envFactoryType = System.Type.GetType("Date_EnvironmentalFactory");
+            if (envFactoryType != null)
+            {
+                var humidityProperty = envFactoryType.GetProperty("Humidity");
+                var waterSourceProperty = envFactoryType.GetProperty("WaterSource");
+                
+                if (humidityProperty != null && waterSourceProperty != null)
+                {
+                    float humidity = (float)humidityProperty.GetValue(null);
+                    float waterSource = (float)waterSourceProperty.GetValue(null);
+                    
+                    // 湿度和水源越高，分数越高
+                    return (humidity + waterSource) / 200f; // 归一化到0-1
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"获取水源数据失败: {e.Message}");
+        }
+        
+        return 0.5f; // 默认中等分数
+    }
+    
+    float CalculatePredatorDistanceScore(Vector3 position)
+    {
+        // 查找所有捕食者
+        try
+        {
+            var predatorType = System.Type.GetType("Actor_Predator");
+            if (predatorType != null)
+            {
+                Component[] allPredators = FindObjectsOfType(predatorType) as Component[];
+                
+                if (allPredators == null || allPredators.Length == 0)
+                    return 1f; // 没有捕食者，满分
+                
+                float minDistance = float.MaxValue;
+                
+                foreach (Component predator in allPredators)
+                {
+                    if (predator != null && predator.transform != null)
+                    {
+                        float distance = Vector3.Distance(position, predator.transform.position);
+                        minDistance = Mathf.Min(minDistance, distance);
+                    }
+                }
+                
+                // 距离捕食者越远分数越高，安全距离为30米
+                return Mathf.Min(1f, minDistance / 30f);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"获取捕食者数据失败: {e.Message}");
+        }
+        
+        return 1f; // 默认满分（假设没有捕食者）
     }
     
     void HandleWandering()
@@ -497,7 +827,7 @@ public class AnimalItem : MonoBehaviour
     {
         hungerTimer += Time.deltaTime;
         
-        // 游荡5秒后重新饥饿
+        // 游荡15秒后重新饥饿
         if (hungerTimer >= hungerInterval && !isHungry)
         {
             isHungry = true;
@@ -595,6 +925,19 @@ public class AnimalItem : MonoBehaviour
     {
         // 动物被销毁时减少总数量
         totalAnimalCount--;
+        
+        // 如果这是最后一个动物且有共享居住地，清理居住地引用
+        if (totalAnimalCount <= 0 && sharedHabitat != null)
+        {
+            if (sharedHabitat.gameObject != null)
+            {
+                Destroy(sharedHabitat.gameObject);
+            }
+            sharedHabitat = null;
+            isCreatingHabitat = false; // 重置创建标志
+            Debug.Log("最后一个动物被销毁，清理共享居住地");
+        }
+        
         Debug.Log($"动物被销毁，剩余动物数量: {totalAnimalCount}");
     }
 
@@ -624,6 +967,26 @@ public class AnimalItem : MonoBehaviour
                 meshRenderer.material.color = Color.red;
             }
             Debug.Log("AnimalItem恢复正常颜色");
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        // 检查是否进入了自己的居住地
+        if (myHabitat != null && other.transform == myHabitat)
+        {
+            isInHabitat = true;
+            Debug.Log("AnimalItem进入了自己的居住地");
+        }
+    }
+    
+    void OnTriggerExit(Collider other)
+    {
+        // 检查是否离开了自己的居住地
+        if (myHabitat != null && other.transform == myHabitat)
+        {
+            isInHabitat = false;
+            Debug.Log("AnimalItem离开了自己的居住地");
         }
     }
 }
