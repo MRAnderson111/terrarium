@@ -37,6 +37,25 @@ public class PlantItem : MonoBehaviour
     public static int totalPlantCount = 0;
     public static int environmentalFood = 0;
 
+    // 植物适宜生存的环境条件
+    [Header("植物生存环境条件")]
+    [SerializeField] private float optimalTemperatureMin = 15f; // 适宜温度下限
+    [SerializeField] private float optimalTemperatureMax = 30f; // 适宜温度上限
+    [SerializeField] private float optimalHumidityMin = 40f;    // 适宜湿度下限
+    [SerializeField] private float optimalHumidityMax = 80f;    // 适宜湿度上限
+    [SerializeField] private float optimalSunlightMin = 30f;    // 适宜光照下限
+    [SerializeField] private float optimalSunlightMax = 90f;    // 适宜光照上限
+    
+    // 环境适应性状态
+    private bool isInOptimalEnvironment = true; // 是否处于适宜环境
+    private float environmentalStress = 0f;     // 环境压力值 (0-1)
+    private float extremeStressTimer = 0f;      // 极端环境压力计时器
+    private bool isWithering = false;           // 是否正在枯萎
+    
+    [Header("枯萎死亡设置")]
+    [SerializeField] private float extremeStressThreshold = 0.8f;  // 极端压力阈值
+    [SerializeField] private float witherTimeLimit = 10f;          // 极端环境下存活时间限制
+
     void Awake()
     {
         // 在场景开始时重置静态变量（只在第一个实例时执行）
@@ -51,6 +70,9 @@ public class PlantItem : MonoBehaviour
     void Start()
     {
         InitializePlant();
+        
+        // 开始环境监测
+        StartCoroutine(MonitorEnvironmentalConditions());
     }
     
     void InitializePlant()
@@ -242,12 +264,18 @@ public class PlantItem : MonoBehaviour
     IEnumerator GrowPlant()
     {
         Vector3 originalScale = transform.localScale;
-        Vector3 targetScale = originalScale * 2f; // 膨胀到两倍
+        Vector3 targetScale = originalScale * 2f;
         Color originalColor = plantMaterial.color;
         Color targetColor = DetermineTargetColor(originalColor);
         
-        float growthTime = isOnBarrenGround ? 10f : 1f; // 只有贫瘠土地生长时间10秒，肥沃土地和正常土地都是1秒
+        // 根据环境条件调整生长时间
+        float baseGrowthTime = isOnBarrenGround ? 10f : 1f;
+        float environmentalMultiplier = 1f + environmentalStress; // 环境压力越大，生长越慢
+        float growthTime = baseGrowthTime * environmentalMultiplier;
+        
         float elapsedTime = 0f;
+        
+        Debug.Log($"植物开始生长，预计时间: {growthTime:F1}秒 (环境压力影响: {environmentalMultiplier:F2}x)");
         
         // 生长过程
         while (elapsedTime < growthTime)
@@ -353,6 +381,9 @@ public class PlantItem : MonoBehaviour
         blueSphere.transform.position = spherePosition;
         blueSphere.transform.localScale = Vector3.one * 0.3f;
         
+        // 重要：将蓝色小球设置为独立对象，不作为植物的子对象
+        blueSphere.transform.SetParent(null);
+        
         // 设置蓝色材质
         MeshRenderer sphereRenderer = blueSphere.GetComponent<MeshRenderer>();
         Material blueMaterial = new Material(Shader.Find("Standard"));
@@ -372,7 +403,10 @@ public class PlantItem : MonoBehaviour
         // 添加点击脚本
         blueSphere.AddComponent<BlueSphereClickHandler>();
         
-        Debug.Log($"在位置 {spherePosition} 生成了浮空蓝色小球");
+        // 添加自动销毁组件，防止蓝色小球永久存在
+        blueSphere.AddComponent<AutoDestroy>();
+        
+        Debug.Log($"在位置 {spherePosition} 生成了独立的浮空蓝色小球");
     }
     
     static void UpdateEnvironmentalFood()
@@ -429,6 +463,405 @@ public class PlantItem : MonoBehaviour
         // 再次检查是否可以繁殖（防止在等待期间主植株被销毁）
         if (gameObject != null && childPlants.Count < maxReplications && canReplicate)
             ReplicatePlant();
+    }
+    
+    IEnumerator MonitorEnvironmentalConditions()
+    {
+        while (gameObject != null)
+        {
+            // 每2秒检测一次环境条件
+            yield return new WaitForSeconds(2f);
+            
+            CheckEnvironmentalConditions();
+        }
+    }
+    
+    void CheckEnvironmentalConditions()
+    {
+        // 如果已经在枯萎过程中，不再检查环境条件
+        if (isWithering) return;
+        
+        // 获取当前环境数据
+        float currentTemperature = GetCurrentTemperature();
+        float currentHumidity = GetCurrentHumidity();
+        float currentSunlight = GetCurrentSunlight();
+        
+        // 计算环境适应性
+        float tempStress = CalculateTemperatureStress(currentTemperature);
+        float humidityStress = CalculateHumidityStress(currentHumidity);
+        float sunlightStress = CalculateSunlightStress(currentSunlight);
+        
+        // 综合环境压力
+        environmentalStress = (tempStress + humidityStress + sunlightStress) / 3f;
+        
+        // 判断是否处于适宜环境
+        bool wasOptimal = isInOptimalEnvironment;
+        isInOptimalEnvironment = environmentalStress < 0.3f; // 压力小于30%认为是适宜环境
+        
+        // 如果环境状态发生变化，调整植物状态
+        if (wasOptimal != isInOptimalEnvironment)
+        {
+            OnEnvironmentalStatusChanged();
+        }
+        
+        // 检查极端环境压力
+        if (environmentalStress >= extremeStressThreshold)
+        {
+            extremeStressTimer += 2f; // 每次检测间隔2秒
+            
+            if (extremeStressTimer >= witherTimeLimit)
+            {
+                Debug.Log($"植物在极端环境下存活{witherTimeLimit}秒后开始枯萎死亡");
+                StartCoroutine(WitherAndDie());
+                return; // 开始枯萎后不再执行后续逻辑
+            }
+            else
+            {
+                Debug.Log($"植物承受极端环境压力 {extremeStressTimer:F1}/{witherTimeLimit}秒");
+            }
+        }
+        else
+        {
+            // 环境改善时重置计时器
+            if (extremeStressTimer > 0f)
+            {
+                extremeStressTimer = 0f;
+                Debug.Log("环境条件改善，植物脱离极端压力状态");
+            }
+        }
+        
+        // 如果环境压力过大，可能影响生长和繁殖
+        if (environmentalStress > 0.7f)
+        {
+            HandleHighEnvironmentalStress();
+        }
+        
+        Debug.Log($"植物环境检测 - 温度: {currentTemperature:F1}°C, 湿度: {currentHumidity:F1}%, 光照: {currentSunlight:F1}, 环境压力: {environmentalStress:F2}");
+    }
+    
+    float GetCurrentTemperature()
+    {
+        try
+        {
+            var envFactoryType = System.Type.GetType("Date_EnvironmentalFactory");
+            if (envFactoryType != null)
+            {
+                var temperatureProperty = envFactoryType.GetProperty("Temperature");
+                if (temperatureProperty != null)
+                {
+                    return (float)temperatureProperty.GetValue(null);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"获取温度数据失败: {e.Message}");
+        }
+        return 25f; // 默认温度
+    }
+    
+    float GetCurrentHumidity()
+    {
+        try
+        {
+            var envFactoryType = System.Type.GetType("Date_EnvironmentalFactory");
+            if (envFactoryType != null)
+            {
+                var humidityProperty = envFactoryType.GetProperty("Humidity");
+                if (humidityProperty != null)
+                {
+                    return (float)humidityProperty.GetValue(null);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"获取湿度数据失败: {e.Message}");
+        }
+        return 50f; // 默认湿度
+    }
+    
+    float GetCurrentSunlight()
+    {
+        try
+        {
+            var envFactoryType = System.Type.GetType("Date_EnvironmentalFactory");
+            if (envFactoryType != null)
+            {
+                var sunlightProperty = envFactoryType.GetProperty("Sunlight");
+                if (sunlightProperty != null)
+                {
+                    return (float)sunlightProperty.GetValue(null);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"获取光照数据失败: {e.Message}");
+        }
+        return 50f; // 默认光照
+    }
+    
+    float CalculateTemperatureStress(float temperature)
+    {
+        if (temperature >= optimalTemperatureMin && temperature <= optimalTemperatureMax)
+            return 0f; // 适宜温度，无压力
+        
+        if (temperature < optimalTemperatureMin)
+        {
+            // 温度过低
+            float deviation = optimalTemperatureMin - temperature;
+            return Mathf.Clamp01(deviation / 15f); // 偏离15度为最大压力
+        }
+        else
+        {
+            // 温度过高
+            float deviation = temperature - optimalTemperatureMax;
+            return Mathf.Clamp01(deviation / 15f); // 偏离15度为最大压力
+        }
+    }
+    
+    float CalculateHumidityStress(float humidity)
+    {
+        if (humidity >= optimalHumidityMin && humidity <= optimalHumidityMax)
+            return 0f; // 适宜湿度，无压力
+        
+        if (humidity < optimalHumidityMin)
+        {
+            // 湿度过低
+            float deviation = optimalHumidityMin - humidity;
+            return Mathf.Clamp01(deviation / 40f); // 偏离40%为最大压力
+        }
+        else
+        {
+            // 湿度过高
+            float deviation = humidity - optimalHumidityMax;
+            return Mathf.Clamp01(deviation / 20f); // 偏离20%为最大压力
+        }
+    }
+    
+    float CalculateSunlightStress(float sunlight)
+    {
+        if (sunlight >= optimalSunlightMin && sunlight <= optimalSunlightMax)
+            return 0f; // 适宜光照，无压力
+        
+        if (sunlight < optimalSunlightMin)
+        {
+            // 光照不足
+            float deviation = optimalSunlightMin - sunlight;
+            return Mathf.Clamp01(deviation / 30f); // 偏离30为最大压力
+        }
+        else
+        {
+            // 光照过强
+            float deviation = sunlight - optimalSunlightMax;
+            return Mathf.Clamp01(deviation / 10f); // 偏离10为最大压力
+        }
+    }
+    
+    void OnEnvironmentalStatusChanged()
+    {
+        if (isInOptimalEnvironment)
+        {
+            Debug.Log("植物进入适宜环境，生长状态良好");
+            // 恢复正常颜色
+            if (plantMaterial != null && !isWithering)
+            {
+                Color currentColor = plantMaterial.color;
+                plantMaterial.color = new Color(currentColor.r, Mathf.Max(currentColor.g, 0.8f), currentColor.b, currentColor.a);
+            }
+        }
+        else
+        {
+            Debug.Log("植物离开适宜环境，开始承受环境压力");
+            // 颜色变暗表示压力
+            if (plantMaterial != null && !isWithering)
+            {
+                Color currentColor = plantMaterial.color;
+                float stressFactor = 1f - (environmentalStress * 0.5f);
+                plantMaterial.color = new Color(currentColor.r * stressFactor, currentColor.g * stressFactor, currentColor.b * stressFactor, currentColor.a);
+            }
+        }
+    }
+    
+    void HandleHighEnvironmentalStress()
+    {
+        // 高环境压力下的处理
+        Debug.Log("植物承受高环境压力，生长和繁殖受到影响");
+        
+        // 延长生长时间
+        if (isGrowing)
+        {
+            // 可以在这里调整生长速度
+        }
+        
+        // 降低繁殖几率
+        if (canReplicate && Random.Range(0f, 1f) < environmentalStress)
+        {
+            Debug.Log("由于环境压力，植物跳过本次繁殖");
+            return; // 跳过繁殖
+        }
+    }
+    
+    IEnumerator WitherAndDie()
+    {
+        if (isWithering) yield break; // 防止重复执行枯萎过程
+        
+        isWithering = true;
+        
+        Debug.Log("植物开始枯萎死亡过程");
+        
+        // 停止其他协程但不停止当前枯萎协程
+        StopCoroutine(nameof(MonitorEnvironmentalConditions));
+        StopCoroutine(nameof(GrowAfterDelay));
+        StopCoroutine(nameof(GrowPlant));
+        StopCoroutine(nameof(ReplicateAfterDelay));
+        
+        // 获取当前材质和颜色
+        if (plantMaterial != null)
+        {
+            Color originalColor = plantMaterial.color;
+            Vector3 originalScale = transform.localScale;
+            
+            Debug.Log($"开始枯萎动画 - 原始颜色: {originalColor}, 原始尺寸: {originalScale}");
+            
+            // 3秒内逐渐枯萎（颜色变成棕色，体积缩小）
+            float witherTime = 3f;
+            float elapsedTime = 0f;
+            
+            Color witherColor = new Color(0.4f, 0.2f, 0.1f, 1f); // 棕色
+            Vector3 witherScale = originalScale * 0.3f; // 缩小到30%
+            
+            while (elapsedTime < witherTime)
+            {
+                elapsedTime += Time.deltaTime;
+                float progress = elapsedTime / witherTime;
+                
+                // 平滑插值到枯萎状态
+                plantMaterial.color = Color.Lerp(originalColor, witherColor, progress);
+                transform.localScale = Vector3.Lerp(originalScale, witherScale, progress);
+                
+                Debug.Log($"枯萎进度: {progress:F2}, 当前颜色: {plantMaterial.color}, 当前尺寸: {transform.localScale}");
+                
+                yield return null;
+            }
+            
+            // 确保最终状态
+            plantMaterial.color = witherColor;
+            transform.localScale = witherScale;
+            
+            Debug.Log("植物枯萎完成，1秒后开始消失");
+            
+            // 等待1秒后开始消失
+            yield return new WaitForSeconds(1f);
+            
+            // 最后1秒内逐渐变透明
+            float fadeTime = 1f;
+            elapsedTime = 0f;
+            
+            while (elapsedTime < fadeTime)
+            {
+                elapsedTime += Time.deltaTime;
+                float alpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeTime);
+                
+                Color fadeColor = plantMaterial.color;
+                fadeColor.a = alpha;
+                plantMaterial.color = fadeColor;
+                
+                Debug.Log($"消失进度: {elapsedTime / fadeTime:F2}, 透明度: {alpha:F2}");
+                
+                yield return null;
+            }
+        }
+        
+        Debug.Log("植物因极端环境死亡");
+        
+        // 在枯萎位置留下小型贫瘠土地
+        CreateBarrenGroundAtWitherLocation();
+        
+        // 销毁植物对象
+        Destroy(gameObject);
+    }
+    
+    void CreateBarrenGroundAtWitherLocation()
+    {
+        // 在植物枯萎位置创建小型贫瘠土地
+        Vector3 barrenGroundPosition = transform.position;
+        barrenGroundPosition.y = 0f; // 设置到地面高度
+        
+        // 创建贫瘠土地对象
+        GameObject barrenGround = new GameObject("SmallBarrenGround");
+        barrenGround.transform.position = barrenGroundPosition;
+        barrenGround.transform.localScale = new Vector3(0.3f, 1f, 0.3f); // 更小的尺寸
+        
+        // 添加基本组件
+        MeshRenderer meshRenderer = barrenGround.AddComponent<MeshRenderer>();
+        MeshFilter meshFilter = barrenGround.AddComponent<MeshFilter>();
+        
+        // 创建平面网格
+        meshFilter.mesh = CreateSmallGroundMesh();
+        
+        // 创建棕色材质表示贫瘠土地
+        Material barrenMaterial = new Material(Shader.Find("Standard"));
+        barrenMaterial.color = new Color(0.3f, 0.2f, 0.1f, 1f); // 棕色
+        meshRenderer.material = barrenMaterial;
+        
+        // 添加碰撞器
+        BoxCollider boxCollider = barrenGround.AddComponent<BoxCollider>();
+        boxCollider.size = new Vector3(3f, 0.1f, 3f);
+        boxCollider.isTrigger = false;
+        
+        Debug.Log($"在植物枯萎位置 {barrenGroundPosition} 创建了小型贫瘠土地");
+    }
+    
+    Mesh CreateSmallGroundMesh()
+    {
+        // 创建一个小型平面网格
+        Mesh mesh = new Mesh();
+        
+        // 顶点坐标（3x3的小平面）
+        Vector3[] vertices = new Vector3[4]
+        {
+            new Vector3(-1.5f, 0f, -1.5f),
+            new Vector3(1.5f, 0f, -1.5f),
+            new Vector3(-1.5f, 0f, 1.5f),
+            new Vector3(1.5f, 0f, 1.5f)
+        };
+        
+        // 三角形索引
+        int[] triangles = new int[6]
+        {
+            0, 2, 1,
+            2, 3, 1
+        };
+        
+        // UV坐标
+        Vector2[] uv = new Vector2[4]
+        {
+            new Vector2(0, 0),
+            new Vector2(1, 0),
+            new Vector2(0, 1),
+            new Vector2(1, 1)
+        };
+        
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+        mesh.uv = uv;
+        mesh.RecalculateNormals();
+        
+        return mesh;
+    }
+}
+
+// 蓝色小球自动销毁组件
+public class AutoDestroy : MonoBehaviour
+{
+    [SerializeField] private float lifeTime = 30f; // 30秒后自动销毁
+    
+    void Start()
+    {
+        // 30秒后自动销毁，防止场景中积累过多蓝色小球
+        Destroy(gameObject, lifeTime);
     }
 }
 

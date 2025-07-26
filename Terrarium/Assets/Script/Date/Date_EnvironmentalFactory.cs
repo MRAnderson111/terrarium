@@ -106,21 +106,23 @@ public class Date_EnvironmentalFactory : MonoBehaviour
     
     void Update()
     {
-        // 处理控制按键
-        HandleSunlightControl();
-        HandleTemperatureControl();
+        // 删除按键控制功能
+        // HandleSunlightControl();
+        // HandleTemperatureControl();
         
         // 实时更新环境数据（如果Inspector中的值发生变化）
         UpdateEnvironmentalData();
     }
     
+    // 删除阳光控制方法
+    /*
     void HandleSunlightControl()
     {
         // 按Z键增加阳光强度
         if (Input.GetKeyDown(KeyCode.Z))
         {
             sunlight += sunlightChangeAmount;
-            sunlight = Mathf.Clamp(sunlight, 0f, 100f); // 限制在0-100范围内
+            sunlight = Mathf.Clamp(sunlight, 0f, 100f);
             Debug.Log($"阳光强度增加到: {sunlight}");
         }
         
@@ -128,11 +130,14 @@ public class Date_EnvironmentalFactory : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.X))
         {
             sunlight -= sunlightChangeAmount;
-            sunlight = Mathf.Clamp(sunlight, 0f, 100f); // 限制在0-100范围内
+            sunlight = Mathf.Clamp(sunlight, 0f, 100f);
             Debug.Log($"阳光强度减少到: {sunlight}");
         }
     }
+    */
     
+    // 删除温度控制方法
+    /*
     void HandleTemperatureControl()
     {
         // 按C键增加温度
@@ -151,6 +156,7 @@ public class Date_EnvironmentalFactory : MonoBehaviour
             Debug.Log($"温度下降到: {temperature}°C");
         }
     }
+    */
     
     void UpdateEnvironmentalData()
     {

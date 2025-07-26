@@ -71,7 +71,7 @@ public class Actor_AnimalHabitat : MonoBehaviour
         BoxCollider boxCollider = GetComponent<BoxCollider>();
         if (boxCollider != null)
         {
-            boxCollider.isTrigger = false; // 保持物理碰撞
+            boxCollider.isTrigger = true; // 设置为触发器，不产生物理碰撞
         }
     }
     

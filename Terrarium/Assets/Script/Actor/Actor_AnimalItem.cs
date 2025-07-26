@@ -4,6 +4,21 @@ using UnityEngine;
 
 public class AnimalItem : MonoBehaviour
 {
+    // 添加状态枚举，统一管理动物行为状态
+    public enum AnimalState
+    {
+        Newborn,        // 新生等待
+        Hungry,         // 饥饿寻食
+        Wandering,      // 游荡
+        SeekingMate,    // 寻找配偶
+        GoingToSleep,   // 前往睡觉
+        Sleeping,       // 睡觉中
+        Dying           // 死亡中
+    }
+    
+    [Header("动物状态")]
+    [SerializeField] private AnimalState currentState = AnimalState.Newborn;
+
     private static bool keyProcessedThisFrame = false; // 静态变量控制每帧只处理一次
     private bool hasGrounded = false; // 是否已经接触地面
     private bool isMovingToPlant = false; // 是否正在向植物移动
@@ -56,6 +71,35 @@ public class AnimalItem : MonoBehaviour
     private float maxLifeTime = 30f; // 最大生存时间30秒
     private bool isDying = false; // 是否正在死亡过程中
     
+    // 新增环境适应性相关变量
+    [Header("动物环境适应性")]
+    [SerializeField] private float optimalTemperatureMin = 10f; // 适宜温度下限
+    [SerializeField] private float optimalTemperatureMax = 35f; // 适宜温度上限
+    [SerializeField] private float optimalHumidityMin = 30f;    // 适宜湿度下限
+    [SerializeField] private float optimalHumidityMax = 90f;    // 适宜湿度上限
+    
+    // 环境适应性状态
+    private bool isInOptimalEnvironment = true; // 是否处于适宜环境
+    private float environmentalStress = 0f;     // 环境压力值 (0-1)
+    private float extremeStressTimer = 0f;      // 极端环境压力计时器
+    private bool isDyingFromEnvironment = false; // 是否因环境因素死亡
+    
+    [Header("环境死亡设置")]
+    [SerializeField] private float extremeStressThreshold = 0.85f;  // 极端压力阈值
+    [SerializeField] private float environmentalDeathTimeLimit = 15f; // 极端环境下存活时间限制
+    
+    // 环境影响的速度修正系数
+    private float environmentalSpeedModifier = 1f;
+    private float environmentalReproductionModifier = 1f;
+
+    // 睡觉相关变量
+    private bool isSleeping = false; // 是否正在睡觉
+    private bool isGoingToSleep = false; // 是否正在前往睡觉地点
+    private float sleepTimer = 0f; // 睡觉计时器
+    private float sleepDuration = 5f; // 睡觉持续时间
+    private float sleepInterval = 15f; // 睡觉间隔时间（成年后15秒）
+    private float timeSinceAdult = 0f; // 成年后的时间计数
+
     void Start()
     {
         // 动物生成时增加总数量
@@ -71,6 +115,20 @@ public class AnimalItem : MonoBehaviour
             Debug.Log("新生幼年体开始等待3秒");
         }
         
+        // 初始化组件...
+        InitializeComponents();
+        
+        // 初始化生命计时器
+        lifeTimer = 0f;
+        Debug.Log($"AnimalItem开始生命周期，将在{maxLifeTime}秒后死亡");
+        Debug.Log($"动物数量: {totalAnimalCount}, 环境动物数量: {environmentalAnimalValue}");
+        
+        // 开始环境监测
+        StartCoroutine(MonitorEnvironmentalConditions());
+    }
+    
+    void InitializeComponents()
+    {
         // 确保有MeshRenderer和MeshFilter组件
         if (GetComponent<MeshRenderer>() == null)
         {
@@ -103,12 +161,8 @@ public class AnimalItem : MonoBehaviour
         {
             Rigidbody rb = gameObject.AddComponent<Rigidbody>();
             rb.mass = 1f;
+            // 初始时不设置为运动学模式，让动物自然下落
         }
-
-        // 初始化生命计时器
-        lifeTimer = 0f;
-        Debug.Log($"AnimalItem开始生命周期，将在{maxLifeTime}秒后死亡");
-        Debug.Log($"动物数量: {totalAnimalCount}, 环境动物数量: {environmentalAnimalValue}");
     }
     
     Mesh CreateCubeMesh()
@@ -122,59 +176,85 @@ public class AnimalItem : MonoBehaviour
 
     void Update()
     {
+        // 处理按键输入
+        HandleKeyInput();
+
         // 生命周期检查
-        if (!isDying)
+        if (!isDying && !isDyingFromEnvironment)
         {
             lifeTimer += Time.deltaTime;
-            
-            // 检查是否到达生命终点
+
             if (lifeTimer >= maxLifeTime)
             {
                 StartCoroutine(Die());
-                return; // 开始死亡过程后不执行其他逻辑
+                return;
             }
         }
-        
+
+        // 如果正在死亡过程中，不执行其他逻辑
+        if (isDying || isDyingFromEnvironment) return;
+
         // 新生幼体等待逻辑
-        if (isWaiting && isNewborn)
+        if (isNewborn && isWaiting)
         {
-            waitTimer += Time.deltaTime;
-            if (waitTimer >= waitDuration)
-            {
-                isWaiting = false;
-                
-                // 等待结束后添加刚体，开始物理交互
-                if (GetComponent<Rigidbody>() == null)
-                {
-                    Rigidbody rb = gameObject.AddComponent<Rigidbody>();
-                    rb.mass = 1f;
-                }
-                
-                Debug.Log("新生幼年体等待结束，开始正常行为");
-            }
-            return; // 等待期间不执行其他逻辑
+            HandleNewbornWaiting();
+            return;
         }
-        
+
         // 更新繁衍冷却时间
         if (reproductionCooldown > 0f)
         {
             reproductionCooldown -= Time.deltaTime;
         }
-        
-        // 重置帧标记
-        if (!Input.GetKeyDown(KeyCode.Alpha2))
+
+        // 核心行为逻辑
+        HandleCoreBehavior();
+    }
+
+    void HandleNewbornWaiting()
+    {
+        waitTimer += Time.deltaTime;
+
+        if (waitTimer >= waitDuration)
         {
-            keyProcessedThisFrame = false;
+            // 等待结束，添加刚体让新生动物自然下落
+            isWaiting = false;
+            isNewborn = false;
+
+            if (GetComponent<Rigidbody>() == null)
+            {
+                Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+                rb.mass = 1f;
+                // 不设置为运动学模式，让新生动物自然下落
+            }
+
+            Debug.Log("新生幼年体等待结束，开始自然下落");
         }
-        
-        // 按下2键在指定位置生成红色动物正方形
-        if (Input.GetKeyDown(KeyCode.Alpha2) && !keyProcessedThisFrame)
+    }
+
+    void HandleCoreBehavior()
+    {
+        // 只有落地后才能执行移动行为
+        if (!hasGrounded)
         {
-            keyProcessedThisFrame = true;
-            SpawnAnimalAtPosition(new Vector3(-50, 50, 50));
+            return; // 还没落地，不执行任何移动逻辑
         }
-        
-        // 向植物移动
+
+        // 睡觉行为（成年体专有）
+        if (isAdult && isSleeping)
+        {
+            HandleSleeping();
+            return;
+        }
+
+        // 前往睡觉
+        if (isAdult && isGoingToSleep)
+        {
+            MoveToHabitat();
+            return;
+        }
+
+        // 向植物移动（饥饿状态）
         if (isMovingToPlant && targetPlant != null)
         {
             MoveTowardsPlant();
@@ -203,7 +283,8 @@ public class AnimalItem : MonoBehaviour
         {
             HandleWandering();
             HandleHunger();
-            
+            HandleSleepBehavior();
+
             // 如果不饥饿且不在冷却期，尝试寻找配偶
             if (!isHungry && !isLookingForMate && reproductionCooldown <= 0f)
             {
@@ -212,175 +293,86 @@ public class AnimalItem : MonoBehaviour
         }
     }
     
-    void TryFindMate()
+    void HandleKeyInput()
     {
-        // 只有成年体且有居住地且场景中至少有2个动物且不在繁衍冷却期才能繁衍
-        if (!isAdult || !hasHabitat || totalAnimalCount < 2 || reproductionCooldown > 0f) return;
-        
-        // 查找所有其他成年动物
-        AnimalItem[] allAnimals = FindObjectsOfType<AnimalItem>();
-        AnimalItem suitableMate = null;
-        float nearestDistance = float.MaxValue;
-        
-        foreach (AnimalItem animal in allAnimals)
+        // 重置帧标记
+        if (!Input.GetKeyDown(KeyCode.Alpha2))
         {
-            // 排除自己，只找成年体且不饥饿且不在冷却期且有居住地的动物
-            if (animal != null && animal != this && animal.isAdult && !animal.isHungry &&
-                animal.reproductionCooldown <= 0f && animal.hasHabitat && animal.transform != null)
-            {
-                float distance = Vector3.Distance(transform.position, animal.transform.position);
-                if (distance <= mateSearchRadius && distance < nearestDistance)
-                {
-                    nearestDistance = distance;
-                    suitableMate = animal;
-                }
-            }
+            keyProcessedThisFrame = false;
         }
         
-        if (suitableMate != null && suitableMate.transform != null)
+        // 按下2键在指定位置生成红色动物正方形
+        if (Input.GetKeyDown(KeyCode.Alpha2) && !keyProcessedThisFrame)
         {
-            targetMate = suitableMate.transform;
-            isLookingForMate = true;
-            isWandering = false;
-            Debug.Log($"AnimalItem找到配偶，开始接近进行繁衍，距离: {nearestDistance:F2}");
+            keyProcessedThisFrame = true;
+            SpawnAnimalAtPosition(new Vector3(-25, 15, -25));
+            Debug.Log("按下2键，尝试生成动物");
         }
     }
     
-    void MoveTowardsMate()
-    {
-        if (targetMate == null) return;
-        
-        // 计算移动方向
-        Vector3 targetPosition = new Vector3(targetMate.position.x, transform.position.y, targetMate.position.z);
-        Vector3 direction = (targetPosition - transform.position).normalized;
-        
-        // 移动
-        transform.position += direction * moveSpeed * Time.deltaTime;
-        
-        // 检查是否到达配偶附近（距离小于2米）
-        float distance = Vector3.Distance(transform.position, targetPosition);
-        if (distance < 2f)
-        {
-            // 尝试繁衍
-            AttemptReproduction();
-        }
-    }
-    
-    void AttemptReproduction()
-    {
-        // 防止重复繁衍 - 多重检查
-        if (isReproducing || reproductionCooldown > 0f) return;
-
-        // 检查targetMate是否为空
-        if (targetMate == null)
-        {
-            Debug.Log("targetMate为空，停止繁衍尝试");
-            isLookingForMate = false;
-            isWandering = true;
-            return;
-        }
-
-        AnimalItem mate = targetMate.GetComponent<AnimalItem>();
-
-        // 确保配偶仍然符合所有条件（包括有居住地）
-        if (mate != null && mate.isAdult && !mate.isHungry && !isHungry &&
-            !mate.isReproducing && mate.reproductionCooldown <= 0f && mate.hasHabitat)
-        {
-            // 设置繁衍标志和冷却时间，防止重复触发
-            isReproducing = true;
-            mate.isReproducing = true;
-            reproductionCooldown = cooldownDuration;
-            mate.reproductionCooldown = cooldownDuration;
-
-            // 在居住地内生成幼年体（优先选择自己的居住地）
-            Vector3 reproductionPosition;
-            if (myHabitat != null)
-            {
-                reproductionPosition = myHabitat.position + Vector3.up * 2f;
-            }
-            else if (mate.myHabitat != null)
-            {
-                reproductionPosition = mate.myHabitat.position + Vector3.up * 2f;
-            }
-            else
-            {
-                // 如果都没有居住地，在两个动物中间位置生成
-                reproductionPosition = (transform.position + targetMate.position) / 2f;
-                reproductionPosition.y += 2f;
-            }
-
-            SpawnOffspring(reproductionPosition);
-
-            // 繁衍完成，双方结束寻找配偶状态
-            CompleteMating();
-            mate.CompleteMating();
-
-            Debug.Log("AnimalItem在居住地内繁衍成功，生成了幼年体");
-        }
-        else
-        {
-            // 配偶状态不符合，停止寻找配偶
-            isLookingForMate = false;
-            targetMate = null;
-            isWandering = true;
-            Debug.Log("配偶状态不符合繁衍条件，停止寻找配偶");
-        }
-    }
-    
-    void SpawnOffspring(Vector3 position)
-    {
-        // 创建新的幼年体AnimalItem
-        GameObject offspring = new GameObject("AnimalItem_Offspring");
-        offspring.transform.position = position;
-        
-        // 添加AnimalItem组件
-        AnimalItem offspringComponent = offspring.AddComponent<AnimalItem>();
-        
-        Debug.Log($"在位置 {position} 繁衍了新的幼年体动物");
-    }
-    
-    void CompleteMating()
-    {
-        isLookingForMate = false;
-        targetMate = null;
-        isReproducing = false;
-        isWandering = true;
-        
-        RestoreNormalColor();
-    }
-    
-    void SpawnAnimalAtPosition(Vector3 position)
+    static void SpawnAnimalAtPosition(Vector3 position)
     {
         // 创建新的AnimalItem对象
         GameObject newAnimal = new GameObject("AnimalItem");
         newAnimal.transform.position = position;
         
-        // 添加AnimalItem组件，这会自动设置为红色正方形
-        newAnimal.AddComponent<AnimalItem>();
+        // 添加AnimalItem组件
+        AnimalItem animalComponent = newAnimal.AddComponent<AnimalItem>();
         
         Debug.Log($"在位置 {position} 生成了红色动物正方形");
     }
     
-
-    
     void OnCollisionEnter(Collision collision)
     {
-        // 简化地面检测：只要碰撞到任何物体就视为落地
+        // 改进的地面检测：检查碰撞是否来自下方
         if (!hasGrounded)
         {
-            hasGrounded = true;
+            // 检查碰撞点是否在动物下方
+            bool isGroundCollision = false;
 
-            // 完全固定动物位置，移除刚体组件
-            Rigidbody rb = GetComponent<Rigidbody>();
-            if (rb != null)
+            foreach (ContactPoint contact in collision.contacts)
             {
-                DestroyImmediate(rb);
+                // 如果碰撞点的法线向上（Y分量为正），说明是地面碰撞
+                if (contact.normal.y > 0.5f)
+                {
+                    isGroundCollision = true;
+                    break;
+                }
             }
 
-            Debug.Log("AnimalItem落地，完全固定位置");
+            // 也可以通过碰撞对象的标签或名称来判断
+            if (!isGroundCollision)
+            {
+                GameObject collisionObject = collision.gameObject;
+                isGroundCollision = collisionObject.CompareTag("Ground") ||
+                                  collisionObject.name.Contains("Ground") ||
+                                  collisionObject.name.Contains("Plane") ||
+                                  collisionObject.name.Contains("Terrain");
+            }
 
-            // 2秒后开始寻找植物
-            StartCoroutine(StartMovingToPlantAfterDelay());
+            if (isGroundCollision)
+            {
+                hasGrounded = true;
+
+                // 固定动物位置，但保留刚体用于移动
+                Rigidbody rb = GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    // 停止物理运动，但保留刚体
+                    rb.velocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.isKinematic = true; // 设置为运动学模式，不受物理影响但可以移动
+                }
+
+                Debug.Log($"AnimalItem落地在 {collision.gameObject.name}，固定位置但保留移动能力");
+
+                // 2秒后开始寻找植物
+                StartCoroutine(StartMovingToPlantAfterDelay());
+            }
+            else
+            {
+                Debug.Log($"AnimalItem碰撞到 {collision.gameObject.name}，但不是地面，继续下落");
+            }
         }
     }
 
@@ -403,12 +395,21 @@ public class AnimalItem : MonoBehaviour
         }
     }
     
+    // 缓存搜索结果，避免频繁搜索
+    private static PlantItem[] cachedPlants;
+    private static float lastPlantCacheTime;
+    private static readonly float cacheValidTime = 1f; // 缓存1秒有效
+    
     void FindNearestPlant()
     {
-        // 查找所有PlantItem对象
-        PlantItem[] allPlants = FindObjectsOfType<PlantItem>();
+        // 使用缓存的植物列表
+        if (cachedPlants == null || Time.time - lastPlantCacheTime > cacheValidTime)
+        {
+            cachedPlants = FindObjectsOfType<PlantItem>();
+            lastPlantCacheTime = Time.time;
+        }
         
-        if (allPlants.Length == 0)
+        if (cachedPlants.Length == 0)
         {
             targetPlant = null;
             return;
@@ -417,35 +418,50 @@ public class AnimalItem : MonoBehaviour
         float nearestDistance = float.MaxValue;
         Transform nearestPlant = null;
         
-        foreach (PlantItem plant in allPlants)
+        foreach (PlantItem plant in cachedPlants)
         {
-            float distance = Vector3.Distance(transform.position, plant.transform.position);
-            if (distance < nearestDistance)
+            if (plant != null && plant.transform != null)
             {
-                nearestDistance = distance;
-                nearestPlant = plant.transform;
+                float distance = Vector3.Distance(transform.position, plant.transform.position);
+                if (distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    nearestPlant = plant.transform;
+                }
             }
         }
         
         targetPlant = nearestPlant;
-        Debug.Log($"找到最近的植物，距离: {nearestDistance:F2}");
+        if (targetPlant != null)
+        {
+            Debug.Log($"找到最近的植物，距离: {nearestDistance:F2}");
+        }
     }
     
     void MoveTowardsPlant()
     {
+        // 安全检查：确保已经落地
+        if (!hasGrounded)
+        {
+            Debug.LogWarning("AnimalItem尝试移动但还没有落地，停止移动");
+            isMovingToPlant = false;
+            return;
+        }
+
         // 计算移动方向（只在水平面移动，保持Y轴不变）
         Vector3 targetPosition = new Vector3(targetPlant.position.x, transform.position.y, targetPlant.position.z);
         Vector3 direction = (targetPosition - transform.position).normalized;
-        
-        // 移动
-        transform.position += direction * moveSpeed * Time.deltaTime;
-        
+
+        // 应用环境影响的移动速度
+        float adjustedMoveSpeed = moveSpeed * environmentalSpeedModifier;
+        transform.position += direction * adjustedMoveSpeed * Time.deltaTime;
+
         // 检查是否到达植物附近（距离小于3米）
         float distance = Vector3.Distance(transform.position, targetPosition);
         if (distance < 3f)
         {
             isMovingToPlant = false;
-            
+
             // 幼年体：如果还没有吃过植物，则吃掉植物并成长
             if (!isAdult && !hasEaten)
             {
@@ -456,7 +472,7 @@ public class AnimalItem : MonoBehaviour
             {
                 EatPlant();
             }
-            
+
             Debug.Log("AnimalItem到达植物附近，停止移动");
         }
     }
@@ -477,6 +493,7 @@ public class AnimalItem : MonoBehaviour
             if (!isAdult)
             {
                 hasEaten = true; // 只有幼年体需要设置hasEaten标记
+                Debug.Log("幼年体AnimalItem吃掉植物，开始成长为成年体");
                 StartCoroutine(GrowToAdult());
             }
             else
@@ -505,24 +522,39 @@ public class AnimalItem : MonoBehaviour
     
     System.Collections.IEnumerator GrowToAdult()
     {
-        Debug.Log("AnimalItem开始成长为成年体");
+        if (isAdult) yield break;
         
-        // 等待2秒成长时间
-        yield return new WaitForSeconds(2f);
-        
-        // 设置为成年体
         isAdult = true;
+        timeSinceAdult = 0f; // 重置成年计时器
         
-        // 改变颜色为暗红色表示成年
+        Vector3 originalScale = transform.localScale;
+        Vector3 targetScale = originalScale * 2f;
+        
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-        if (meshRenderer != null && meshRenderer.material != null)
+        Material animalMaterial = meshRenderer.material;
+        Color originalColor = animalMaterial.color;
+        Color targetColor = new Color(originalColor.r * 0.5f, originalColor.g * 0.5f, originalColor.b * 0.5f);
+        
+        float growthTime = 1f;
+        float elapsedTime = 0f;
+        
+        while (elapsedTime < growthTime)
         {
-            meshRenderer.material.color = new Color(0.5f, 0f, 0f, 1f); // 暗红色
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / growthTime;
+            
+            transform.localScale = Vector3.Lerp(originalScale, targetScale, progress);
+            animalMaterial.color = Color.Lerp(originalColor, targetColor, progress);
+            
+            yield return null;
         }
         
-        Debug.Log("AnimalItem成长为成年体，开始游荡和寻找配偶");
+        transform.localScale = targetScale;
+        animalMaterial.color = targetColor;
         
-        // 成年后开始游荡（这里会触发居住地创建逻辑）
+        Debug.Log("AnimalItem成长为成年体：体型变大，颜色变暗，开始睡觉周期");
+        
+        // 成长完成后开始游荡
         StartWandering();
     }
     
@@ -830,10 +862,13 @@ public class AnimalItem : MonoBehaviour
     
     void HandleHunger()
     {
+        // 如果当前处于饥饿状态，不执行饥饿计时逻辑
+        if (isHungry) return;
+        
         hungerTimer += Time.deltaTime;
         
         // 游荡15秒后重新饥饿
-        if (hungerTimer >= hungerInterval && !isHungry)
+        if (hungerTimer >= hungerInterval)
         {
             isHungry = true;
             isWandering = false; // 停止游荡
@@ -855,11 +890,7 @@ public class AnimalItem : MonoBehaviour
             }
             else
             {
-                Debug.Log("AnimalItem未找到食物，继续游荡");
-                // 如果没找到食物，继续游荡
-                isWandering = true;
-                isHungry = false;
-                RestoreNormalColor(); // 恢复正常颜色
+                Debug.Log("AnimalItem未找到食物，保持饥饿状态");
             }
         }
     }
@@ -879,18 +910,207 @@ public class AnimalItem : MonoBehaviour
     
     void MoveTowardsWanderTarget()
     {
+        // 安全检查：确保已经落地
+        if (!hasGrounded)
+        {
+            Debug.LogWarning("AnimalItem尝试游荡但还没有落地，停止游荡");
+            isWandering = false;
+            return;
+        }
+
         // 计算移动方向（只在水平面移动，保持Y轴不变）
         Vector3 direction = (wanderTarget - transform.position).normalized;
-        
-        // 移动植物多颜色bug
-        transform.position += direction * wanderSpeed * Time.deltaTime;
-        
+
+        // 应用环境影响的游荡速度
+        float adjustedWanderSpeed = wanderSpeed * environmentalSpeedModifier;
+        transform.position += direction * adjustedWanderSpeed * Time.deltaTime;
+
         // 检查是否接近目标点（距离小于2米时选择新目标）
         float distance = Vector3.Distance(transform.position, wanderTarget);
         if (distance < 2f)
         {
             ChooseNewWanderTarget();
         }
+    }
+
+    void TryFindMate()
+    {
+        // 只有成年体且场景中至少有2个动物且不在繁衍冷却期才能繁衍
+        if (!isAdult || totalAnimalCount < 2 || reproductionCooldown > 0f) return;
+
+        // 查找所有其他成年动物
+        AnimalItem[] allAnimals = FindObjectsOfType<AnimalItem>();
+        AnimalItem suitableMate = null;
+        float nearestDistance = float.MaxValue;
+
+        foreach (AnimalItem animal in allAnimals)
+        {
+            // 排除自己，只找成年体且不饥饿且不在冷却期的动物
+            if (animal != null && animal != this && animal.isAdult && !animal.isHungry &&
+                animal.reproductionCooldown <= 0f && animal.transform != null)
+            {
+                float distance = Vector3.Distance(transform.position, animal.transform.position);
+                if (distance <= mateSearchRadius && distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    suitableMate = animal;
+                }
+            }
+        }
+
+        if (suitableMate != null && suitableMate.transform != null)
+        {
+            targetMate = suitableMate.transform;
+            isLookingForMate = true;
+            isWandering = false;
+            Debug.Log($"AnimalItem找到配偶，开始接近进行繁衍，距离: {nearestDistance:F2}");
+        }
+    }
+
+    void MoveTowardsMate()
+    {
+        if (targetMate == null) return;
+
+        // 安全检查：确保已经落地
+        if (!hasGrounded)
+        {
+            Debug.LogWarning("AnimalItem尝试寻找配偶但还没有落地，停止寻找配偶");
+            isLookingForMate = false;
+            targetMate = null;
+            return;
+        }
+
+        // 计算移动方向
+        Vector3 targetPosition = new Vector3(targetMate.position.x, transform.position.y, targetMate.position.z);
+        Vector3 direction = (targetPosition - transform.position).normalized;
+
+        // 移动
+        float adjustedMoveSpeed = moveSpeed * environmentalSpeedModifier;
+        transform.position += direction * adjustedMoveSpeed * Time.deltaTime;
+
+        // 检查是否到达配偶附近（距离小于2米）
+        float distance = Vector3.Distance(transform.position, targetPosition);
+        if (distance < 2f)
+        {
+            // 尝试繁衍
+            AttemptReproduction();
+        }
+    }
+
+    void AttemptReproduction()
+    {
+        // 防止重复繁衍 - 多重检查
+        if (isReproducing || reproductionCooldown > 0f) return;
+
+        // 检查targetMate是否为空
+        if (targetMate == null)
+        {
+            Debug.Log("targetMate为空，停止繁衍尝试");
+            isLookingForMate = false;
+            isWandering = true;
+            return;
+        }
+
+        AnimalItem mate = targetMate.GetComponent<AnimalItem>();
+
+        // 确保配偶仍然符合所有条件
+        if (mate != null && mate.isAdult && !mate.isHungry && !isHungry &&
+            !mate.isReproducing && mate.reproductionCooldown <= 0f)
+        {
+            // 应用环境影响的繁衍成功率
+            float reproductionChance = 0.8f * environmentalReproductionModifier;
+            if (Random.Range(0f, 1f) > reproductionChance)
+            {
+                Debug.Log($"繁衍失败，环境影响成功率: {reproductionChance:F2}");
+                // 繁衍失败时不消耗体力，只是结束寻找配偶状态
+                FailedMating();
+                mate.FailedMating();
+                return;
+            }
+
+            // 设置繁衍标志和冷却时间，防止重复触发
+            isReproducing = true;
+            mate.isReproducing = true;
+            reproductionCooldown = cooldownDuration;
+            mate.reproductionCooldown = cooldownDuration;
+
+            // 在两个动物中间位置生成幼年体
+            Vector3 reproductionPosition = (transform.position + targetMate.position) / 2f;
+            reproductionPosition.y += 2f;
+
+            SpawnOffspring(reproductionPosition);
+
+            // 繁衍完成，双方结束寻找配偶状态
+            CompleteMating();
+            mate.CompleteMating();
+
+            Debug.Log("AnimalItem繁衍成功，生成了幼年体");
+        }
+        else
+        {
+            // 配偶状态不符合，停止寻找配偶
+            isLookingForMate = false;
+            targetMate = null;
+            isWandering = true;
+            Debug.Log("配偶状态不符合繁衍条件，停止寻找配偶");
+        }
+    }
+
+    void SpawnOffspring(Vector3 position)
+    {
+        // 创建新的幼年体AnimalItem
+        GameObject offspring = new GameObject("AnimalItem_Offspring");
+        offspring.transform.position = position;
+
+        // 添加AnimalItem组件
+        AnimalItem offspringComponent = offspring.AddComponent<AnimalItem>();
+
+        Debug.Log($"在位置 {position} 繁衍了新的幼年体动物");
+    }
+
+    void CompleteMating()
+    {
+        isLookingForMate = false;
+        targetMate = null;
+        isReproducing = false;
+
+        // 繁衍消耗体力，动物需要重新进食
+        isHungry = true;
+        isWandering = false; // 停止游荡，开始寻找食物
+        hungerTimer = 0f; // 重置饥饿计时器
+
+        // 变成鲜红色表示饥饿状态
+        ChangeToHungryColor();
+
+        Debug.Log("AnimalItem繁衍完成，消耗体力，需要重新进食");
+
+        // 立即寻找最近的植物
+        FindNearestPlant();
+        if (targetPlant != null)
+        {
+            isMovingToPlant = true;
+            Debug.Log($"AnimalItem繁衍后寻找食物目标: {targetPlant.name}");
+        }
+        else
+        {
+            Debug.Log("AnimalItem繁衍后未找到食物，保持饥饿状态");
+        }
+    }
+
+    void FailedMating()
+    {
+        isLookingForMate = false;
+        targetMate = null;
+        isReproducing = false;
+
+        // 繁衍失败不消耗体力，继续游荡
+        isWandering = true;
+        // 不重置hungerTimer，保持原有的饥饿进度
+
+        // 恢复正常颜色
+        RestoreNormalColor();
+
+        Debug.Log("AnimalItem繁衍失败，继续游荡");
     }
     
     void SpawnBlueSphere()
@@ -928,23 +1148,27 @@ public class AnimalItem : MonoBehaviour
     
     void OnDestroy()
     {
-        // 动物被销毁时减少总数量
+        // 停止所有协程，防止内存泄漏
+        StopAllCoroutines();
+        
+        // 清理引用
+        targetPlant = null;
+        targetMate = null;
+        myHabitat = null;
+        
+        // 如果是共享居住地的最后一个动物，清理共享居住地
+        if (sharedHabitat != null && totalAnimalCount <= 1)
+        {
+            if (sharedHabitat.gameObject != null)
+                Destroy(sharedHabitat.gameObject);
+            sharedHabitat = null;
+        }
+        
+        // 减少总数量
         totalAnimalCount--;
         UpdateEnvironmentalAnimalValue();
         
-        // 如果这是最后一个动物且有共享居住地，清理居住地引用
-        if (totalAnimalCount <= 0 && sharedHabitat != null)
-        {
-            if (sharedHabitat.gameObject != null)
-            {
-                Destroy(sharedHabitat.gameObject);
-            }
-            sharedHabitat = null;
-            isCreatingHabitat = false; // 重置创建标志
-            Debug.Log("最后一个动物被销毁，清理共享居住地");
-        }
-        
-        Debug.Log($"动物被销毁，剩余动物数量: {totalAnimalCount}, 环境动物数量: {environmentalAnimalValue}");
+        Debug.Log($"动物被销毁，剩余动物数量: {totalAnimalCount}, 环境动物数值: {environmentalAnimalValue}");
     }
 
     void ChangeToHungryColor()
@@ -952,7 +1176,16 @@ public class AnimalItem : MonoBehaviour
         MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
         if (meshRenderer != null && meshRenderer.material != null)
         {
-            meshRenderer.material.color = new Color(1f, 0f, 0f, 1f); // 鲜红色
+            if (isAdult)
+            {
+                // 成年体饥饿时变成鲜红色
+                meshRenderer.material.color = new Color(1f, 0f, 0f, 1f);
+            }
+            else
+            {
+                // 幼年体饥饿时也是鲜红色
+                meshRenderer.material.color = new Color(1f, 0f, 0f, 1f);
+            }
             Debug.Log("AnimalItem变成鲜红色，表示饥饿状态");
         }
     }
@@ -964,15 +1197,16 @@ public class AnimalItem : MonoBehaviour
         {
             if (isAdult)
             {
-                // 成年体恢复为暗红色
+                // 成年体恢复为暗红色（保持大体型）
                 meshRenderer.material.color = new Color(0.5f, 0f, 0f, 1f);
+                Debug.Log("成年体AnimalItem恢复暗红色");
             }
             else
             {
-                // 幼年体恢复为正常红色
+                // 幼年体恢复为正常红色（保持小体型）
                 meshRenderer.material.color = Color.red;
+                Debug.Log("幼年体AnimalItem恢复红色");
             }
-            Debug.Log("AnimalItem恢复正常颜色");
         }
     }
 
@@ -1055,6 +1289,348 @@ public class AnimalItem : MonoBehaviour
     public static int GetEnvironmentalAnimalValue()
     {
         return environmentalAnimalValue;
+    }
+
+    IEnumerator MonitorEnvironmentalConditions()
+    {
+        while (gameObject != null && !isDying && !isDyingFromEnvironment)
+        {
+            // 每3秒检测一次环境条件
+            yield return new WaitForSeconds(3f);
+            
+            CheckEnvironmentalConditions();
+        }
+    }
+    
+    void CheckEnvironmentalConditions()
+    {
+        // 如果已经在死亡过程中，不再检查环境条件
+        if (isDying || isDyingFromEnvironment) return;
+        
+        // 获取当前环境数据
+        float currentTemperature = GetCurrentTemperature();
+        float currentHumidity = GetCurrentHumidity();
+        
+        // 计算环境适应性
+        float tempStress = CalculateTemperatureStress(currentTemperature);
+        float humidityStress = CalculateHumidityStress(currentHumidity);
+        
+        // 综合环境压力
+        environmentalStress = (tempStress + humidityStress) / 2f;
+        
+        // 判断是否处于适宜环境
+        bool wasOptimal = isInOptimalEnvironment;
+        isInOptimalEnvironment = environmentalStress < 0.3f; // 压力小于30%认为是适宜环境
+        
+        // 计算环境影响修正系数
+        CalculateEnvironmentalModifiers();
+        
+        // 如果环境状态发生变化，调整动物状态
+        if (wasOptimal != isInOptimalEnvironment)
+        {
+            OnEnvironmentalStatusChanged();
+        }
+        
+        // 检查极端环境压力
+        if (environmentalStress >= extremeStressThreshold)
+        {
+            extremeStressTimer += 3f; // 每次检测间隔3秒
+            
+            if (extremeStressTimer >= environmentalDeathTimeLimit)
+            {
+                Debug.Log($"动物在极端环境下存活{environmentalDeathTimeLimit}秒后开始死亡");
+                StartCoroutine(DieFromEnvironment());
+                return; // 开始死亡后不再执行后续逻辑
+            }
+            else
+            {
+                Debug.Log($"动物承受极端环境压力 {extremeStressTimer:F1}/{environmentalDeathTimeLimit}秒");
+            }
+        }
+        else
+        {
+            // 环境改善时重置计时器
+            if (extremeStressTimer > 0f)
+            {
+                extremeStressTimer = 0f;
+                Debug.Log("环境条件改善，动物脱离极端压力状态");
+            }
+        }
+        
+        Debug.Log($"动物环境检测 - 温度: {currentTemperature:F1}°C, 湿度: {currentHumidity:F1}%, 环境压力: {environmentalStress:F2}");
+    }
+    
+    // 缓存环境数据，避免重复反射调用
+    private static System.Type envFactoryType;
+    private static System.Reflection.PropertyInfo temperatureProperty;
+    private static System.Reflection.PropertyInfo humidityProperty;
+    
+    static AnimalItem()
+    {
+        try
+        {
+            envFactoryType = System.Type.GetType("Date_EnvironmentalFactory");
+            if (envFactoryType != null)
+            {
+                temperatureProperty = envFactoryType.GetProperty("Temperature");
+                humidityProperty = envFactoryType.GetProperty("Humidity");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"初始化环境数据访问失败: {e.Message}");
+        }
+    }
+    
+    float GetCurrentTemperature()
+    {
+        try
+        {
+            if (temperatureProperty != null)
+                return (float)temperatureProperty.GetValue(null);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"获取温度数据失败: {e.Message}");
+        }
+        return 25f; // 默认温度
+    }
+    
+    float GetCurrentHumidity()
+    {
+        try
+        {
+            if (humidityProperty != null)
+                return (float)humidityProperty.GetValue(null);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"获取湿度数据失败: {e.Message}");
+        }
+        return 60f; // 默认湿度
+    }
+    
+    float CalculateTemperatureStress(float temperature)
+    {
+        if (temperature >= optimalTemperatureMin && temperature <= optimalTemperatureMax)
+            return 0f; // 适宜温度，无压力
+        
+        if (temperature < optimalTemperatureMin)
+        {
+            // 温度过低
+            float deviation = optimalTemperatureMin - temperature;
+            return Mathf.Clamp01(deviation / 20f); // 偏离20度为最大压力
+        }
+        else
+        {
+            // 温度过高
+            float deviation = temperature - optimalTemperatureMax;
+            return Mathf.Clamp01(deviation / 20f); // 偏离20度为最大压力
+        }
+    }
+    
+    float CalculateHumidityStress(float humidity)
+    {
+        if (humidity >= optimalHumidityMin && humidity <= optimalHumidityMax)
+            return 0f; // 适宜湿度，无压力
+        
+        if (humidity < optimalHumidityMin)
+        {
+            // 湿度过低
+            float deviation = optimalHumidityMin - humidity;
+            return Mathf.Clamp01(deviation / 40f); // 偏离40%为最大压力
+        }
+        else
+        {
+            // 湿度过高
+            float deviation = humidity - optimalHumidityMax;
+            return Mathf.Clamp01(deviation / 40f); // 偏离40%为最大压力
+        }
+    }
+    
+    void CalculateEnvironmentalModifiers()
+    {
+        // 根据环境压力计算速度和繁衍修正系数
+        environmentalSpeedModifier = Mathf.Lerp(1f, 0.3f, environmentalStress); // 最低降到30%
+        environmentalReproductionModifier = Mathf.Lerp(1f, 0.1f, environmentalStress); // 最低降到10%
+        
+        Debug.Log($"环境修正系数 - 速度: {environmentalSpeedModifier:F2}, 繁衍: {environmentalReproductionModifier:F2}");
+    }
+    
+    void OnEnvironmentalStatusChanged()
+    {
+        if (isInOptimalEnvironment)
+        {
+            Debug.Log("动物进入适宜环境，状态良好");
+            // 恢复正常颜色
+            RestoreNormalColor();
+        }
+        else
+        {
+            Debug.Log("动物离开适宜环境，开始承受环境压力");
+            // 颜色变暗表示压力
+            ChangeToStressedColor();
+        }
+    }
+    
+    void ChangeToStressedColor()
+    {
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        if (meshRenderer != null && meshRenderer.material != null)
+        {
+            Color currentColor = meshRenderer.material.color;
+            float stressFactor = 1f - (environmentalStress * 0.4f);
+            meshRenderer.material.color = new Color(currentColor.r * stressFactor, currentColor.g * stressFactor, currentColor.b * stressFactor, currentColor.a);
+            Debug.Log("动物因环境压力颜色变暗");
+        }
+    }
+    
+    IEnumerator DieFromEnvironment()
+    {
+        if (isDyingFromEnvironment) yield break; // 防止重复执行死亡过程
+        
+        isDyingFromEnvironment = true;
+        
+        Debug.Log($"动物开始因环境因素死亡，承受压力时间: {extremeStressTimer:F1}秒");
+        
+        // 停止所有行为
+        isMovingToPlant = false;
+        isWandering = false;
+        isLookingForMate = false;
+        targetPlant = null;
+        targetMate = null;
+        
+        // 获取渲染器和材质
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        if (meshRenderer != null && meshRenderer.material != null)
+        {
+            Material animalMaterial = meshRenderer.material;
+            Color originalColor = animalMaterial.color;
+            
+            // 2秒内逐渐变透明（环境死亡比自然死亡更快）
+            float fadeTime = 2f;
+            float elapsedTime = 0f;
+            
+            while (elapsedTime < fadeTime)
+            {
+                elapsedTime += Time.deltaTime;
+                float alpha = Mathf.Lerp(originalColor.a, 0f, elapsedTime / fadeTime);
+                
+                // 设置透明度，同时颜色变成灰色表示环境死亡
+                Color newColor = new Color(0.5f, 0.5f, 0.5f, alpha);
+                animalMaterial.color = newColor;
+                
+                yield return null;
+            }
+        }
+        
+        Debug.Log("动物因极端环境死亡");
+        
+        // 销毁对象
+        Destroy(gameObject);
+    }
+    // 睡觉行为相关方法
+    void HandleSleepBehavior()
+    {
+        timeSinceAdult += Time.deltaTime;
+        
+        if (timeSinceAdult >= sleepInterval && !isSleeping && !isGoingToSleep && 
+            !isHungry && !isMovingToPlant && !isLookingForMate && hasHabitat)
+        {
+            Debug.Log("AnimalItem需要睡觉，开始前往居住地");
+            StartGoingToSleep();
+        }
+    }
+    
+    void StartGoingToSleep()
+    {
+        isGoingToSleep = true;
+        isWandering = false;
+        isLookingForMate = false;
+        targetMate = null;
+        Debug.Log("AnimalItem开始前往居住地睡觉");
+    }
+    
+    void MoveToHabitat()
+    {
+        if (myHabitat == null)
+        {
+            Debug.Log("AnimalItem没有居住地，取消睡觉");
+            isGoingToSleep = false;
+            isWandering = true;
+            return;
+        }
+
+        // 安全检查：确保已经落地
+        if (!hasGrounded)
+        {
+            Debug.LogWarning("AnimalItem尝试前往居住地但还没有落地，取消睡觉");
+            isGoingToSleep = false;
+            isWandering = true;
+            return;
+        }
+
+        Vector3 targetPosition = new Vector3(myHabitat.position.x, transform.position.y, myHabitat.position.z);
+        Vector3 direction = (targetPosition - transform.position).normalized;
+
+        float adjustedMoveSpeed = moveSpeed * environmentalSpeedModifier;
+        transform.position += direction * adjustedMoveSpeed * Time.deltaTime;
+
+        float distance = Vector3.Distance(transform.position, targetPosition);
+        if (distance < 3f)
+        {
+            StartSleeping();
+        }
+    }
+    
+    void StartSleeping()
+    {
+        isGoingToSleep = false;
+        isSleeping = true;
+        sleepTimer = 0f;
+        timeSinceAdult = 0f;
+        
+        ChangeToSleepingColor();
+        Debug.Log("AnimalItem开始睡觉，持续5秒");
+    }
+    
+    void HandleSleeping()
+    {
+        sleepTimer += Time.deltaTime;
+        
+        if (sleepTimer >= sleepDuration)
+        {
+            WakeUp();
+        }
+    }
+    
+    void WakeUp()
+    {
+        isSleeping = false;
+        sleepTimer = 0f;
+        
+        // 恢复正常颜色
+        RestoreNormalColor();
+        
+        // 醒来后开始游荡
+        isWandering = true;
+        ChooseNewWanderTarget();
+        
+        Debug.Log("AnimalItem睡醒了，开始游荡");
+    }
+    
+    void ChangeToSleepingColor()
+    {
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        if (meshRenderer != null && meshRenderer.material != null)
+        {
+            if (isAdult)
+            {
+                // 成年体睡觉时变成更暗的红色
+                meshRenderer.material.color = new Color(0.3f, 0f, 0f, 1f);
+            }
+            Debug.Log("AnimalItem变成深暗红色，表示睡觉状态");
+        }
     }
 }
 
