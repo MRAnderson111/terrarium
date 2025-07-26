@@ -324,6 +324,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plantType: 0
+  optimalTemperatureMin: 15
+  optimalTemperatureMax: 30
+  optimalHumidityMin: 40
+  optimalHumidityMax: 80
+  optimalSunlightMin: 30
+  optimalSunlightMax: 90
+  extremeStressThreshold: 0.8
+  witherTimeLimit: 10
 --- !u!65 &83133373
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1044,6 +1052,124 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &327349300
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 327349303}
+  - component: {fileID: 327349302}
+  - component: {fileID: 327349301}
+  m_Layer: 0
+  m_Name: Sunlight (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &327349301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327349300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fb15058a300eca49a63246ef35f726d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sunlight: 50
+  humidity: 50
+  waterSource: 50
+  temperature: 25
+  sunlightChangeAmount: 5
+  maxLightIntensity: 3
+  temperatureChangeAmount: 2
+  minTemperature: 0
+  maxTemperature: 40
+  warmColor: {r: 1, g: 0.8, b: 0.6, a: 1}
+  coldColor: {r: 0.6, g: 0.8, b: 1, a: 1}
+--- !u!108 &327349302
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327349300}
+  m_Enabled: 1
+  serializedVersion: 10
+  m_Type: 0
+  m_Shape: 0
+  m_Color: {r: 1, g: 0.906923, b: 0.2924527, a: 0.41960785}
+  m_Intensity: 2
+  m_Range: 110
+  m_SpotAngle: 130
+  m_InnerSpotAngle: 1
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 2
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 0.5
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &327349303
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327349300}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 11.9, y: 53.5, z: 6.8}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &347476139
 GameObject:
   m_ObjectHideFlags: 0
@@ -4120,6 +4246,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 441c05c53c6d7804da189182729319de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentState: 0
+  optimalTemperatureMin: 10
+  optimalTemperatureMax: 35
+  optimalHumidityMin: 30
+  optimalHumidityMax: 90
+  extremeStressThreshold: 0.85
+  environmentalDeathTimeLimit: 15
 --- !u!1 &1824473291
 GameObject:
   m_ObjectHideFlags: 0
@@ -4548,5 +4681,6 @@ SceneRoots:
   - {fileID: 1824473295}
   - {fileID: 1463195281}
   - {fileID: 1390207619}
+  - {fileID: 327349303}
   - {fileID: 117769854}
   - {fileID: 197461230}

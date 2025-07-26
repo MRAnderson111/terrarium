@@ -4,20 +4,7 @@ using UnityEngine;
 
 public class AnimalItem : MonoBehaviour
 {
-    // 添加状态枚举，统一管理动物行为状态
-    public enum AnimalState
-    {
-        Newborn,        // 新生等待
-        Hungry,         // 饥饿寻食
-        Wandering,      // 游荡
-        SeekingMate,    // 寻找配偶
-        GoingToSleep,   // 前往睡觉
-        Sleeping,       // 睡觉中
-        Dying           // 死亡中
-    }
-    
-    [Header("动物状态")]
-    [SerializeField] private AnimalState currentState = AnimalState.Newborn;
+
 
     private static bool keyProcessedThisFrame = false; // 静态变量控制每帧只处理一次
     private bool hasGrounded = false; // 是否已经接触地面
@@ -39,6 +26,11 @@ public class AnimalItem : MonoBehaviour
     private float hungerTimer = 0f;
     private float hungerInterval = 15f; // 游荡15秒后重新饥饿
     private bool isHungry = false;
+
+    // 喝水相关变量
+    private bool isMovingToWater = false; // 是否正在向水源移动
+    private Transform targetWater = null; // 目标水源
+    private bool isThirsty = false; // 是否口渴
     
     // 繁衍相关变量
     private bool isLookingForMate = false;
@@ -58,7 +50,6 @@ public class AnimalItem : MonoBehaviour
     private bool hasHabitat = false; // 是否已经建立居住地
     private Transform myHabitat = null; // 自己的居住地
     private bool isBuildingHabitat = false; // 是否正在建立居住地
-    private bool isInHabitat = false; // 是否在居住地内
 
     // 静态变量记录所有动物数量和共享居住地
     public static int totalAnimalCount = 0;
@@ -95,10 +86,6 @@ public class AnimalItem : MonoBehaviour
     // 睡觉相关变量
     private bool isSleeping = false; // 是否正在睡觉
     private bool isGoingToSleep = false; // 是否正在前往睡觉地点
-    private float sleepTimer = 0f; // 睡觉计时器
-    private float sleepDuration = 5f; // 睡觉持续时间
-    private float sleepInterval = 15f; // 睡觉间隔时间（成年后15秒）
-    private float timeSinceAdult = 0f; // 成年后的时间计数
 
     void Start()
     {
@@ -172,6 +159,62 @@ public class AnimalItem : MonoBehaviour
         Mesh cubeMesh = tempCube.GetComponent<MeshFilter>().mesh;
         DestroyImmediate(tempCube);
         return cubeMesh;
+    }
+
+    Vector3 GetGroundedPosition(Vector3 targetPosition)
+    {
+        // 从目标位置上方向下发射射线，确保动物贴地移动
+        float raycastHeight = 10f; // 射线起始高度
+        float maxDistance = 20f; // 最大射线距离
+
+        Vector3 rayStart = new Vector3(targetPosition.x, targetPosition.y + raycastHeight, targetPosition.z);
+
+        // 发射射线向下检测地面
+        if (Physics.Raycast(rayStart, Vector3.down, out RaycastHit hit, maxDistance))
+        {
+            // 检查碰撞的是否是地面对象
+            if (IsGroundObject(hit.collider.gameObject))
+            {
+                // 将动物位置设置为地面上方一点点（避免穿透）
+                return new Vector3(targetPosition.x, hit.point.y + 0.5f, targetPosition.z);
+            }
+        }
+
+        // 如果没有检测到地面，保持当前Y坐标
+        return new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
+    }
+
+    bool IsGroundObject(GameObject obj)
+    {
+        return obj.CompareTag("Ground") ||
+               obj.name.Contains("Ground") ||
+               obj.name.Contains("Plane") ||
+               obj.name.Contains("BarrenGround") ||
+               obj.name.Contains("FertileGround") ||
+               obj.name.Contains("Terrain");
+    }
+
+    bool IsAnimalObject(GameObject obj)
+    {
+        // 检查对象是否有AnimalItem组件
+        if (obj.GetComponent<AnimalItem>() != null)
+        {
+            return true;
+        }
+
+        // 检查对象名称是否包含Animal相关字符串
+        if (obj.name.Contains("Animal") || obj.name.Contains("AnimalItem"))
+        {
+            return true;
+        }
+
+        // 检查标签
+        if (obj.CompareTag("Animal"))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     void Update()
@@ -254,8 +297,27 @@ public class AnimalItem : MonoBehaviour
             return;
         }
 
+        // 向水源移动（口渴状态）
+        if (isMovingToWater && targetWater != null)
+        {
+            MoveTowardsWater();
+        }
+        // 如果目标水源被销毁，寻找新目标
+        else if (isMovingToWater && targetWater == null)
+        {
+            FindNearestWater();
+            if (targetWater != null)
+            {
+                Debug.Log($"AnimalItem目标水源已消失，找到新目标: {targetWater.name}");
+            }
+            else
+            {
+                isMovingToWater = false;
+                Debug.Log("AnimalItem未找到新的水源目标，停止移动");
+            }
+        }
         // 向植物移动（饥饿状态）
-        if (isMovingToPlant && targetPlant != null)
+        else if (isMovingToPlant && targetPlant != null)
         {
             MoveTowardsPlant();
         }
@@ -281,14 +343,20 @@ public class AnimalItem : MonoBehaviour
         // 成年动物游荡行为
         else if (isWandering && isAdult)
         {
-            HandleWandering();
-            HandleHunger();
+            // 优先处理睡觉行为
             HandleSleepBehavior();
 
-            // 如果不饥饿且不在冷却期，尝试寻找配偶
-            if (!isHungry && !isLookingForMate && reproductionCooldown <= 0f)
+            // 如果不在睡觉状态，才进行其他活动
+            if (!isSleeping && !isGoingToSleep)
             {
-                TryFindMate();
+                HandleWandering();
+                HandleHunger();
+
+                // 如果不饥饿且不在冷却期且不是夜晚，尝试寻找配偶
+                if (!isHungry && !isLookingForMate && reproductionCooldown <= 0f && !Actor_Daylight.IsNight)
+                {
+                    TryFindMate();
+                }
             }
         }
     }
@@ -327,6 +395,13 @@ public class AnimalItem : MonoBehaviour
         // 改进的地面检测：检查碰撞是否来自下方
         if (!hasGrounded)
         {
+            // 首先检查碰撞对象是否为其他动物，如果是则忽略
+            if (IsAnimalObject(collision.gameObject))
+            {
+                Debug.Log($"AnimalItem碰撞到其他动物 {collision.gameObject.name}，忽略碰撞");
+                return;
+            }
+
             // 检查碰撞点是否在动物下方
             bool isGroundCollision = false;
 
@@ -343,11 +418,7 @@ public class AnimalItem : MonoBehaviour
             // 也可以通过碰撞对象的标签或名称来判断
             if (!isGroundCollision)
             {
-                GameObject collisionObject = collision.gameObject;
-                isGroundCollision = collisionObject.CompareTag("Ground") ||
-                                  collisionObject.name.Contains("Ground") ||
-                                  collisionObject.name.Contains("Plane") ||
-                                  collisionObject.name.Contains("Terrain");
+                isGroundCollision = IsGroundObject(collision.gameObject);
             }
 
             if (isGroundCollision)
@@ -437,7 +508,96 @@ public class AnimalItem : MonoBehaviour
             Debug.Log($"找到最近的植物，距离: {nearestDistance:F2}");
         }
     }
-    
+
+    // 缓存水源搜索结果，避免频繁搜索
+    private static GameObject[] cachedWaterSources;
+    private static float lastWaterCacheTime;
+
+    void FindNearestWater()
+    {
+        // 使用缓存的水源列表
+        if (cachedWaterSources == null || Time.time - lastWaterCacheTime > cacheValidTime)
+        {
+            // 查找所有名称包含"Water"的对象
+            cachedWaterSources = GameObject.FindGameObjectsWithTag("Water");
+            if (cachedWaterSources.Length == 0)
+            {
+                // 如果没有标签，尝试通过名称查找
+                GameObject[] allObjects = FindObjectsOfType<GameObject>();
+                List<GameObject> waterObjects = new List<GameObject>();
+                foreach (GameObject obj in allObjects)
+                {
+                    if (obj.name.Contains("Water"))
+                    {
+                        waterObjects.Add(obj);
+                    }
+                }
+                cachedWaterSources = waterObjects.ToArray();
+            }
+            lastWaterCacheTime = Time.time;
+        }
+
+        if (cachedWaterSources.Length == 0)
+        {
+            targetWater = null;
+            return;
+        }
+
+        float nearestDistance = float.MaxValue;
+        Transform nearestWater = null;
+
+        foreach (GameObject water in cachedWaterSources)
+        {
+            if (water != null && water.transform != null)
+            {
+                float distance = Vector3.Distance(transform.position, water.transform.position);
+                if (distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    nearestWater = water.transform;
+                }
+            }
+        }
+
+        targetWater = nearestWater;
+        if (targetWater != null)
+        {
+            Debug.Log($"找到最近的水源，距离: {nearestDistance:F2}");
+        }
+    }
+
+    void MoveTowardsWater()
+    {
+        // 安全检查：确保已经落地
+        if (!hasGrounded)
+        {
+            Debug.LogWarning("AnimalItem尝试移动到水源但还没有落地，停止移动");
+            isMovingToWater = false;
+            return;
+        }
+
+        // 计算移动方向（只在水平面移动，保持Y轴不变）
+        Vector3 targetPosition = new Vector3(targetWater.position.x, transform.position.y, targetWater.position.z);
+        Vector3 direction = (targetPosition - transform.position).normalized;
+
+        // 应用环境影响的移动速度
+        float adjustedMoveSpeed = moveSpeed * environmentalSpeedModifier;
+        Vector3 newPosition = transform.position + direction * adjustedMoveSpeed * Time.deltaTime;
+
+        // 使用射线检测确保动物贴地移动
+        newPosition = GetGroundedPosition(newPosition);
+        transform.position = newPosition;
+
+        // 检查是否到达水源附近（距离小于3米）
+        float distance = Vector3.Distance(transform.position, targetPosition);
+        if (distance < 3f)
+        {
+            isMovingToWater = false;
+            DrinkWater();
+            Debug.Log("AnimalItem到达水源附近，开始喝水");
+        }
+    }
+
     void MoveTowardsPlant()
     {
         // 安全检查：确保已经落地
@@ -454,7 +614,11 @@ public class AnimalItem : MonoBehaviour
 
         // 应用环境影响的移动速度
         float adjustedMoveSpeed = moveSpeed * environmentalSpeedModifier;
-        transform.position += direction * adjustedMoveSpeed * Time.deltaTime;
+        Vector3 newPosition = transform.position + direction * adjustedMoveSpeed * Time.deltaTime;
+
+        // 使用射线检测确保动物贴地移动
+        newPosition = GetGroundedPosition(newPosition);
+        transform.position = newPosition;
 
         // 检查是否到达植物附近（距离小于3米）
         float distance = Vector3.Distance(transform.position, targetPosition);
@@ -476,7 +640,41 @@ public class AnimalItem : MonoBehaviour
             Debug.Log("AnimalItem到达植物附近，停止移动");
         }
     }
-    
+
+    void DrinkWater()
+    {
+        if (targetWater != null)
+        {
+            Debug.Log($"AnimalItem喝了水: {targetWater.name}");
+
+            // 喝水后解除口渴状态
+            isThirsty = false;
+
+            // 喝水后检查是否还需要食物
+            if (isHungry)
+            {
+                Debug.Log("AnimalItem喝水完毕，继续寻找食物");
+                FindNearestPlant();
+                if (targetPlant != null)
+                {
+                    isMovingToPlant = true;
+                    Debug.Log($"AnimalItem找到食物目标: {targetPlant.name}");
+                }
+                else
+                {
+                    Debug.Log("AnimalItem未找到食物，保持饥饿状态");
+                }
+            }
+            else
+            {
+                // 既不饥饿也不口渴，开始游荡
+                isWandering = true;
+                RestoreNormalColor();
+                Debug.Log("AnimalItem喝水完毕，开始游荡");
+            }
+        }
+    }
+
     void EatPlant()
     {
         if (targetPlant != null)
@@ -498,24 +696,50 @@ public class AnimalItem : MonoBehaviour
             }
             else
             {
-                // 成年体进食后进入吃饱状态（不饥饿）
+                // 成年体进食后只解除饥饿，不解除口渴
                 isHungry = false;
+                // isThirsty 保持不变，需要喝水才能解渴
                 hungerTimer = 0f;
-                isWandering = true;
-                
-                // 恢复正常颜色
-                RestoreNormalColor();
-                
-                // 60%几率生成蓝色小球
-                if (Random.Range(0f, 1f) < 0.6f)
+
+                // 如果还口渴，继续寻找水源
+                if (isThirsty)
                 {
-                    SpawnBlueSphere();
+                    isWandering = false;
+                    FindNearestWater();
+                    if (targetWater != null)
+                    {
+                        isMovingToWater = true;
+                        Debug.Log($"AnimalItem吃饱了但还口渴，寻找水源: {targetWater.name}");
+                    }
+                    else
+                    {
+                        // 没有水源，开始游荡但保持口渴状态
+                        isWandering = true;
+                        Debug.Log("AnimalItem吃饱了但还口渴，未找到水源");
+                    }
                 }
-                
-                // 成年体吃饱后也应该调用StartWandering来检查居住地
-                StartWandering();
-                
-                Debug.Log("成年AnimalItem进食完毕，进入吃饱状态，可以繁衍");
+                else
+                {
+                    // 既不饥饿也不口渴，开始游荡
+                    isWandering = true;
+
+                    // 60%几率生成蓝色小球
+                    if (Random.Range(0f, 1f) < 0.6f)
+                    {
+                        SpawnBlueSphere();
+                    }
+
+                    // 成年体吃饱后也应该调用StartWandering来检查居住地
+                    StartWandering();
+
+                    Debug.Log("AnimalItem进食完毕，进入吃饱状态，可以繁衍");
+                }
+
+                // 恢复正常颜色（如果不口渴的话）
+                if (!isThirsty)
+                {
+                    RestoreNormalColor();
+                }
             }
         }
     }
@@ -523,9 +747,8 @@ public class AnimalItem : MonoBehaviour
     System.Collections.IEnumerator GrowToAdult()
     {
         if (isAdult) yield break;
-        
+
         isAdult = true;
-        timeSinceAdult = 0f; // 重置成年计时器
         
         Vector3 originalScale = transform.localScale;
         Vector3 targetScale = originalScale * 2f;
@@ -553,8 +776,9 @@ public class AnimalItem : MonoBehaviour
         animalMaterial.color = targetColor;
         
         Debug.Log("AnimalItem成长为成年体：体型变大，颜色变暗，开始睡觉周期");
-        
-        // 成长完成后开始游荡
+
+        // 成长完成后，幼年体变为健康的成年体（不饥饿也不口渴）
+        isThirsty = false; // 成长时重置口渴状态
         StartWandering();
     }
     
@@ -562,10 +786,14 @@ public class AnimalItem : MonoBehaviour
     {
         isWandering = true;
         isHungry = false;
+        // 不自动重置口渴状态，只有喝水才能解渴
         hungerTimer = 0f;
-        
-        // 恢复正常颜色
-        RestoreNormalColor();
+
+        // 只有在不口渴时才恢复正常颜色
+        if (!isThirsty)
+        {
+            RestoreNormalColor();
+        }
         
         // 成年体吃饱后优先建立或寻找居住地
         if (isAdult && !hasHabitat && !isBuildingHabitat)
@@ -871,26 +1099,37 @@ public class AnimalItem : MonoBehaviour
         if (hungerTimer >= hungerInterval)
         {
             isHungry = true;
+            isThirsty = true; // 饥饿时也会口渴
             isWandering = false; // 停止游荡
             isLookingForMate = false; // 停止寻找配偶
             targetMate = null;
             hungerTimer = 0f; // 重置计时器
-            
+
             // 变成鲜红色表示饥饿状态
             ChangeToHungryColor();
-            
-            Debug.Log("AnimalItem重新进入饥饿状态，开始寻找食物");
-            
-            // 寻找最近的植物
-            FindNearestPlant();
-            if (targetPlant != null)
+
+            Debug.Log("AnimalItem重新进入饥饿状态，需要寻找食物和水源");
+
+            // 优先寻找水源，然后寻找植物
+            FindNearestWater();
+            if (targetWater != null)
             {
-                isMovingToPlant = true;
-                Debug.Log($"AnimalItem找到新的食物目标: {targetPlant.name}");
+                isMovingToWater = true;
+                Debug.Log($"AnimalItem找到水源目标: {targetWater.name}");
             }
             else
             {
-                Debug.Log("AnimalItem未找到食物，保持饥饿状态");
+                // 没有水源时寻找植物
+                FindNearestPlant();
+                if (targetPlant != null)
+                {
+                    isMovingToPlant = true;
+                    Debug.Log($"AnimalItem未找到水源，寻找食物目标: {targetPlant.name}");
+                }
+                else
+                {
+                    Debug.Log("AnimalItem未找到食物和水源，保持饥饿状态");
+                }
             }
         }
     }
@@ -923,7 +1162,11 @@ public class AnimalItem : MonoBehaviour
 
         // 应用环境影响的游荡速度
         float adjustedWanderSpeed = wanderSpeed * environmentalSpeedModifier;
-        transform.position += direction * adjustedWanderSpeed * Time.deltaTime;
+        Vector3 newPosition = transform.position + direction * adjustedWanderSpeed * Time.deltaTime;
+
+        // 使用射线检测确保动物贴地移动
+        newPosition = GetGroundedPosition(newPosition);
+        transform.position = newPosition;
 
         // 检查是否接近目标点（距离小于2米时选择新目标）
         float distance = Vector3.Distance(transform.position, wanderTarget);
@@ -986,7 +1229,11 @@ public class AnimalItem : MonoBehaviour
 
         // 移动
         float adjustedMoveSpeed = moveSpeed * environmentalSpeedModifier;
-        transform.position += direction * adjustedMoveSpeed * Time.deltaTime;
+        Vector3 newPosition = transform.position + direction * adjustedMoveSpeed * Time.deltaTime;
+
+        // 使用射线检测确保动物贴地移动
+        newPosition = GetGroundedPosition(newPosition);
+        transform.position = newPosition;
 
         // 检查是否到达配偶附近（距离小于2米）
         float distance = Vector3.Distance(transform.position, targetPosition);
@@ -1074,26 +1321,37 @@ public class AnimalItem : MonoBehaviour
         targetMate = null;
         isReproducing = false;
 
-        // 繁衍消耗体力，动物需要重新进食
+        // 繁衍消耗体力，动物需要重新进食和喝水
         isHungry = true;
-        isWandering = false; // 停止游荡，开始寻找食物
+        isThirsty = true;
+        isWandering = false; // 停止游荡，开始寻找食物和水源
         hungerTimer = 0f; // 重置饥饿计时器
 
         // 变成鲜红色表示饥饿状态
         ChangeToHungryColor();
 
-        Debug.Log("AnimalItem繁衍完成，消耗体力，需要重新进食");
+        Debug.Log("AnimalItem繁衍完成，消耗体力，需要重新进食和喝水");
 
-        // 立即寻找最近的植物
-        FindNearestPlant();
-        if (targetPlant != null)
+        // 优先寻找水源
+        FindNearestWater();
+        if (targetWater != null)
         {
-            isMovingToPlant = true;
-            Debug.Log($"AnimalItem繁衍后寻找食物目标: {targetPlant.name}");
+            isMovingToWater = true;
+            Debug.Log($"AnimalItem繁衍后寻找水源目标: {targetWater.name}");
         }
         else
         {
-            Debug.Log("AnimalItem繁衍后未找到食物，保持饥饿状态");
+            // 没有水源时寻找植物
+            FindNearestPlant();
+            if (targetPlant != null)
+            {
+                isMovingToPlant = true;
+                Debug.Log($"AnimalItem繁衍后未找到水源，寻找食物目标: {targetPlant.name}");
+            }
+            else
+            {
+                Debug.Log("AnimalItem繁衍后未找到食物和水源，保持饥饿状态");
+            }
         }
     }
 
@@ -1215,17 +1473,15 @@ public class AnimalItem : MonoBehaviour
         // 检查是否进入了自己的居住地
         if (myHabitat != null && other.transform == myHabitat)
         {
-            isInHabitat = true;
             Debug.Log("AnimalItem进入了自己的居住地");
         }
     }
-    
+
     void OnTriggerExit(Collider other)
     {
         // 检查是否离开了自己的居住地
         if (myHabitat != null && other.transform == myHabitat)
         {
-            isInHabitat = false;
             Debug.Log("AnimalItem离开了自己的居住地");
         }
     }
@@ -1532,13 +1788,18 @@ public class AnimalItem : MonoBehaviour
     // 睡觉行为相关方法
     void HandleSleepBehavior()
     {
-        timeSinceAdult += Time.deltaTime;
-        
-        if (timeSinceAdult >= sleepInterval && !isSleeping && !isGoingToSleep && 
+        // 检查是否为夜晚，如果是且动物不在睡觉状态，则前往居住地睡觉
+        if (Actor_Daylight.IsNight && !isSleeping && !isGoingToSleep &&
             !isHungry && !isMovingToPlant && !isLookingForMate && hasHabitat)
         {
-            Debug.Log("AnimalItem需要睡觉，开始前往居住地");
+            Debug.Log("AnimalItem检测到夜晚降临，开始前往居住地睡觉");
             StartGoingToSleep();
+        }
+        // 如果是白天且动物在睡觉，则醒来
+        else if (!Actor_Daylight.IsNight && isSleeping)
+        {
+            Debug.Log("AnimalItem检测到白天到来，从睡眠中醒来");
+            WakeUp();
         }
     }
     
@@ -1574,7 +1835,11 @@ public class AnimalItem : MonoBehaviour
         Vector3 direction = (targetPosition - transform.position).normalized;
 
         float adjustedMoveSpeed = moveSpeed * environmentalSpeedModifier;
-        transform.position += direction * adjustedMoveSpeed * Time.deltaTime;
+        Vector3 newPosition = transform.position + direction * adjustedMoveSpeed * Time.deltaTime;
+
+        // 使用射线检测确保动物贴地移动
+        newPosition = GetGroundedPosition(newPosition);
+        transform.position = newPosition;
 
         float distance = Vector3.Distance(transform.position, targetPosition);
         if (distance < 3f)
@@ -1587,36 +1852,29 @@ public class AnimalItem : MonoBehaviour
     {
         isGoingToSleep = false;
         isSleeping = true;
-        sleepTimer = 0f;
-        timeSinceAdult = 0f;
-        
+
         ChangeToSleepingColor();
-        Debug.Log("AnimalItem开始睡觉，持续5秒");
+        Debug.Log("AnimalItem开始睡觉，将持续到白天");
     }
     
     void HandleSleeping()
     {
-        sleepTimer += Time.deltaTime;
-        
-        if (sleepTimer >= sleepDuration)
-        {
-            WakeUp();
-        }
+        // 睡觉期间不需要特殊处理，动物会在白天到来时通过HandleSleepBehavior自动醒来
+        // 保持睡觉状态直到白天
     }
     
     void WakeUp()
     {
         isSleeping = false;
-        sleepTimer = 0f;
-        
+
         // 恢复正常颜色
         RestoreNormalColor();
-        
+
         // 醒来后开始游荡
         isWandering = true;
         ChooseNewWanderTarget();
-        
-        Debug.Log("AnimalItem睡醒了，开始游荡");
+
+        Debug.Log("AnimalItem在白天醒来，开始游荡");
     }
     
     void ChangeToSleepingColor()

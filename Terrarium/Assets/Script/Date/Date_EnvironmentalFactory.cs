@@ -11,11 +11,9 @@ public class Date_EnvironmentalFactory : MonoBehaviour
     [SerializeField] private float temperature = 25f;  // 温度 (摄氏度)
     
     [Header("阳光控制设置")]
-    [SerializeField] private float sunlightChangeAmount = 5f; // 每次按键改变的阳光强度
     [SerializeField] private float maxLightIntensity = 3f;    // 最大灯光强度
     
     [Header("温度控制设置")]
-    [SerializeField] private float temperatureChangeAmount = 5f; // 每次按键改变的温度 (测试阶段调大)
     [SerializeField] private float minTemperature = 0f;         // 最低温度
     [SerializeField] private float maxTemperature = 40f;        // 最高温度
     [SerializeField] private Color warmColor = new Color(1f, 0.5f, 0.2f); // 更明显的暖色温 (橙红色)
