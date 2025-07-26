@@ -15,6 +15,7 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
     private bool isHungry = false;
     private bool isThirsty = false;
     private bool hasEaten = false; // 幼年体是否已经吃过植物
+    private bool hasDrunk = false; // 幼年体是否已经喝过水
     
     // 计时器
     private float hungerTimer = 0f;
@@ -35,6 +36,7 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
     public bool IsHungry => isHungry;
     public bool IsThirsty => isThirsty;
     public bool HasEaten => hasEaten;
+    public bool HasDrunk => hasDrunk;
     public Transform TargetPlant => targetPlant;
     public Transform TargetWater => targetWater;
     
@@ -76,45 +78,73 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
     
     public void Eat(Transform food)
     {
-        if (food == null) return;
-        
-        // 检查是否是植物
-        var plantComponent = food.GetComponent<MonoBehaviour>();
-        if (plantComponent != null && plantComponent.GetType().Name.Contains("Plant"))
+        if (food == null)
         {
-            Debug.Log($"动物吃掉了植物: {food.name}");
-            
+            Debug.LogWarning("尝试进食但食物目标为null");
+            return;
+        }
+
+        Debug.Log($"动物开始进食: {food.name}");
+        Debug.Log($"进食前状态 - 饥饿: {isHungry}, 已进食: {hasEaten}");
+
+        // 检查是否是植物（通过组件或名称）
+        var plantComponent = food.GetComponent<MonoBehaviour>();
+        bool isPlant = (plantComponent != null && plantComponent.GetType().Name.Contains("Plant")) ||
+                       food.name.Contains("Plant") ||
+                       food.name.Contains("plant") ||
+                       food.name.Contains("Tree") ||
+                       food.name.Contains("Grass") ||
+                       food.name.Contains("Vegetation");
+
+        if (isPlant)
+        {
+            Debug.Log($"确认为植物，动物开始进食: {food.name}");
+
             // 销毁植物
             Destroy(food.gameObject);
-            
+
             // 更新状态
             isHungry = false;
             hasEaten = true;
             hungerTimer = 0f;
             targetPlant = null;
-            
+
+            Debug.Log($"进食后状态 - 饥饿: {isHungry}, 已进食: {hasEaten}");
+
             // 触发事件
             OnAteFood?.Invoke();
-            
-            Debug.Log("动物进食完毕，不再饥饿");
+
+            Debug.Log("动物进食完毕，不再饥饿，触发OnAteFood事件");
+        }
+        else
+        {
+            Debug.LogWarning($"目标 {food.name} 不是有效的植物，无法进食");
         }
     }
     
     public void Drink(Transform water)
     {
-        if (water == null) return;
-        
-        Debug.Log($"动物喝了水: {water.name}");
-        
+        if (water == null)
+        {
+            Debug.LogWarning("尝试喝水但水源目标为null");
+            return;
+        }
+
+        Debug.Log($"动物开始喝水: {water.name}");
+        Debug.Log($"喝水前状态 - 口渴: {isThirsty}, 已喝水: {hasDrunk}");
+
         // 更新状态
         isThirsty = false;
+        hasDrunk = true;
         thirstTimer = 0f;
         targetWater = null;
-        
+
+        Debug.Log($"喝水后状态 - 口渴: {isThirsty}, 已喝水: {hasDrunk}");
+
         // 触发事件
         OnDrankWater?.Invoke();
-        
-        Debug.Log("动物喝水完毕，不再口渴");
+
+        Debug.Log("动物喝水完毕，不再口渴，触发OnDrankWater事件");
     }
     
     public void FindNearestPlant()
@@ -245,6 +275,8 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
     {
         isHungry = false;
         isThirsty = false;
+        hasEaten = false;
+        hasDrunk = false;
         hungerTimer = 0f;
         thirstTimer = 0f;
         targetPlant = null;

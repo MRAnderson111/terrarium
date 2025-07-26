@@ -20,8 +20,12 @@ public class UI_Plant : MonoBehaviour
     {
         // 确保在UI初始化时重置植物数据（如果没有实际植物对象）
         ResetPlantDataIfNeeded();
-        
+
+        // 确保动物计数准确
+        ResetAnimalDataIfNeeded();
+
         Debug.Log($"UI_Plant Start() - 初始植物数量: {GetTotalPlantCount()}, 环境食物: {GetEnvironmentalFood()}");
+        Debug.Log($"UI_Plant Start() - 初始动物数量: {GetTotalAnimalCount()}, 环境动物数量: {GetEnvironmentalAnimalValue()}");
         CreatePlantInventoryUI();
         UpdatePlantInventoryDisplay();
     }
@@ -226,13 +230,13 @@ public class UI_Plant : MonoBehaviour
 
     int GetTotalAnimalCount()
     {
-        // 通过反射调用AnimalItem的静态方法
+        // 通过反射调用AnimalLifecycleSystem的静态方法
         try
         {
-            var animalItemType = System.Type.GetType("AnimalItem");
-            if (animalItemType != null)
+            var animalLifecycleType = System.Type.GetType("AnimalLifecycleSystem");
+            if (animalLifecycleType != null)
             {
-                var method = animalItemType.GetMethod("GetTotalAnimalCount", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                var method = animalLifecycleType.GetMethod("GetTotalAnimalCount", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
                 if (method != null)
                 {
                     return (int)method.Invoke(null, null);
@@ -244,18 +248,20 @@ public class UI_Plant : MonoBehaviour
             Debug.LogWarning($"获取动物数量失败: {e.Message}");
         }
 
-        return 0;
+        // 备用方案：通过查找AnimalItem组件计算
+        AnimalItem[] animals = FindObjectsOfType<AnimalItem>();
+        return animals.Length;
     }
 
     int GetEnvironmentalAnimalValue()
     {
-        // 通过反射调用AnimalItem的静态方法
+        // 通过反射调用AnimalLifecycleSystem的静态方法
         try
         {
-            var animalItemType = System.Type.GetType("AnimalItem");
-            if (animalItemType != null)
+            var animalLifecycleType = System.Type.GetType("AnimalLifecycleSystem");
+            if (animalLifecycleType != null)
             {
-                var method = animalItemType.GetMethod("GetEnvironmentalAnimalValue", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                var method = animalLifecycleType.GetMethod("GetEnvironmentalAnimalValue", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
                 if (method != null)
                 {
                     return (int)method.Invoke(null, null);
@@ -267,6 +273,64 @@ public class UI_Plant : MonoBehaviour
             Debug.LogWarning($"获取环境动物数量失败: {e.Message}");
         }
 
-        return 0;
+        // 备用方案：根据动物数量计算（每个动物贡献2点环境动物数值）
+        return GetTotalAnimalCount() * 2;
+    }
+
+    void ResetAnimalDataIfNeeded()
+    {
+        // 获取场景中实际的动物数量
+        AnimalItem[] actualAnimals = FindObjectsOfType<AnimalItem>();
+        int actualAnimalCount = actualAnimals.Length;
+
+        // 获取静态变量中的动物数量
+        int staticAnimalCount = 0;
+        try
+        {
+            var animalLifecycleType = System.Type.GetType("AnimalLifecycleSystem");
+            if (animalLifecycleType != null)
+            {
+                var totalCountField = animalLifecycleType.GetField("totalAnimalCount", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                if (totalCountField != null)
+                {
+                    staticAnimalCount = (int)totalCountField.GetValue(null);
+                }
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogWarning($"获取静态动物数量失败: {e.Message}");
+        }
+
+        Debug.Log($"动物数量检查 - 场景中实际: {actualAnimalCount}, 静态变量: {staticAnimalCount}");
+
+        // 如果数量不匹配，重置静态变量
+        if (actualAnimalCount != staticAnimalCount)
+        {
+            try
+            {
+                var animalLifecycleType = System.Type.GetType("AnimalLifecycleSystem");
+                if (animalLifecycleType != null)
+                {
+                    var totalCountField = animalLifecycleType.GetField("totalAnimalCount", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                    var environmentalAnimalField = animalLifecycleType.GetField("environmentalAnimalValue", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+
+                    if (totalCountField != null)
+                    {
+                        totalCountField.SetValue(null, actualAnimalCount);
+                    }
+                    if (environmentalAnimalField != null)
+                    {
+                        environmentalAnimalField.SetValue(null, actualAnimalCount * 2);
+                    }
+
+                    Debug.Log($"UI重置了动物静态数据 - 动物数量: {actualAnimalCount}, 环境动物数量: {actualAnimalCount * 2}");
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"重置动物数据失败: {e.Message}");
+            }
+        }
     }
 }

@@ -29,7 +29,21 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
     private float environmentalReproductionModifier = 1f;
     
     // 属性实现
-    public bool CanReproduce => isAdult && !isReproducing && reproductionCooldown <= 0f;
+    public bool CanReproduce
+    {
+        get
+        {
+            if (!isAdult || isReproducing || reproductionCooldown > 0f)
+                return false;
+
+            // 检查是否饥饿或口渴
+            var needsSystem = GetComponent<AnimalNeedsSystem>();
+            if (needsSystem != null && (needsSystem.IsHungry || needsSystem.IsThirsty))
+                return false;
+
+            return true;
+        }
+    }
     public float ReproductionCooldown => reproductionCooldown;
     public bool IsAdult => isAdult;
     public bool IsNewborn => isNewborn;
@@ -74,36 +88,75 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
     public void TryFindMate()
     {
         // 检查是否可以繁衍
-        if (!CanReproduce) return;
-        
+        if (!CanReproduce)
+        {
+            var needsSystem = GetComponent<AnimalNeedsSystem>();
+            string reason = $"成年: {isAdult}, 正在繁衍: {isReproducing}, 冷却时间: {reproductionCooldown:F1}s";
+            if (needsSystem != null)
+            {
+                reason += $", 饥饿: {needsSystem.IsHungry}, 口渴: {needsSystem.IsThirsty}";
+            }
+            Debug.Log($"动物不能繁衍 - {reason}");
+            return;
+        }
+
         // 获取动物总数
         int totalAnimalCount = GetTotalAnimalCount();
-        if (totalAnimalCount < 2) return;
+        if (totalAnimalCount < 2)
+        {
+            Debug.Log($"动物总数不足，无法繁衍 (当前: {totalAnimalCount})");
+            return;
+        }
+
+        Debug.Log($"开始寻找配偶 - 总动物数: {totalAnimalCount}");
         
         // 查找所有其他成年动物
         AnimalItem[] allAnimals = FindObjectsOfType<AnimalItem>();
         AnimalItem suitableMate = null;
         float nearestDistance = float.MaxValue;
-        
+        int checkedAnimals = 0;
+        int suitableAnimals = 0;
+
         foreach (AnimalItem animal in allAnimals)
         {
-            // 排除自己，只找成年体且不饥饿且不在冷却期的动物
+            // 排除自己
+            if (animal == null || animal == GetComponent<AnimalItem>()) continue;
+
+            checkedAnimals++;
             var animalReproduction = animal.GetComponent<AnimalReproductionSystem>();
             var animalNeeds = animal.GetComponent<AnimalNeedsSystem>();
-            
-            if (animal != null && animal != GetComponent<AnimalItem>() && 
-                animalReproduction != null && animalReproduction.IsAdult && 
-                animalNeeds != null && !animalNeeds.IsHungry &&
-                animalReproduction.reproductionCooldown <= 0f && animal.transform != null)
+
+            // 检查各项条件
+            bool isAdult = animalReproduction != null && animalReproduction.IsAdult;
+            bool notHungry = animalNeeds != null && !animalNeeds.IsHungry;
+            bool noCooldown = animalReproduction != null && animalReproduction.reproductionCooldown <= 0f;
+            bool hasTransform = animal.transform != null;
+
+            if (isAdult && notHungry && noCooldown && hasTransform)
             {
                 float distance = Vector3.Distance(transform.position, animal.transform.position);
+                Debug.Log($"发现潜在配偶: {animal.name}, 距离: {distance:F2}m");
+
                 if (distance <= mateSearchRadius && distance < nearestDistance)
                 {
                     nearestDistance = distance;
                     suitableMate = animal;
+                    suitableAnimals++;
                 }
             }
+            else
+            {
+                string reason = "";
+                if (!isAdult) reason += "非成年 ";
+                if (!notHungry) reason += "饥饿 ";
+                if (!noCooldown) reason += $"冷却中({animalReproduction?.reproductionCooldown:F1}s) ";
+                if (!hasTransform) reason += "无Transform ";
+
+                Debug.Log($"动物 {animal.name} 不适合繁衍: {reason}");
+            }
         }
+
+        Debug.Log($"配偶搜索结果 - 检查了{checkedAnimals}只动物，找到{suitableAnimals}只合适的");
         
         if (suitableMate != null && suitableMate.transform != null)
         {
@@ -160,9 +213,10 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
             // 繁衍完成
             CompleteMating();
             mateReproduction.CompleteMating();
-            
+
             Debug.Log("繁衍成功，生成了幼年体");
             OnReproductionCompleted?.Invoke();
+            mateReproduction.OnReproductionCompleted?.Invoke();
         }
         else
         {

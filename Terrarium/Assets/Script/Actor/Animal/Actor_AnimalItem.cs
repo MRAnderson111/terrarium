@@ -231,6 +231,26 @@ public class AnimalItem : MonoBehaviour
                 }
                 reproductionSystem.TryFindMate();
             }
+            else if (Time.frameCount % 300 == 0) // 每5秒输出一次
+            {
+                string reason = "";
+                if (!reproductionSystem.CanReproduce)
+                {
+                    reason += $"不能繁衍(冷却:{reproductionSystem.ReproductionCooldown:F1}s, 正在繁衍:{reproductionSystem.IsLookingForMate}) ";
+                }
+                if (IsNight())
+                {
+                    reason += "夜晚时间 ";
+                }
+                Debug.Log($"成年动物游荡但不尝试繁衍: {reason}");
+            }
+        }
+        else if (Time.frameCount % 300 == 0) // 每5秒输出一次
+        {
+            if (reproductionSystem != null && reproductionSystem.IsAdult)
+            {
+                Debug.Log($"成年动物不在游荡状态 - 游荡: {movementSystem?.IsWandering}");
+            }
         }
 
         // 调试：输出当前状态
@@ -449,14 +469,24 @@ public class AnimalItem : MonoBehaviour
             }
         }
 
-        // 如果是幼年体，成长为成年体
-        if (reproductionSystem != null && !reproductionSystem.IsAdult)
+        // 成长逻辑只在OnAteFood中处理
+        if (reproductionSystem != null && !reproductionSystem.IsAdult && needsSystem != null)
         {
-            reproductionSystem.GrowToAdult();
+            // 幼年体吃掉植物后，检查是否也喝过水以满足成长条件
+            if (needsSystem.HasDrunk)
+            {
+                Debug.Log("幼年体已满足成长条件（吃过植物且喝过水），开始成长");
+                reproductionSystem.GrowToAdult();
+            }
+            else
+            {
+                Debug.Log("幼年体吃过植物但还未喝水，尚未满足成长条件，开始游荡");
+                StartWandering();
+            }
         }
         else
         {
-            // 成年体进食后开始游荡
+            // 成年体吃完后直接开始游荡
             StartWandering();
         }
     }
@@ -468,7 +498,14 @@ public class AnimalItem : MonoBehaviour
             visualSystem.SetThirstyVisual(false);
         }
 
+        // 喝水后不触发成长，只负责解除口渴状态并开始游荡
+        Debug.Log("动物喝完水，开始游荡");
         StartWandering();
+    }
+
+    private void CheckGrowthConditions()
+    {
+        // 此方法逻辑有缺陷，已被废弃。成长逻辑移至 OnAteFood。
     }
 
     private void OnBecameAdult()
@@ -483,11 +520,30 @@ public class AnimalItem : MonoBehaviour
 
     private void OnReproductionCompleted()
     {
+        Debug.Log("动物繁衍完成，开始处理繁衍后状态");
+
         // 繁衍消耗体力，需要重新进食和喝水
         if (needsSystem != null)
         {
             needsSystem.SetHungryAndThirsty();
+            Debug.Log("繁衍后设置动物为饥饿和口渴状态");
         }
+
+        // 停止当前的移动行为
+        if (movementSystem != null)
+        {
+            movementSystem.StopMovement();
+            Debug.Log("停止当前移动和游荡行为");
+        }
+
+        // 重置繁衍相关状态（确保完全停止繁衍）
+        if (reproductionSystem != null)
+        {
+            reproductionSystem.StopLookingForMate();
+            Debug.Log("确保停止寻找配偶");
+        }
+
+        Debug.Log("繁衍后处理完成，动物将重新开始寻找食物和水源");
     }
 
     private void OnNewbornWaitCompleted()
