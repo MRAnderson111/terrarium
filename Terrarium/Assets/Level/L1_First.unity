@@ -1063,8 +1063,9 @@ GameObject:
   - component: {fileID: 327349303}
   - component: {fileID: 327349302}
   - component: {fileID: 327349301}
+  - component: {fileID: 327349304}
   m_Layer: 0
-  m_Name: Sunlight (1)
+  m_Name: Daylight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1086,9 +1087,7 @@ MonoBehaviour:
   humidity: 50
   waterSource: 50
   temperature: 25
-  sunlightChangeAmount: 5
   maxLightIntensity: 3
-  temperatureChangeAmount: 2
   minTemperature: 0
   maxTemperature: 40
   warmColor: {r: 1, g: 0.8, b: 0.6, a: 1}
@@ -1170,6 +1169,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &327349304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 327349300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e28b8d49026394940965b7637d9ab707, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dayDuration: 20
+  nightDuration: 10
+  dayIntensity: 2
+  nightIntensity: 0.5
+  transitionSpeed: 2
+  currentState: 0
 --- !u!1 &347476139
 GameObject:
   m_ObjectHideFlags: 0
@@ -2908,9 +2925,7 @@ MonoBehaviour:
   humidity: 50
   waterSource: 50
   temperature: 25
-  sunlightChangeAmount: 5
   maxLightIntensity: 3
-  temperatureChangeAmount: 2
   minTemperature: 0
   maxTemperature: 40
   warmColor: {r: 1, g: 0.8, b: 0.6, a: 1}
@@ -3725,7 +3740,7 @@ GameObject:
   - component: {fileID: 1753786743}
   - component: {fileID: 1753786742}
   m_Layer: 0
-  m_Name: AnimalFirst (1)
+  m_Name: Predator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3823,7 +3838,7 @@ Transform:
   m_GameObject: {fileID: 1753786741}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 99.3, y: 17.6, z: -168.3}
+  m_LocalPosition: {x: 43.5, y: 17.6, z: -168.3}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4228,7 +4243,7 @@ Transform:
   m_GameObject: {fileID: 1807429311}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 60.8, y: 17.6, z: -168.3}
+  m_LocalPosition: {x: 60.9, y: 17.6, z: -168.3}
   m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4246,13 +4261,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 441c05c53c6d7804da189182729319de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentState: 0
-  optimalTemperatureMin: 10
-  optimalTemperatureMax: 35
-  optimalHumidityMin: 30
-  optimalHumidityMax: 90
-  extremeStressThreshold: 0.85
-  environmentalDeathTimeLimit: 15
+  debugMode: 0
 --- !u!1 &1824473291
 GameObject:
   m_ObjectHideFlags: 0

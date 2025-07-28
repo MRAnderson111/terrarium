@@ -16,7 +16,7 @@ public class AnimalItem : MonoBehaviour
     private AnimalEnvironmentSystem environmentSystem;
     private AnimalLifecycleSystem lifecycleSystem;
     private AnimalVisualSystem visualSystem;
-    private AnimalHabitatSystem habitatSystem;
+    private AnimalHabitatSystem habitatSystem; 
 
     // 输入处理
     private static bool keyProcessedThisFrame = false;
