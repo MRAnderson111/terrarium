@@ -14,4 +14,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Level/L3_Third.unity
     guid: 54c761164786aa845af1454cff59c18d
+  - enabled: 1
+    path: Assets/YoYoTest/Level 1.unity
+    guid: 5bd83af09127a1e4689732df10b51d0f
+  - enabled: 1
+    path: Assets/YoYoTest/Level 2.unity
+    guid: 47e4c5fc807c65241819d3decc6bcd5e
+  - enabled: 1
+    path: Assets/YoYoTest/Level 3.unity
+    guid: f04414b4721f0084ab5bab0e4c1195e6
+  - enabled: 1
+    path: Assets/YoYoTest/Start.unity
+    guid: 9bd8591bd918111408c093986a6c7185
   m_configObjects: {}
