@@ -1,18 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class JoinLevel : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string levelName;
 
-    // Update is called once per frame
-    void Update()
+    // 当鼠标点击这个对象时调用
+    void OnMouseDown()
     {
-        
+        // 检查levelName是否已设置
+        if (!string.IsNullOrEmpty(levelName))
+        {
+            SceneManager.LoadScene(levelName);
+        }
+        else
+        {
+            Debug.LogWarning("Level name is not set in JoinLevel script!");
+        }
     }
 }
