@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
@@ -48,6 +49,9 @@ public class StageManager : MonoBehaviour
 
     //当前阶段
     public int stage = 0;
+
+    // 私有字段用于跟踪上一次的阶段，避免重复触发事件
+    private int previousStage = -1;
 
     //当前食物数量
     public int foodQuantity = 0;
@@ -119,10 +123,15 @@ public class StageManager : MonoBehaviour
         {
             if (foodQuantity >= switchStageFoodQuantity)
             {
-                stage = 2;
+                ChangeStage(2);
                 StartSecondStageTimer(); // 开始第二阶段计时
             }
         }
+    }
+
+    private void OnDestroy()
+    {
+        Events.OnGameStart.RemoveListener(OnGameStart);
     }
 
 
@@ -130,7 +139,27 @@ public class StageManager : MonoBehaviour
     {
         Debug.Log("游戏开始");
         StartTime();
-        stage = 1;
+        ChangeStage(1);
+    }
+
+    /// <summary>
+    /// 优雅地切换阶段并触发相应事件
+    /// </summary>
+    /// <param name="newStage">新的阶段编号</param>
+    private void ChangeStage(int newStage)
+    {
+        // 如果阶段没有变化，不执行任何操作
+        if (stage == newStage)
+            return;
+
+        // 更新阶段
+        previousStage = stage;
+        stage = newStage;
+
+        // 触发阶段切换事件
+        Events.OnGameEnterStage.Invoke(newStage);
+
+        Debug.Log($"阶段切换：从阶段{previousStage}切换到阶段{newStage}");
     }
 
 
@@ -190,7 +219,7 @@ public class StageManager : MonoBehaviour
     /// </summary>
     private void OnSecondStageTimeUp()
     {
-        stage = 3;
+        ChangeStage(3);
         Debug.Log("第二阶段时间到！进入阶段3");
         // 在这里可以添加进入阶段3后的逻辑
     }
