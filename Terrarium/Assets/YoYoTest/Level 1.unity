@@ -2320,8 +2320,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1280878942}
+  - component: {fileID: 1280878943}
   m_Layer: 0
-  m_Name: ObjectSelect
+  m_Name: ObjectSelectUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2352,6 +2353,21 @@ Transform:
   - {fileID: 2123420318}
   m_Father: {fileID: 6254119161575108975}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1280878943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1280878941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4376681a13672624b8697b7b2d7d5a65, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plantButtonGroup: {fileID: 884213072}
+  animalButtonGroup: {fileID: 193526949}
+  killerButtonGroup: {fileID: 2123420317}
 --- !u!1 &1359091993
 GameObject:
   m_ObjectHideFlags: 0

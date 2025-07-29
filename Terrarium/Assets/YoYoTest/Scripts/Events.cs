@@ -5,6 +5,9 @@ public static class Events
     // 游戏开始事件
     public static UnityEvent OnGameStart = new();
 
+    // 游戏进入阶段事件 (参数: 阶段编号 1-第一阶段, 2-第二阶段, 3-第三阶段)
+    public static UnityEvent<int> OnGameEnterStage = new();
+
     // 游戏结束事件
     public static UnityEvent OnGameEnd = new();
 
@@ -39,6 +42,7 @@ public static class Events
     public static void ClearAllListeners()
     {
         OnGameStart.RemoveAllListeners();
+        OnGameEnterStage.RemoveAllListeners();
         OnGameEnd.RemoveAllListeners();
         OnGamePause.RemoveAllListeners();
         OnGameResume.RemoveAllListeners();
