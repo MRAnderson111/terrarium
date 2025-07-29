@@ -5,6 +5,7 @@ using UnityEngine;
 public class CreateManager : MonoBehaviour
 {
     public GameObject selectPrefab;
+    public GameObject hitPrefab; // 用于显示鼠标射线指向位置的GameObject
     public GameObject selectPosition; // 用于显示鼠标射线指向位置的GameObject
 
 
@@ -14,7 +15,8 @@ public class CreateManager : MonoBehaviour
     void Start()
     {
         Events.OnSelectPrefab.AddListener(OnSelectPrefab);
-        
+        selectPosition = Instantiate(hitPrefab);
+        selectPosition.SetActive(false);
     }
 
     // Update is called once per frame
@@ -44,6 +46,8 @@ public class CreateManager : MonoBehaviour
             // 将selectPosition移动到射线击中的位置
             selectPosition.transform.position = hit.point;
             isHit = true;
+            // 当射线击中物体时，激活selectPosition
+            selectPosition.SetActive(true);
         }
         else
         {
@@ -51,6 +55,8 @@ public class CreateManager : MonoBehaviour
             Vector3 targetPosition = ray.origin + ray.direction * 10f; // 距离摄像机10单位
             selectPosition.transform.position = targetPosition;
             isHit = false;
+            // 当射线没有击中物体时，也激活selectPosition
+            selectPosition.SetActive(false);
         }
     }
 
