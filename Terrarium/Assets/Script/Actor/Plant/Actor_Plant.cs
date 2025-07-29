@@ -7,17 +7,21 @@ public class Actor_Plant : MonoBehaviour
     private MeshRenderer meshRenderer;
     private Material plantMaterial;
     private PlantGrowthSystem growthSystem;
+    private PlantReproduction reproductionSystem;
     
-    // 实现接口属性
     public bool HasGrounded = false;
     public GameObject Ground;
     public GameObject FertileGround;
     public GameObject BarrenGround;
+    public int GrowthStage = 0;
+    public int GrowSpeed = 2;
+    public bool EnvironmentalFactor = true;
 
     void Start()
     {
         SetupPlantAppearance();
         growthSystem = gameObject.AddComponent<PlantGrowthSystem>();
+        reproductionSystem = gameObject.AddComponent<PlantReproduction>();
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -30,6 +34,23 @@ public class Actor_Plant : MonoBehaviour
         if (!HasGrounded && IsGroundObject(collision.gameObject))
         {
             Debug.Log($"植物接触到地面: {collision.gameObject.name}");
+            
+            // 根据地面类型设置生长速度
+            if (collision.gameObject.name.Contains("FertileGround") || collision.gameObject == FertileGround)
+            {
+                GrowSpeed = 3;
+                Debug.Log("接触到肥沃土地，生长速度设置为3");
+            }
+            else if (collision.gameObject.name.Contains("BarrenGround") || collision.gameObject == BarrenGround)
+            {
+                GrowSpeed = 1;
+                Debug.Log("接触到贫瘠土地，生长速度设置为1");
+            }
+            else
+            {
+                GrowSpeed = 2;
+                Debug.Log("接触到普通地面，生长速度设置为2");
+            }
             
             FixPosition();
         }
@@ -60,16 +81,22 @@ public class Actor_Plant : MonoBehaviour
         {
             Sprout();
         }
+        if (EnvironmentalFactor == true && growthSystem.FirstGrowthDone == true && growthSystem.SecondGrowthDone == false)
+            {
+                growthSystem.SecondGrowth();
+            }
+        if (EnvironmentalFactor == true && growthSystem.SecondGrowthDone == true)
+        {
+
+        }
     }
 
     void Sprout()
     {
-        if (growthSystem != null && !growthSystem.IsGrowing)
-        {
             growthSystem.StartGrowth();
             // 生长开始后停止重复调用
-            HasGrounded = false; // 或者使用其他标志位
-        }
+            HasGrounded = false; // 或者使用其他标志位      
+        
     }
 
     void SetupPlantAppearance()
