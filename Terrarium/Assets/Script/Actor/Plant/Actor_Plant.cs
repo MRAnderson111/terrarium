@@ -20,8 +20,8 @@ public class Actor_Plant : MonoBehaviour
     void Start()
     {
         SetupPlantAppearance();
-        growthSystem = gameObject.AddComponent<PlantGrowthSystem>();
-        reproductionSystem = gameObject.AddComponent<PlantReproduction>();
+        growthSystem = gameObject.GetComponent<PlantGrowthSystem>();
+        reproductionSystem = gameObject.GetComponent<PlantReproduction>();
     }
 
     public void OnCollisionEnter(Collision collision)
