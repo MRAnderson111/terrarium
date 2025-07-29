@@ -149,4 +149,20 @@ public class UI_Plant : MonoBehaviour
             ActorManager.OnFourthSquareClicked();
         }
     }
+
+    public void OnRightMouseDown()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            ResetValue();
+        }
+    }
+
+    public void ResetValue()
+    {
+        if (ActorManager.Instance != null)
+        {
+            ActorManager.ResetValue();
+        }
+    }
 }
