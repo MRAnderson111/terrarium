@@ -1,3 +1,4 @@
+using UnityEngine;
 using UnityEngine.Events;
 
 public static class Events
@@ -7,6 +8,11 @@ public static class Events
 
     // 游戏进入阶段事件 (参数: 阶段编号 1-第一阶段, 2-第二阶段, 3-第三阶段)
     public static UnityEvent<int> OnGameEnterStage = new();
+
+    // 选择预制体事件 (参数: 预制体)
+    public static UnityEvent<GameObject> OnSelectPrefab = new();
+
+
 
     // 游戏结束事件
     public static UnityEvent OnGameEnd = new();
