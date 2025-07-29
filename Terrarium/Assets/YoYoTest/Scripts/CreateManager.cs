@@ -24,6 +24,9 @@ public class CreateManager : MonoBehaviour
     {
         // 实时检测鼠标射线并更新selectPosition位置
         UpdateSelectPosition();
+
+        // 检测鼠标点击
+        HandleMouseClick();
     }
 
     /// <summary>
@@ -57,6 +60,32 @@ public class CreateManager : MonoBehaviour
             isHit = false;
             // 当射线没有击中物体时，也激活selectPosition
             selectPosition.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// 处理鼠标点击，在射线击中位置生成预制体
+    /// </summary>
+    private void HandleMouseClick()
+    {
+        // 检测鼠标左键点击
+        if (Input.GetMouseButtonDown(0))
+        {
+            // 只有当射线击中物体且有选择的预制体时才生成
+            if (isHit && selectPrefab != null)
+            {
+                // 在selectPosition的位置生成预制体
+                GameObject newObject = Instantiate(selectPrefab, selectPosition.transform.position, Quaternion.identity);
+                Debug.Log("在位置 " + selectPosition.transform.position + " 生成了预制体：" + selectPrefab.name);
+            }
+            else if (!isHit)
+            {
+                Debug.Log("射线未击中任何物体，无法生成预制体");
+            }
+            else if (selectPrefab == null)
+            {
+                Debug.Log("未选择预制体，无法生成");
+            }
         }
     }
 

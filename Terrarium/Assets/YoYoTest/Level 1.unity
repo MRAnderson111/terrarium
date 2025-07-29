@@ -2127,7 +2127,7 @@ GameObject:
   - component: {fileID: 1254615844}
   m_Layer: 0
   m_Name: NormalLand
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2697,7 +2697,7 @@ GameObject:
   - component: {fileID: 1431474374}
   m_Layer: 0
   m_Name: PerfectLand
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3994,7 +3994,7 @@ GameObject:
   - component: {fileID: 2082629956}
   m_Layer: 0
   m_Name: GoodLand
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
