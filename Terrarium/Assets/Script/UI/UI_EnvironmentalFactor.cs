@@ -4,9 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-// 如果Date_EnvironmentalFactory在特定命名空间中，添加对应的using语句
-// 例如: using Terrarium.Date;
-
 public class UI_EnvironmentalFactor : MonoBehaviour
 {
     [Header("环境因素滑块")]
@@ -108,29 +105,7 @@ public class UI_EnvironmentalFactor : MonoBehaviour
     
     void Update()
     {
-        // 同步环境工厂的数据到滑块（如果通过按键改变了值）
-        SyncSlidersWithEnvironmentalData();
-    }
-    
-    void SyncSlidersWithEnvironmentalData()
-    {
-        if (sunlightSlider != null && sunlightSlider.value != Date_EnvironmentalFactory.Sunlight)
-        {
-            sunlightSlider.value = Date_EnvironmentalFactory.Sunlight;
-        }
         
-        if (humiditySlider != null && humiditySlider.value != Date_EnvironmentalFactory.Humidity)
-        {
-            humiditySlider.value = Date_EnvironmentalFactory.Humidity;
-        }
-        
-        if (temperatureSlider != null && temperatureSlider.value != Date_EnvironmentalFactory.Temperature)
-        {
-            temperatureSlider.value = Date_EnvironmentalFactory.Temperature;
-        }
-        
-        // 更新文本显示
-        UpdateAllTexts();
     }
     
     void UpdateAllTexts()
