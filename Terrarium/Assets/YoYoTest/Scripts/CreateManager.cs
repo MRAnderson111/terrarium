@@ -46,11 +46,24 @@ public class CreateManager : MonoBehaviour
         // 检测射线是否击中物体
         if (Physics.Raycast(ray, out hit))
         {
-            // 将selectPosition移动到射线击中的位置
-            selectPosition.transform.position = hit.point;
-            isHit = true;
-            // 当射线击中物体时，激活selectPosition
-            selectPosition.SetActive(true);
+            // 检查击中的物体是否有"Ground"标签
+            if (hit.collider.CompareTag("Ground"))
+            {
+                // 将selectPosition移动到射线击中的位置
+                selectPosition.transform.position = hit.point;
+                isHit = true;
+                // 当射线击中Ground物体时，激活selectPosition
+                selectPosition.SetActive(true);
+            }
+            else
+            {
+                // 击中了物体但不是Ground标签，视为未击中
+                Vector3 targetPosition = ray.origin + ray.direction * 10f; // 距离摄像机10单位
+                selectPosition.transform.position = targetPosition;
+                isHit = false;
+                // 当射线没有击中Ground物体时，隐藏selectPosition
+                selectPosition.SetActive(false);
+            }
         }
         else
         {
