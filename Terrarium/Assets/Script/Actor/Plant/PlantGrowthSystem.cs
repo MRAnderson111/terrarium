@@ -8,6 +8,8 @@ public class PlantGrowthSystem : MonoBehaviour
     private bool isGrowing = false;
     public bool FirstGrowthDone = false;
     public bool SecondGrowthDone = false;
+    public System.Action OnFirstGrowthCompleted;
+    public System.Action OnSecondGrowthCompleted;
 
     void Start()
     {
@@ -76,13 +78,15 @@ public class PlantGrowthSystem : MonoBehaviour
         Debug.Log("植物成长完成：体型变大，颜色变深");
         isGrowing = false;
         FirstGrowthDone = true;
+        
+        OnFirstGrowthCompleted?.Invoke();
     }
 
     public bool IsGrowing => isGrowing;
 
     public void SecondGrowth()
     {
-        if (!isGrowing && plantMaterial != null && FirstGrowthDone)
+        if (!isGrowing && plantMaterial != null && FirstGrowthDone && !SecondGrowthDone) 
         {
             isGrowing = true;
             StartCoroutine(DelayedSecondGrowth());
@@ -139,8 +143,13 @@ public class PlantGrowthSystem : MonoBehaviour
         Debug.Log("植物第二阶段生长完成：长高且颜色更深");
         isGrowing = false;
         SecondGrowthDone = true;
+        OnSecondGrowthCompleted?.Invoke();
     }
 }
+
+
+
+
 
 
 

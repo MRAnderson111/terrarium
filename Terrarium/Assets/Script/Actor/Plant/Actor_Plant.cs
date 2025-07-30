@@ -16,7 +16,11 @@ public class Actor_Plant : MonoBehaviour
     public int GrowthStage = 0;
     public int GrowSpeed = 2;
     public bool EnvironmentalFactor = true;
-    public bool FirstReproduction = false;
+    public int ReproductionCount = 0;
+    public int MaxReproductionCount = 1;
+    public bool SingleReproduction = false;
+    public bool PluralReproduction = false;
+    public bool ReproductionDone = false;
     
     private bool hasIncreasedPlantAmount = false; // 添加标志位
 
@@ -25,6 +29,14 @@ public class Actor_Plant : MonoBehaviour
         SetupPlantAppearance();
         growthSystem = gameObject.GetComponent<PlantGrowthSystem>();
         reproductionSystem = gameObject.GetComponent<PlantReproduction>();
+        growthSystem.OnFirstGrowthCompleted += OnFirstGrowthCompleted;
+        growthSystem.OnSecondGrowthCompleted += OnSecondGrowthCompleted;
+
+    }
+
+    void Update()
+    {
+        
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -38,20 +50,26 @@ public class Actor_Plant : MonoBehaviour
         {
             Debug.Log($"植物接触到地面: {collision.gameObject.name}");
             
-            // 根据地面类型设置生长速度
-            if (collision.gameObject.name.Contains("FertileGround") || collision.gameObject == FertileGround)
+            // 优化地面类型检测 - 按优先级检测
+            if (IsFertileGround(collision.gameObject))
             {
                 GrowSpeed = 3;
+                PluralReproduction = true;
+                SingleReproduction = false;
                 Debug.Log("接触到肥沃土地，生长速度设置为3");
             }
-            else if (collision.gameObject.name.Contains("BarrenGround") || collision.gameObject == BarrenGround)
+            else if (IsBarrenGround(collision.gameObject))
             {
                 GrowSpeed = 1;
+                SingleReproduction = true;
+                PluralReproduction = false;
                 Debug.Log("接触到贫瘠土地，生长速度设置为1");
             }
             else
             {
                 GrowSpeed = 2;
+                SingleReproduction = true;
+                PluralReproduction = false;
                 Debug.Log("接触到普通地面，生长速度设置为2");
             }
             
@@ -59,14 +77,30 @@ public class Actor_Plant : MonoBehaviour
         }
     }
 
-    bool IsGroundObject(GameObject obj) // 判断是否是地面物体
+    // 分离地面类型检测方法
+    bool IsFertileGround(GameObject obj)
+    {
+        return obj == FertileGround || 
+               obj.name.Contains("FertileGround") ||
+               obj.name.Equals("FertileGround") ||
+               obj.GetComponent<Actor_FertileGround>() != null;
+    }
+
+    bool IsBarrenGround(GameObject obj)
+    {
+        return obj == BarrenGround || 
+               obj.name.Contains("BarrenGround") ||
+               obj.name.Equals("BarrenGround");
+    }
+
+    bool IsGroundObject(GameObject obj)
     {
         return obj == Ground || 
                obj == FertileGround || 
                obj == BarrenGround ||
                obj.name.Contains("Ground") || 
-               obj.name.Contains("BarrenGround") ||
-               obj.name.Contains("FertileGround");
+               obj.name.Contains("Plane") ||
+               obj.CompareTag("Ground");
     }
 
     void FixPosition() // 固定植物位置
@@ -76,22 +110,9 @@ public class Actor_Plant : MonoBehaviour
             Object.Destroy(rb);
         HasGrounded = true;
         Debug.Log("植物已固定在地面上");
-    }
-
-    void Update()
-    {
-        if(HasGrounded && growthSystem != null && !growthSystem.IsGrowing)
+        if(HasGrounded && !growthSystem.IsGrowing)
         {
             Sprout();
-        }
-        if (EnvironmentalFactor == true && growthSystem.FirstGrowthDone == true && growthSystem.SecondGrowthDone == false)
-            {
-                growthSystem.SecondGrowth();
-            }
-        if (EnvironmentalFactor == true && growthSystem.SecondGrowthDone == true && FirstReproduction == false)
-        {
-            reproductionSystem.StartReproduction();
-            FirstReproduction = true;
         }
     }
 
@@ -105,6 +126,50 @@ public class Actor_Plant : MonoBehaviour
         {
             ActorManager.PlantAmountIncrease();
             hasIncreasedPlantAmount = true;
+        }
+    }
+
+
+    private void OnFirstGrowthCompleted()
+    {
+        Debug.Log("收到第一阶段生长完成通知");
+        SecondGrowth();
+    }
+
+    void SecondGrowth()
+    {
+        if (EnvironmentalFactor == true && growthSystem.SecondGrowthDone == false)
+        {
+            growthSystem.SecondGrowth();
+        }
+    }
+
+    private void OnSecondGrowthCompleted()
+    {
+        Debug.Log("收到第二阶段生长完成通知");
+        Reproduction();
+    }
+
+    void Reproduction()
+    {
+        if (reproductionSystem == null)
+            return;
+
+        if (EnvironmentalFactor == true && growthSystem.SecondGrowthDone == true && ReproductionDone == false)
+        {
+            if (GrowSpeed == 1 && SingleReproduction == true){
+            reproductionSystem.StartReproduction();
+            ReproductionDone = true;
+            }
+            if (GrowSpeed == 2 && SingleReproduction == true ){
+            reproductionSystem.StartReproduction();
+            ReproductionDone = true;
+            }
+            if (GrowSpeed == 3 && PluralReproduction == true){
+            reproductionSystem.StartDoubleReproduction();
+            ReproductionDone = true;
+            }
+            
         }
     }
 
@@ -138,6 +203,6 @@ public class Actor_Plant : MonoBehaviour
         DestroyImmediate(tempCube);
         return cubeMesh;
     }
+
+   
 }
-
-
