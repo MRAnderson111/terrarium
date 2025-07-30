@@ -6,9 +6,11 @@ public class ActorManager : MonoBehaviour
 {
     public static ActorManager Instance { get; private set; }
     public static int PlantIndex;
-    
+    public static int PlantAmount;
+
     // 定义事件
     public static System.Action<int> OnPlantIndexChanged;
+    public static System.Action<int> OnPlantAmountChanged;
 
     void Awake()
     {
@@ -22,6 +24,12 @@ public class ActorManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    public static void PlantAmountIncrease()
+    {
+        PlantAmount++;
+        OnPlantAmountChanged?.Invoke(PlantAmount);
     }
 
     public static void OnFirstSquareClicked()

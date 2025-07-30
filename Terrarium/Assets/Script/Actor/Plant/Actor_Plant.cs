@@ -16,6 +16,9 @@ public class Actor_Plant : MonoBehaviour
     public int GrowthStage = 0;
     public int GrowSpeed = 2;
     public bool EnvironmentalFactor = true;
+    public bool FirstReproduction = false;
+    
+    private bool hasIncreasedPlantAmount = false; // 添加标志位
 
     void Start()
     {
@@ -85,18 +88,24 @@ public class Actor_Plant : MonoBehaviour
             {
                 growthSystem.SecondGrowth();
             }
-        if (EnvironmentalFactor == true && growthSystem.SecondGrowthDone == true)
+        if (EnvironmentalFactor == true && growthSystem.SecondGrowthDone == true && FirstReproduction == false)
         {
-
+            reproductionSystem.StartReproduction();
+            FirstReproduction = true;
         }
     }
 
     void Sprout()
     {
-            growthSystem.StartGrowth();
-            // 生长开始后停止重复调用
-            HasGrounded = false; // 或者使用其他标志位      
-        
+        growthSystem.StartGrowth();
+        // 生长开始后停止重复调用
+        HasGrounded = false; // 或者使用其他标志位 
+        // 只在第一次调用时增加植物数量
+        if (!hasIncreasedPlantAmount)
+        {
+            ActorManager.PlantAmountIncrease();
+            hasIncreasedPlantAmount = true;
+        }
     }
 
     void SetupPlantAppearance()

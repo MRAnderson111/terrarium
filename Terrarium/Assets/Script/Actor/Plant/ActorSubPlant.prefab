@@ -13,9 +13,8 @@ GameObject:
   - component: {fileID: 179564602959645066}
   - component: {fileID: 7068249548529090775}
   - component: {fileID: -4879311878452524575}
-  - component: {fileID: -8764613505886895931}
   m_Layer: 0
-  m_Name: ActorPlant
+  m_Name: ActorSubPlant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -120,16 +119,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FirstGrowthDone: 0
   SecondGrowthDone: 0
---- !u!114 &-8764613505886895931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3473362297784194756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 98cf4dc417005a242864f2c817ca1708, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  plantPrefab: {fileID: 3473362297784194756, guid: 1fe4e03224c7cff47b03df2b8226ed5b, type: 3}
