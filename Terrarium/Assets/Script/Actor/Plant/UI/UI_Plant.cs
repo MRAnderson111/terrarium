@@ -22,19 +22,46 @@ public class UI_Plant : MonoBehaviour
     public Button showUIButton;
     public Button hideUIButton;
 
+    [Header("植物数量显示")]
+    public TextMeshProUGUI plantAmountText;
+
     private Image[] allSquareImages;
 
     void Start()
     {
         InitializeUI();
         SetupSquareClickEvents();
+        ActorManager.OnPlantAmountChanged += OnPlantAmountChanged;
+        
+        // 初始化植物数量显示
+        UpdatePlantAmountDisplay();
     }
+    
+    void OnPlantAmountChanged(int newAmount)
+    {
+        UpdatePlantAmountDisplay();
+    }
+    
+    void UpdatePlantAmountDisplay()
+    {
+        if (plantAmountText != null)
+        {
+            plantAmountText.text = $"植物数量: {ActorManager.PlantAmount}";
+        }
+    }
+    
+    void OnDestroy()
+    {
+        // 取消订阅事件，防止内存泄漏
+        ActorManager.OnPlantAmountChanged -= OnPlantAmountChanged;
+    }
+    
 
     void InitializeUI()
     {
         // 默认隐藏UI面板
         if (rectangularPanel != null)
-            rectangularPanel.SetActive(false);
+            rectangularPanel.SetActive(true);
 
         // 绑定按钮事件
         if (showUIButton != null)
@@ -64,6 +91,9 @@ public class UI_Plant : MonoBehaviour
 
     void Update()
     {
+        // 调用ActorManager中的PlantAmount
+
+    {
         // 按空格键切换UI显示状态
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -84,6 +114,7 @@ public class UI_Plant : MonoBehaviour
                 HideUI();
             }
         }
+    }
     }
 
     public void SetupSquareClickEvents()
