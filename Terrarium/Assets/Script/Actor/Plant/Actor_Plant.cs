@@ -2,13 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Actor_Plant : MonoBehaviour
+public interface IResearchPoint
+{
+    void SpawnResearchPoint();
+}
+
+public class Actor_Plant : MonoBehaviour, IResearchPoint
 {
     private MeshRenderer meshRenderer;
     private Material plantMaterial;
     private PlantGrowthSystem growthSystem;
     private PlantReproduction reproductionSystem;
     
+    //Growth and Reproduction 
     public bool HasGrounded = false;
     public GameObject Ground;
     public GameObject FertileGround;
@@ -23,6 +29,8 @@ public class Actor_Plant : MonoBehaviour
     public bool ReproductionDone = false;
     
     private bool hasIncreasedPlantAmount = false; // 添加标志位
+
+    public GameObject ResearchPoint;
 
     void Start()
     {
@@ -141,12 +149,13 @@ public class Actor_Plant : MonoBehaviour
         if (EnvironmentalFactor == true && growthSystem.SecondGrowthDone == false)
         {
             growthSystem.SecondGrowth();
+            
         }
     }
 
     private void OnSecondGrowthCompleted()
     {
-        Debug.Log("收到第二阶段生长完成通知");
+        SpawnResearchPoint();
         Reproduction();
     }
 
@@ -204,5 +213,16 @@ public class Actor_Plant : MonoBehaviour
         return cubeMesh;
     }
 
-   
+    public void SpawnResearchPoint()
+    {
+        // 在植物上方生成蓝色研究点球体
+        Vector3 spawnPosition = transform.position + Vector3.up * 3f;
+        
+        ResearchPoint = new GameObject("ResearchPoint");
+        ResearchPoint.transform.position = spawnPosition;
+        
+        // 添加Actor_ResearchPoint组件
+        ResearchPoint.AddComponent<Actor_ResearchPoint>();
+    }
 }
+

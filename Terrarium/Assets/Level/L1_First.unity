@@ -1698,7 +1698,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2397381522748782375, guid: ee553988d54c6314b81110e5d3007234, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -133
+      value: -25
       objectReference: {fileID: 0}
     - target: {fileID: 2397381522748782375, guid: ee553988d54c6314b81110e5d3007234, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -2236,6 +2236,7 @@ MonoBehaviour:
   SingleReproduction: 0
   PluralReproduction: 0
   ReproductionDone: 0
+  ResearchPoint: {fileID: 0}
 --- !u!1 &1414103771
 GameObject:
   m_ObjectHideFlags: 0

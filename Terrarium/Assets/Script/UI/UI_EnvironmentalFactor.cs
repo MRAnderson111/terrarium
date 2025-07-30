@@ -68,14 +68,14 @@ public class UI_EnvironmentalFactor : MonoBehaviour
     {
         Date_EnvironmentalFactory.SetSunlight(value);
         if (sunlightText != null)
-            sunlightText.text = $"阳光强度: {value:F0}";
+            sunlightText.text = $"Sunlight: {value:F0}";
     }
     
     void OnHumidityChanged(float value)
     {
         Date_EnvironmentalFactory.SetHumidity(value);
         if (humidityText != null)
-            humidityText.text = $"湿度: {value:F0}%";
+            humidityText.text = $"Humidity: {value:F0}%";
     }
     
     void OnWaterSourceChanged(float value)
@@ -87,11 +87,11 @@ public class UI_EnvironmentalFactor : MonoBehaviour
             GameObject waterObject = GameObject.Find("Water");
             if (waterObject != null)
             {
-                waterSourceText.text = "水源: 充足";
+                waterSourceText.text = "Water: Present";
             }
             else
             {
-                waterSourceText.text = $"水源: {value:F0}%";
+                waterSourceText.text = $"Water: {value:F0}%";
             }
         }
     }
@@ -100,7 +100,7 @@ public class UI_EnvironmentalFactor : MonoBehaviour
     {
         Date_EnvironmentalFactory.SetTemperature(value);
         if (temperatureText != null)
-            temperatureText.text = $"温度: {value:F0}°C";
+            temperatureText.text = $"Temperature: {value:F0}°C";
     }
     
     void Update()
@@ -111,10 +111,10 @@ public class UI_EnvironmentalFactor : MonoBehaviour
     void UpdateAllTexts()
     {
         if (sunlightText != null)
-            sunlightText.text = $"阳光强度: {Date_EnvironmentalFactory.Sunlight:F0}";
+            sunlightText.text = $"Sunlight: {Date_EnvironmentalFactory.Sunlight:F0}";
             
         if (humidityText != null)
-            humidityText.text = $"湿度: {Date_EnvironmentalFactory.Humidity:F0}%";
+            humidityText.text = $"Humidity: {Date_EnvironmentalFactory.Humidity:F0}%";
             
         if (waterSourceText != null)
         {
@@ -122,15 +122,15 @@ public class UI_EnvironmentalFactor : MonoBehaviour
             GameObject waterObject = GameObject.Find("Water");
             if (waterObject != null)
             {
-                waterSourceText.text = "水源: 充足";
+                waterSourceText.text = "Water: Present";
             }
             else
             {
-                waterSourceText.text = $"水源: {Date_EnvironmentalFactory.WaterSource:F0}%";
+                waterSourceText.text = $"Water: {Date_EnvironmentalFactory.WaterSource:F0}%";
             }
         }
         
         if (temperatureText != null)
-            temperatureText.text = $"温度: {Date_EnvironmentalFactory.Temperature:F0}°C";
+            temperatureText.text = $"Humidity: {Date_EnvironmentalFactory.Temperature:F0}°C";
     }
 }

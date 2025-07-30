@@ -76,8 +76,7 @@ public class Date_EnvironmentalFactory : MonoBehaviour
             // 更新灯光
             UpdateSunlightIntensity();
             UpdateTemperatureLight();
-            
-            Debug.Log($"环境数据更新 - 阳光: {Sunlight}, 湿度: {Humidity}, 水源: {WaterSource}, 温度: {Temperature}°C");
+
         }
     }
     

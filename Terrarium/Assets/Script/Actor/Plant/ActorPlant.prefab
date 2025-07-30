@@ -55,7 +55,12 @@ MonoBehaviour:
   GrowthStage: 0
   GrowSpeed: 2
   EnvironmentalFactor: 1
-  FirstReproduction: 0
+  ReproductionCount: 0
+  MaxReproductionCount: 1
+  SingleReproduction: 0
+  PluralReproduction: 0
+  ReproductionDone: 0
+  ResearchPoint: {fileID: 4684970321456219004, guid: 5200a836da37e4f478484cafd32740f6, type: 3}
 --- !u!33 &179564602959645066
 MeshFilter:
   m_ObjectHideFlags: 0
