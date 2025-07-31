@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class CreateManager : MonoBehaviour
 {
-    public GameObject selectPrefab;
+    public GameObject selectPrefab;// button选择的植物预制体
     public GameObject hitPrefab; // 用于显示鼠标射线指向位置的GameObject
     public GameObject selectPosition; // 用于显示鼠标射线指向位置的GameObject
 
@@ -96,7 +96,7 @@ public class CreateManager : MonoBehaviour
             if (isHit && selectPrefab != null)
             {
                 // 在selectPosition的位置生成预制体
-                GameObject newObject = Instantiate(selectPrefab, selectPosition.transform.position, Quaternion.identity);
+                GameObject newObject = Instantiate(selectPrefab, selectPosition.transform.position + Vector3.up * 0.5f, Quaternion.identity);
                 Debug.Log("在位置 " + selectPosition.transform.position + " 生成了预制体：" + selectPrefab.name);
             }
             else if (!isHit)

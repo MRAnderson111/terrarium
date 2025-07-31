@@ -15,7 +15,7 @@ public static class GroundDetectionUtils
     public static int GetGroundFertility(Vector3 position, float rayDistance = 10f)
     {
         // 向下发射射线检测地面
-        Vector3 rayOrigin = position + Vector3.up * 0.5f; // 从指定位置开始
+        Vector3 rayOrigin = position; // 从指定位置开始
         Vector3 rayDirection = Vector3.down; // 向下方向
 
         // 发射射线检测所有物体（使用所有层）
