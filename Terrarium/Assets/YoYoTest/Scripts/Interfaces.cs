@@ -18,10 +18,11 @@ public class Interfaces : MonoBehaviour
 }
 
 //define a interface for the object
-public interface I
+public interface IGetObjectClass
 {
-    void OnSelect();
-    void OnDeselect();
+    string BigClass { get; }
+    string SmallClass { get; }
+
 }
 
 

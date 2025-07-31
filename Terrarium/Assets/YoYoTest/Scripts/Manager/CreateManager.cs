@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,14 +11,21 @@ public class CreateManager : MonoBehaviour
 
 
     [Header("预制体")]
-    public bool isHit;
-    // Start is called before the first frame update
+    public bool isHit; // 射线是否击中Ground物体的标志位
+
+    // 初始化方法，在游戏开始时调用
     void Start()
     {
+        // 监听预制体选择事件
         Events.OnSelectPrefab.AddListener(OnSelectPrefab);
+
+        // 实例化位置指示器并初始隐藏（用来显示鼠标射线指向位置）
         selectPosition = Instantiate(hitPrefab);
         selectPosition.SetActive(false);
+
     }
+
+
 
     // Update is called once per frame
     void Update()

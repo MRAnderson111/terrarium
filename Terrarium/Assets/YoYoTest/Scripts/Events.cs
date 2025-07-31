@@ -12,6 +12,10 @@ public static class Events
     // 选择预制体事件 (参数: 预制体)
     public static UnityEvent<GameObject> OnSelectPrefab = new();
 
+    // 物种生成,销毁事件 (参数: 物种信息接口)
+    public static UnityEvent<IGetObjectClass> OnCreateObject = new();
+    public static UnityEvent<IGetObjectClass> OnDestroyObject = new();
+
 
 
     // 游戏结束事件
