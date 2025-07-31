@@ -25,6 +25,12 @@ public class Grass : MonoBehaviour, IGetObjectClass
         // Events.OnSelectPrefab.AddListener(OnSelectPrefab);
     }
 
+
+    private void OnDestroy()
+    {
+        Events.OnDestroyObject.Invoke(this);
+    }
+
     
     
 }

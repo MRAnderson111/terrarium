@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 2884052989680025617}
   - component: {fileID: 426446581585778677}
   - component: {fileID: 6389254637753849302}
-  - component: {fileID: 2444406458751475145}
+  - component: {fileID: 398965389130124538}
   m_Layer: 0
   m_Name: BigAnt
   m_TagString: Untagged
@@ -240,7 +240,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2444406458751475145
+--- !u!114 &398965389130124538
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -249,6 +249,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 7340170426973155689}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 821c930204569a34982080e613a28ee0, type: 3}
+  m_Script: {fileID: 11500000, guid: 1bd619ac5fdde0442ac3db6e6a03a637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

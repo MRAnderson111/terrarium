@@ -12,7 +12,7 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
     void Start()
     {
         Events.OnCreateObject.Invoke(this);
-    }
+    } 
 
     // Update is called once per frame
     void Update()
@@ -25,6 +25,9 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
         // Events.OnSelectPrefab.AddListener(OnSelectPrefab);
     }
 
-    
+    private void OnDestroy()
+    {
+        Events.OnDestroyObject.Invoke(this);
+    }
     
 }
