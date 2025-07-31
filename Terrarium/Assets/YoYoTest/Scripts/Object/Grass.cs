@@ -8,10 +8,15 @@ public class Grass : MonoBehaviour, IGetObjectClass
 
     public string SmallClass => "Grass";
 
+    public float growthSpeed = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
         Events.OnCreateObject.Invoke(this);
+
+        // 检测地面并设置生长速度
+        GroundDetectionUtils.SetGrowthSpeedFromGroundSimple(transform.position, (fertility) => growthSpeed = fertility);
     }
 
     // Update is called once per frame
@@ -31,6 +36,6 @@ public class Grass : MonoBehaviour, IGetObjectClass
         Events.OnDestroyObject.Invoke(this);
     }
 
-    
+
     
 }

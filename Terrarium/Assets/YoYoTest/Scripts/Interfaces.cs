@@ -22,7 +22,12 @@ public interface IGetObjectClass
 {
     string BigClass { get; }
     string SmallClass { get; }
-
 }
 
+
+
+public interface IGetGroundClass
+{
+    int Fertility { get; }
+}
 
