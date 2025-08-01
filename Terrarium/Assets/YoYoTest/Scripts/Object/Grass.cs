@@ -8,7 +8,7 @@ public class Grass : MonoBehaviour, IGetObjectClass
 
     public string SmallClass => "Grass";
 
-    private float growthSpeed = 0.3f;
+    private float growthSpeed = 3f;
 
     // Start is called before the first frame update
     void Start()

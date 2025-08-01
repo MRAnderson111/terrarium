@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SimpleGrowth : MonoBehaviour, IGrowth
@@ -22,12 +21,11 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
     {
         // 保存原始scale
         originalScale = meshObject.transform.localScale;
-        Debug.Log("捕获到的原始 scale: " + originalScale.ToString("F4"));
+        Debug.Log("在 Awake 中捕获到的原始 scale: " + originalScale.ToString("F4"));
 
         // 初始设置为原始scale的0.1倍
         meshObject.transform.localScale = originalScale * 0.1f;
     }
-
 
 
     public void Growth()
@@ -39,7 +37,8 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
     {
         while (growthProgress < 100f)
         {
-            growthProgress += GrowthSpeed;
+            // 使用deltaTime让生长速度与帧率无关
+            growthProgress += GrowthSpeed * Time.deltaTime;
 
             // 确保生长进度不超过100
             if (growthProgress > 100f)
@@ -48,10 +47,11 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
             // 根据生长进度计算scale，从0.1到1.0
             float targetScale = 0.1f + (growthProgress / 100f) * 0.9f;
             meshObject.transform.localScale = originalScale * targetScale;
+            Debug.Log("originalScale：" + originalScale + " targetScale：" + targetScale + " progress：" + growthProgress.ToString("F2"));
 
-            yield return new WaitForSeconds(0.1f);
+            // 每帧更新一次
+            yield return null;
         }
-
     }
 
 
