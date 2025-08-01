@@ -2,20 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Interfaces : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-}
 
 //define a interface for the object
 public interface IGetObjectClass
@@ -24,10 +11,30 @@ public interface IGetObjectClass
     string SmallClass { get; }
 }
 
+public interface IGrowth
+{
+    //生长速度
+    float GrowthSpeed { get; set; }
+    //生长进度
+    float GrowthProgress { get; set; }
+    //生长
+    void Growth();
+}
+
+public interface IReleaseSeed
+{
+    void ReleaseSeed();
+}
+
+
 
 
 public interface IGetGroundClass
 {
     int Fertility { get; }
 }
+
+
+
+
 

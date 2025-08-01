@@ -1,0 +1,58 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SimpleGrowth : MonoBehaviour, IGrowth
+{
+    //生长速度（接口）
+    public float GrowthSpeed { get; set; }
+    //生长进度（接口）
+    [SerializeField]
+    private float growthProgress = 0f;
+    public float GrowthProgress { get => growthProgress; set => growthProgress = value; }
+
+    //mesh object
+    public GameObject meshObject;
+
+    //保存原始scale
+    private Vector3 originalScale;
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        // 保存原始scale
+        originalScale = meshObject.transform.localScale;
+        Debug.Log("捕获到的原始 scale: " + originalScale.ToString("F4"));
+
+        // 初始设置为原始scale的0.1倍
+        meshObject.transform.localScale = originalScale * 0.1f;
+    }
+
+
+
+    public void Growth()
+    {
+        StartCoroutine(GrowthCoroutine());
+    }
+
+    private IEnumerator GrowthCoroutine()
+    {
+        while (growthProgress < 100f)
+        {
+            growthProgress += GrowthSpeed;
+
+            // 确保生长进度不超过100
+            if (growthProgress > 100f)
+                growthProgress = 100f;
+
+            // 根据生长进度计算scale，从0.1到1.0
+            float targetScale = 0.1f + (growthProgress / 100f) * 0.9f;
+            meshObject.transform.localScale = originalScale * targetScale;
+
+            yield return new WaitForSeconds(0.1f);
+        }
+
+    }
+
+
+}
