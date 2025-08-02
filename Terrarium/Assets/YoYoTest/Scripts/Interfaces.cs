@@ -31,6 +31,10 @@ public interface IReleaseSeed
     void ReleaseSeed();
 }
 
+public interface IReproduction
+{
+    void Reproduction();
+}
 
 
 
