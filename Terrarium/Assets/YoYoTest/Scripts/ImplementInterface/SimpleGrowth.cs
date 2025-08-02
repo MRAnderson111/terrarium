@@ -52,6 +52,8 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
             // 每帧更新一次
             yield return null;
         }
+
+        Debug.Log("生长完成");
     }
 
 
