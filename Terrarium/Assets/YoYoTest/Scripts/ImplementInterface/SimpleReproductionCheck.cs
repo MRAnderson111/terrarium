@@ -4,6 +4,7 @@ using UnityEngine;
 public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
 {
     private readonly Collider[] colliderBuffer = new Collider[10]; // 预分配缓冲区
+    public bool drawDebugSphere = false;
     
     public void ReproductionCheck()
     {
@@ -80,27 +81,35 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
                 }
             }
 
-            // 生成可视化球体
-            GameObject visualSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            visualSphere.name = $"DebugSphere_{direction}";
-            visualSphere.transform.position = checkPosition;
-            visualSphere.transform.localScale = Vector3.one * 1f;
+            // 根据布尔值决定是否生成可视化球体
+            if (drawDebugSphere)
+            {
+                // 生成可视化球体
+                GameObject visualSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                visualSphere.name = $"DebugSphere_{direction}";
+                visualSphere.transform.position = checkPosition;
+                visualSphere.transform.localScale = Vector3.one * 1f;
 
-            Debug.Log($"生成可视化球体: {visualSphere.name} 在位置 {checkPosition}");
+                Debug.Log($"生成可视化球体: {visualSphere.name} 在位置 {checkPosition}");
 
-            // 设置半透明红色材质
-            Renderer renderer = visualSphere.GetComponent<Renderer>();
-            Material debugMaterial = new Material(Shader.Find("Standard"));
-            debugMaterial.color = new Color(1f, 0f, 0f, 0.5f); // 半透明红色
-            debugMaterial.SetFloat("_Mode", 3); // 设置为透明模式
-            debugMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            debugMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            debugMaterial.SetInt("_ZWrite", 0);
-            debugMaterial.DisableKeyword("_ALPHATEST_ON");
-            debugMaterial.EnableKeyword("_ALPHABLEND_ON");
-            debugMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            debugMaterial.renderQueue = 3000;
-            renderer.material = debugMaterial;
+                // 设置半透明红色材质
+                Renderer renderer = visualSphere.GetComponent<Renderer>();
+                Material debugMaterial = new Material(Shader.Find("Standard"));
+                debugMaterial.color = new Color(1f, 0f, 0f, 0.5f); // 半透明红色
+                debugMaterial.SetFloat("_Mode", 3); // 设置为透明模式
+                debugMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                debugMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                debugMaterial.SetInt("_ZWrite", 0);
+                debugMaterial.DisableKeyword("_ALPHATEST_ON");
+                debugMaterial.EnableKeyword("_ALPHABLEND_ON");
+                debugMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                debugMaterial.renderQueue = 3000;
+                renderer.material = debugMaterial;
+            }
+            else
+            {
+                Debug.Log($"drawDebugSphere为false，跳过 {direction} 方向的可视化球体生成");
+            }
 
             // 检查是否有实现IGetObjectClass接口的对象
             bool foundValidObject = false;
