@@ -8,15 +8,19 @@ public static class SphereDetectionUtility
     private static readonly Collider[] colliderBuffer = new Collider[10]; // 预分配缓冲区
     
     /// <summary>
-    /// 执行四个方向的球形检测
+    /// 执行四个方向的球形检测，找到第一个空位置
     /// </summary>
     /// <param name="centerPosition">检测中心位置</param>
     /// <param name="checkDistance">检测距离</param>
     /// <param name="sphereRadius">检测球体半径</param>
     /// <param name="drawDebugSphere">是否绘制调试球体</param>
-    /// <returns>是否所有方向都检测到实现IGetObjectClass接口的对象</returns>
-    public static bool PerformDirectionalSphereDetection(Vector3 centerPosition, float checkDistance = 1f, float sphereRadius = 0.5f, bool drawDebugSphere = false)
+    /// <param name="emptyPosition">输出参数：找到的空位置</param>
+    /// <returns>是否找到空位置</returns>
+    public static bool PerformDirectionalSphereDetection(Vector3 centerPosition, out Vector3 emptyPosition, float checkDistance = 1f, float sphereRadius = 0.5f, bool drawDebugSphere = false)
     {
+        // 初始化输出参数
+        emptyPosition = Vector3.zero;
+
         // 定义四个方向：前后左右
         Vector3[] directions = {
             Vector3.forward,  // 前
@@ -24,22 +28,22 @@ public static class SphereDetectionUtility
             Vector3.left,     // 左
             Vector3.right     // 右
         };
-        
+
         foreach (Vector3 direction in directions)
         {
             Vector3 checkPosition = centerPosition + direction * checkDistance;
-            
+
             Debug.Log($"=== 开始检测 {direction} 方向 ===");
             Debug.Log($"检测位置: {checkPosition}, 检测半径: {sphereRadius}");
-            
+
             // 使用OverlapSphereNonAlloc避免内存分配
             int colliderCount = Physics.OverlapSphereNonAlloc(checkPosition, sphereRadius, colliderBuffer);
-            
+
             Debug.Log($"在 {direction} 方向检测到 {colliderCount} 个碰撞体");
-            
+
             // 详细记录每个检测到的碰撞体信息
             LogColliderDetails(colliderCount, direction);
-            
+
             // 根据布尔值决定是否生成可视化球体
             if (drawDebugSphere)
             {
@@ -49,22 +53,23 @@ public static class SphereDetectionUtility
             {
                 Debug.Log($"drawDebugSphere为false，跳过 {direction} 方向的可视化球体生成");
             }
-            
+
             // 检查是否有实现IGetObjectClass接口的对象
             if (!CheckForValidObjects(colliderCount, direction))
             {
-                Debug.Log($"=== 在 {direction} 方向没有检测到实现IGetObjectClass接口的对象，停止检测 ===");
+                Debug.Log($"=== 在 {direction} 方向没有检测到实现IGetObjectClass接口的对象，找到空位置 ===");
                 Debug.Log("哈哈哈");
-                return false;
+                emptyPosition = checkPosition;
+                return true;
             }
             else
             {
                 Debug.Log($"=== {direction} 方向检测通过，继续下一个方向 ===");
             }
         }
-        
-        Debug.Log("四个方向都有物体但没有找到包含fix和joint的脚本");
-        return true;
+
+        Debug.Log("四个方向都有物体但没有找到空位置");
+        return false;
     }
     
     /// <summary>
