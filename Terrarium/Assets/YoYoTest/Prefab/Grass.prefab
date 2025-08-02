@@ -298,6 +298,8 @@ MonoBehaviour:
   checkDistance: 1
   sphereRadius: 0.5
   drawDebugSphere: 1
+  reproductionPrefab: {fileID: 7340170426973155689}
+  autoFindPrefab: 1
 --- !u!1 &7472400939293495386
 GameObject:
   m_ObjectHideFlags: 0

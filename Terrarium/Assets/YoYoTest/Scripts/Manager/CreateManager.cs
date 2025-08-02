@@ -85,6 +85,26 @@ public class CreateManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 生成预制体到指定位置
+    /// </summary>
+    /// <param name="prefab">要生成的预制体</param>
+    /// <param name="position">生成位置</param>
+    /// <returns>生成的GameObject实例</returns>
+    private GameObject CreatePrefab(GameObject prefab, Vector3 position)
+    {
+        if (prefab == null)
+        {
+            Debug.LogWarning("预制体为空，无法生成");
+            return null;
+        }
+
+        // 在指定位置生成预制体
+        GameObject newObject = Instantiate(prefab, position, Quaternion.identity);
+        Debug.Log("在位置 " + position + " 生成了预制体：" + prefab.name);
+        return newObject;
+    }
+
+    /// <summary>
     /// 处理鼠标点击，在射线击中位置生成预制体
     /// </summary>
     private void HandleMouseClick()
@@ -95,9 +115,7 @@ public class CreateManager : MonoBehaviour
             // 只有当射线击中物体且有选择的预制体时才生成
             if (isHit && selectPrefab != null)
             {
-                // 在selectPosition的位置生成预制体
-                GameObject newObject = Instantiate(selectPrefab, selectPosition.transform.position + Vector3.up * 0.5f, Quaternion.identity);
-                Debug.Log("在位置 " + selectPosition.transform.position + " 生成了预制体：" + selectPrefab.name);
+                CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * 0.5f);
             }
             else if (!isHit)
             {
