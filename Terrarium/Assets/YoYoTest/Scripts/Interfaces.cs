@@ -31,9 +31,9 @@ public interface IReleaseSeed
     void ReleaseSeed();
 }
 
-public interface IReproduction
+public interface IReproductionCheck
 {
-    void Reproduction();
+    void ReproductionCheck();
 }
 
 

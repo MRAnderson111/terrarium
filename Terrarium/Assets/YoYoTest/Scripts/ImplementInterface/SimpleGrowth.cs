@@ -55,11 +55,17 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
 
         Debug.Log("生长完成");
 
-        
+
         // 释放研究点
         if (TryGetComponent<IReleaseResearchPoint>(out var releaseComponent))
         {
             releaseComponent.ReleaseResearchPoint();
+        }
+
+        // 检查是否可以繁殖
+        if (TryGetComponent<IReproductionCheck>(out var reproductionCheckComponent))
+        {
+            reproductionCheckComponent.ReproductionCheck();
         }
     }
 
