@@ -1,5 +1,10 @@
 {
     "dotrush.roslyn.projectOrSolutionFiles": [
-        "d:\\Project\\terrraian\\Terrarium\\Terrarium.sln"
-    ]
+        "d:\\Project\\Terrian\\Terrarium\\Terrarium.sln",
+        "d:\\Project\\Terrian\\Terrarium\\Assembly-CSharp.csproj"
+    ],
+    "files.exclude": {
+        "**/*.meta": true
+    },
+    "dotnet.defaultSolution": "Terrarium.sln"
 }

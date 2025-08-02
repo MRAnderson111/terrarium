@@ -54,6 +54,13 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
         }
 
         Debug.Log("生长完成");
+
+        
+        // 释放研究点
+        if (TryGetComponent<IReleaseResearchPoint>(out var releaseComponent))
+        {
+            releaseComponent.ReleaseResearchPoint();
+        }
     }
 
 

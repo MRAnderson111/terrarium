@@ -21,9 +21,9 @@ public interface IGrowth
     void Growth();
 }
 
-public interface IReleasePoint
+public interface IReleaseResearchPoint
 {
-    void ReleasePoint();
+    void ReleaseResearchPoint();
 }
 
 public interface IReleaseSeed
