@@ -38,6 +38,9 @@ public static class SphereDetectionUtility
             Vector3.right     // 右
         };
 
+        // 随机化方向数组的顺序，使每次检测的方向都是随机的
+        ShuffleArray(directions);
+
         foreach (Vector3 direction in directions)
         {
             Vector3 checkPosition = centerPosition + direction * checkDistance;
@@ -246,5 +249,20 @@ public static class SphereDetectionUtility
         }
 
         return false; // 没有找到合适的地面
+    }
+
+    /// <summary>
+    /// 使用Fisher-Yates洗牌算法随机化数组顺序
+    /// </summary>
+    /// <param name="array">要随机化的数组</param>
+    private static void ShuffleArray<T>(T[] array)
+    {
+        for (int i = array.Length - 1; i > 0; i--)
+        {
+            int randomIndex = Random.Range(0, i + 1);
+            T temp = array[i];
+            array[i] = array[randomIndex];
+            array[randomIndex] = temp;
+        }
     }
 }
