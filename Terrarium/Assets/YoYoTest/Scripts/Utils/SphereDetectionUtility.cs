@@ -6,6 +6,11 @@ using UnityEngine;
 public static class SphereDetectionUtility
 {
     private static readonly Collider[] colliderBuffer = new Collider[10]; // 预分配缓冲区
+    private static Material debugMaterial; // 缓存调试材质，避免重复创建
+
+    // 性能优化开关
+    public static bool enableDetailedLogging = false; // 默认关闭详细日志
+    public static bool enableDebugSpheres = false; // 默认关闭调试球体
     
     /// <summary>
     /// 执行四个方向的球形检测，找到第一个空位置
@@ -33,50 +38,55 @@ public static class SphereDetectionUtility
         {
             Vector3 checkPosition = centerPosition + direction * checkDistance;
 
-            Debug.Log($"=== 开始检测 {direction} 方向 ===");
-            Debug.Log($"检测位置: {checkPosition}, 检测半径: {sphereRadius}");
+            // 只在启用详细日志时输出
+            if (enableDetailedLogging)
+            {
+                Debug.Log($"=== 开始检测 {direction} 方向 ===");
+                Debug.Log($"检测位置: {checkPosition}, 检测半径: {sphereRadius}");
+            }
 
             // 使用OverlapSphereNonAlloc避免内存分配
             int colliderCount = Physics.OverlapSphereNonAlloc(checkPosition, sphereRadius, colliderBuffer);
 
-            Debug.Log($"在 {direction} 方向检测到 {colliderCount} 个碰撞体");
-
-            // 详细记录每个检测到的碰撞体信息
-            LogColliderDetails(colliderCount, direction);
+            if (enableDetailedLogging)
+            {
+                Debug.Log($"在 {direction} 方向检测到 {colliderCount} 个碰撞体");
+                // 详细记录每个检测到的碰撞体信息
+                LogColliderDetails(colliderCount);
+            }
 
             // 根据布尔值决定是否生成可视化球体
-            if (drawDebugSphere)
+            if (drawDebugSphere && enableDebugSpheres)
             {
                 CreateDebugSphere(checkPosition, direction);
             }
-            else
-            {
-                Debug.Log($"drawDebugSphere为false，跳过 {direction} 方向的可视化球体生成");
-            }
 
             // 检查是否有实现IGetObjectClass接口的对象
-            if (!CheckForValidObjects(colliderCount, direction))
+            if (!CheckForValidObjects(colliderCount))
             {
-                Debug.Log($"=== 在 {direction} 方向没有检测到实现IGetObjectClass接口的对象，找到空位置 ===");
-                Debug.Log("哈哈哈");
+                if (enableDetailedLogging)
+                {
+                    Debug.Log($"=== 在 {direction} 方向没有检测到实现IGetObjectClass接口的对象，找到空位置 ===");
+                }
                 emptyPosition = checkPosition;
                 return true;
             }
-            else
-            {
-                Debug.Log($"=== {direction} 方向检测通过，继续下一个方向 ===");
-            }
         }
 
-        Debug.Log("四个方向都有物体但没有找到空位置");
+        if (enableDetailedLogging)
+        {
+            Debug.Log("四个方向都有物体但没有找到空位置");
+        }
         return false;
     }
     
     /// <summary>
-    /// 记录碰撞体详细信息
+    /// 记录碰撞体详细信息（仅在详细日志模式下使用）
     /// </summary>
-    private static void LogColliderDetails(int colliderCount, Vector3 direction)
+    private static void LogColliderDetails(int colliderCount)
     {
+        if (!enableDetailedLogging) return;
+
         for (int i = 0; i < colliderCount; i++)
         {
             Collider col = colliderBuffer[i];
@@ -84,40 +94,17 @@ public static class SphereDetectionUtility
             {
                 string objectName = col.gameObject.name;
                 string colliderType = col.GetType().Name;
-                Vector3 colliderPos = col.transform.position;
-                
-                Debug.Log($"  碰撞体 {i + 1}: 名称='{objectName}', 类型={colliderType}, 位置={colliderPos}");
-                
-                // 检查是否有Rigidbody
+
+                Debug.Log($"  碰撞体 {i + 1}: 名称='{objectName}', 类型={colliderType}");
+
+                // 简化的组件检查，避免性能开销
                 if (col.attachedRigidbody != null)
                 {
                     Debug.Log($"    - 附加刚体: {col.attachedRigidbody.name}");
-                    
-                    // 检查所有组件
-                    Component[] components = col.attachedRigidbody.GetComponents<Component>();
-                    Debug.Log($"    - 刚体上的组件数量: {components.Length}");
-                    foreach (Component comp in components)
-                    {
-                        if (comp != null)
-                        {
-                            Debug.Log($"      * {comp.GetType().Name}");
-                        }
-                    }
                 }
                 else
                 {
                     Debug.Log($"    - 无附加刚体");
-                    
-                    // 如果没有刚体，检查GameObject上的组件
-                    Component[] components = col.GetComponents<Component>();
-                    Debug.Log($"    - GameObject上的组件数量: {components.Length}");
-                    foreach (Component comp in components)
-                    {
-                        if (comp != null)
-                        {
-                            Debug.Log($"      * {comp.GetType().Name}");
-                        }
-                    }
                 }
             }
             else
@@ -128,62 +115,64 @@ public static class SphereDetectionUtility
     }
     
     /// <summary>
-    /// 创建调试球体
+    /// 创建调试球体（使用缓存材质避免内存泄漏）
     /// </summary>
     private static void CreateDebugSphere(Vector3 position, Vector3 direction)
     {
+        if (!enableDebugSpheres) return;
+
         GameObject visualSphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         visualSphere.name = $"DebugSphere_{direction}";
         visualSphere.transform.position = position;
         visualSphere.transform.localScale = Vector3.one * 1f;
-        
-        Debug.Log($"生成可视化球体: {visualSphere.name} 在位置 {position}");
-        
-        // 设置半透明红色材质
+
+        if (enableDetailedLogging)
+        {
+            Debug.Log($"生成可视化球体: {visualSphere.name} 在位置 {position}");
+        }
+
+        // 使用缓存的材质，避免重复创建
         Renderer renderer = visualSphere.GetComponent<Renderer>();
-        Material debugMaterial = new Material(Shader.Find("Standard"));
-        debugMaterial.color = new Color(1f, 0f, 0f, 0.5f); // 半透明红色
-        debugMaterial.SetFloat("_Mode", 3); // 设置为透明模式
-        debugMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-        debugMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-        debugMaterial.SetInt("_ZWrite", 0);
-        debugMaterial.DisableKeyword("_ALPHATEST_ON");
-        debugMaterial.EnableKeyword("_ALPHABLEND_ON");
-        debugMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-        debugMaterial.renderQueue = 3000;
+        if (debugMaterial == null)
+        {
+            debugMaterial = new Material(Shader.Find("Standard"));
+            debugMaterial.color = new Color(1f, 0f, 0f, 0.5f); // 半透明红色
+            debugMaterial.SetFloat("_Mode", 3); // 设置为透明模式
+            debugMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+            debugMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+            debugMaterial.SetInt("_ZWrite", 0);
+            debugMaterial.DisableKeyword("_ALPHATEST_ON");
+            debugMaterial.EnableKeyword("_ALPHABLEND_ON");
+            debugMaterial.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+            debugMaterial.renderQueue = 3000;
+        }
         renderer.material = debugMaterial;
+
+        // 使用Unity的Destroy方法在10秒后自动销毁，防止调试球体积累
+        Object.Destroy(visualSphere, 10f);
     }
-    
+
     /// <summary>
-    /// 检查是否有实现IGetObjectClass接口的对象
+    /// 检查是否有实现IGetObjectClass接口的对象（优化版本）
     /// </summary>
-    private static bool CheckForValidObjects(int colliderCount, Vector3 direction)
+    private static bool CheckForValidObjects(int colliderCount)
     {
-        bool foundValidObject = false;
-        Debug.Log($"开始检查 {direction} 方向的碰撞体是否实现IGetObjectClass接口...");
-        
         for (int i = 0; i < colliderCount; i++)
         {
             Collider col = colliderBuffer[i];
             if (col != null && col.attachedRigidbody != null)
             {
-                if (col.attachedRigidbody.TryGetComponent<IGetObjectClass>(out var objectClass))
+                if (col.attachedRigidbody.TryGetComponent<IGetObjectClass>(out _))
                 {
-                    Debug.Log($"  找到实现IGetObjectClass接口的对象: {col.attachedRigidbody.name}");
-                    foundValidObject = true;
-                    break;
+                    if (enableDetailedLogging)
+                    {
+                        Debug.Log($"  找到实现IGetObjectClass接口的对象: {col.attachedRigidbody.name}");
+                    }
+                    return true; // 找到一个就返回，提高性能
                 }
-                else
-                {
-                    Debug.Log($"  对象 {col.attachedRigidbody.name} 未实现IGetObjectClass接口");
-                }
-            }
-            else if (col != null)
-            {
-                Debug.Log($"  对象 {col.name} 没有附加刚体，跳过接口检查");
             }
         }
-        
-        return foundValidObject;
+
+        return false; // 没有找到任何实现接口的对象
     }
 }

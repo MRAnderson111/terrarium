@@ -47,7 +47,7 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
             // 根据生长进度计算scale，从0.1到1.0
             float targetScale = 0.1f + (growthProgress / 100f) * 0.9f;
             meshObject.transform.localScale = originalScale * targetScale;
-            Debug.Log("originalScale：" + originalScale + " targetScale：" + targetScale + " progress：" + growthProgress.ToString("F2"));
+            // Debug.Log("originalScale：" + originalScale + " targetScale：" + targetScale + " progress：" + growthProgress.ToString("F2"));
 
             // 每帧更新一次
             yield return null;

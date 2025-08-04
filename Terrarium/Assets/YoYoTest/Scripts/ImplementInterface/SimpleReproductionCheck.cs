@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
 {
@@ -11,7 +12,9 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
     public bool drawDebugSphere = false; // 是否绘制调试球体
 
     [Header("繁殖控制")]
-    private bool hasReproduced = false; // 是否已经繁殖过
+    public float reproductionInterval = 3f; // 繁殖检测间隔（秒）
+    public bool enableReproductionLogging = false; // 是否启用繁殖日志
+    private bool isReproductionActive = false; // 是否正在进行繁殖检测循环
 
     private GameObject reproductionPrefab; // 缓存加载的预制体
 
@@ -58,17 +61,46 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
 
     public void ReproductionCheck()
     {
-        // 检查是否已经繁殖过
-        if (hasReproduced)
+        // 如果繁殖检测循环还没有开始，则启动它
+        if (!isReproductionActive)
         {
-            Debug.Log("该对象已经繁殖过，无法再次繁殖");
-            return;
+            StartCoroutine(ReproductionLoop());
+        }
+    }
+
+    /// <summary>
+    /// 繁殖检测循环，每隔指定时间进行一次检测
+    /// </summary>
+    private IEnumerator ReproductionLoop()
+    {
+        isReproductionActive = true;
+        if (enableReproductionLogging)
+        {
+            Debug.Log("开始繁殖检测循环，每隔" + reproductionInterval + "秒检测一次");
         }
 
+        while (true)
+        {
+            // 执行一次繁殖检测
+            PerformSingleReproductionCheck();
+
+            // 等待指定的时间间隔
+            yield return new WaitForSeconds(reproductionInterval);
+        }
+    }
+
+    /// <summary>
+    /// 执行单次繁殖检测
+    /// </summary>
+    private void PerformSingleReproductionCheck()
+    {
         // 尝试加载预制体
         if (!LoadReproductionPrefab())
         {
-            Debug.LogError("无法加载繁殖预制体，停止繁殖检测");
+            if (enableReproductionLogging)
+            {
+                Debug.LogError("无法加载繁殖预制体，跳过本次检测");
+            }
             return;
         }
 
@@ -84,21 +116,47 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
             // 找到空位置，使用CreateManager生成预制体
             if (CreateManager.Instance != null)
             {
-                GameObject newObject = CreateManager.Instance.CreatePrefab(reproductionPrefab, emptyPosition);
-                Debug.Log($"使用CreateManager在位置 {emptyPosition} 生成了预制体：{reproductionPrefab.name}");
+                CreateManager.Instance.CreatePrefab(reproductionPrefab, emptyPosition);
+                if (enableReproductionLogging)
+                {
+                    Debug.Log($"使用CreateManager在位置 {emptyPosition} 生成了预制体：{reproductionPrefab.name}");
+                }
             }
             else
             {
-                Debug.LogError("CreateManager引用为空，无法生成预制体");
+                if (enableReproductionLogging)
+                {
+                    Debug.LogError("CreateManager引用为空，无法生成预制体");
+                }
             }
-
-            // 标记为已繁殖
-            hasReproduced = true;
-            Debug.Log("繁殖完成，该对象不能再次繁殖");
         }
         else
         {
-            Debug.Log("没有找到合适的空位置进行繁殖");
+            if (enableReproductionLogging)
+            {
+                Debug.Log("没有找到合适的空位置进行繁殖，将在" + reproductionInterval + "秒后重新检测");
+            }
         }
+    }
+
+    /// <summary>
+    /// 停止繁殖检测循环
+    /// </summary>
+    public void StopReproductionLoop()
+    {
+        if (isReproductionActive)
+        {
+            StopAllCoroutines();
+            isReproductionActive = false;
+            Debug.Log("繁殖检测循环已停止");
+        }
+    }
+
+    /// <summary>
+    /// 当对象被销毁时停止协程
+    /// </summary>
+    private void OnDestroy()
+    {
+        StopReproductionLoop();
     }
 }
