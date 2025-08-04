@@ -5,6 +5,28 @@ using UnityEngine;
 
 public class CreateManager : MonoBehaviour
 {
+    // 单例实例
+    private static CreateManager instance;
+    
+    // 公共访问点
+    public static CreateManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<CreateManager>();
+                if (instance == null)
+                {
+                    GameObject go = new GameObject("CreateManager");
+                    instance = go.AddComponent<CreateManager>();
+                    Debug.Log("创建了新的 CreateManager 实例");
+                }
+            }
+            return instance;
+        }
+    }
+    
     public GameObject selectPrefab;// button选择的植物预制体
     public GameObject hitPrefab; // 用于显示鼠标射线指向位置的GameObject
     public GameObject selectPosition; // 用于显示鼠标射线指向位置的GameObject
@@ -14,15 +36,26 @@ public class CreateManager : MonoBehaviour
     public bool isHit; // 射线是否击中Ground物体的标志位
 
     // 初始化方法，在游戏开始时调用
-    void Start()
+    void Awake()
     {
-        // 监听预制体选择事件
-        Events.OnSelectPrefab.AddListener(OnSelectPrefab);
+        // 确保只有一个实例
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+            
+            // 监听预制体选择事件
+            Events.OnSelectPrefab.AddListener(OnSelectPrefab);
 
-        // 实例化位置指示器并初始隐藏（用来显示鼠标射线指向位置）
-        selectPosition = Instantiate(hitPrefab);
-        selectPosition.SetActive(false);
-
+            // 实例化位置指示器并初始隐藏（用来显示鼠标射线指向位置）
+            selectPosition = Instantiate(hitPrefab);
+            selectPosition.SetActive(false);
+        }
+        else
+        {
+            // 如果已存在实例，销毁此游戏对象
+            Destroy(gameObject);
+        }
     }
 
 

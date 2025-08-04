@@ -14,16 +14,14 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
     private bool hasReproduced = false; // 是否已经繁殖过
 
     private GameObject reproductionPrefab; // 缓存加载的预制体
-    private CreateManager createManager; // 引用CreateManager
 
     /// <summary>
-    /// 初始化，获取CreateManager引用
+    /// 初始化，检查CreateManager实例
     /// </summary>
     private void Start()
     {
-        // 获取CreateManager实例
-        createManager = FindObjectOfType<CreateManager>();
-        if (createManager == null)
+        // 检查CreateManager实例是否存在
+        if (CreateManager.Instance == null)
         {
             Debug.LogError("场景中未找到CreateManager，无法使用其生成方法");
         }
@@ -84,9 +82,9 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
         ))
         {
             // 找到空位置，使用CreateManager生成预制体
-            if (createManager != null)
+            if (CreateManager.Instance != null)
             {
-                GameObject newObject = createManager.CreatePrefab(reproductionPrefab, emptyPosition);
+                GameObject newObject = CreateManager.Instance.CreatePrefab(reproductionPrefab, emptyPosition);
                 Debug.Log($"使用CreateManager在位置 {emptyPosition} 生成了预制体：{reproductionPrefab.name}");
             }
             else
