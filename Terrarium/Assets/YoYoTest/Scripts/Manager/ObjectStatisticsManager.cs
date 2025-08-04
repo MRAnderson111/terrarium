@@ -16,11 +16,53 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// </summary>
     public Dictionary<string, int> smallClassCount = new();
 
+
+    /// <summary>
+    /// 存储全局冷却时间，键为SmallClass，值为冷却时间。
+    /// </summary>
+    public Dictionary<string, float> globalCoolDown = new();
+
+
+
     void Start()
     {
         // 注册对象生成和销毁事件的监听器
         Events.OnCreateObject.AddListener(OnCreateObject);
         Events.OnDestroyObject.AddListener(OnDestroyObject);
+    }
+
+    /// <summary>
+    /// 每帧增加冷却时间
+    /// </summary>
+    void Update()
+    {
+        // 检查全局冷却时间字典是否为空，不为空才遍历增加时间
+        if (globalCoolDown.Count > 0)
+        {
+            // 先获取所有键，避免在遍历过程中修改字典
+            var keys = new List<string>(globalCoolDown.Keys);
+            
+            // 遍历键列表，增加冷却时间
+            foreach (var key in keys)
+            {
+                // 增加冷却时间
+                globalCoolDown[key] += Time.deltaTime;
+            }
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            // 检查字典中是否包含 "Grass" 键
+            if (globalCoolDown.ContainsKey("Grass"))
+            {
+                Debug.LogError("全局冷却时间：" + globalCoolDown["Grass"]);
+            }
+            else
+            {
+                Debug.LogError("Grass 不在全局冷却时间字典中");
+            }
+        }
     }
 
     /// <summary>
@@ -30,6 +72,13 @@ public class ObjectStatisticsManager : MonoBehaviour
     private void OnCreateObject(IGetObjectClass arg0)
     {
         Debug.Log("生成物种：" + arg0.BigClass + " " + arg0.SmallClass);
+
+        // 检查这个小类是否已经在全局冷却时间中
+        if (globalCoolDown.ContainsKey(arg0.SmallClass))
+        {
+            Debug.Log("小类 " + arg0.SmallClass + " 已在全局冷却时间中，跳过生成");
+            return;
+        }
 
         // 更新BigClass数量统计
         if (bigClassCount.ContainsKey(arg0.BigClass))
@@ -50,6 +99,10 @@ public class ObjectStatisticsManager : MonoBehaviour
         {
             smallClassCount[arg0.SmallClass] = 1;
         }
+
+        // 将这个小类添加到全局冷却时间中
+        globalCoolDown[arg0.SmallClass] = 0f;
+        Debug.Log("小类 " + arg0.SmallClass + " 已添加到全局冷却时间中");
 
         UpdateStatistics(); // 更新并打印统计信息
     }
@@ -79,6 +132,13 @@ public class ObjectStatisticsManager : MonoBehaviour
             if (smallClassCount[arg0.SmallClass] <= 0)
             {
                 smallClassCount.Remove(arg0.SmallClass);
+                
+                // 如果小类数量小于等于0，重置全局冷却时间
+                if (globalCoolDown.ContainsKey(arg0.SmallClass))
+                {
+                    globalCoolDown[arg0.SmallClass] = 0f;
+                    Debug.Log("小类 " + arg0.SmallClass + " 数量已为0，重置全局冷却时间");
+                }
             }
         }
 
