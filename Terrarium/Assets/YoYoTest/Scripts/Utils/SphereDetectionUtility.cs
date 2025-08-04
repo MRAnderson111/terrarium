@@ -11,6 +11,10 @@ public static class SphereDetectionUtility
     // 性能优化开关
     public static bool enableDetailedLogging = false; // 默认关闭详细日志
     public static bool enableDebugSpheres = false; // 默认关闭调试球体
+
+    // 地面检测设置
+    public static float groundCheckDistance = 10f; // 向下检测地面的距离
+    public static string groundTag = "Ground"; // 地面标签
     
     /// <summary>
     /// 执行四个方向的球形检测，找到第一个空位置
@@ -66,10 +70,26 @@ public static class SphereDetectionUtility
             {
                 if (enableDetailedLogging)
                 {
-                    Debug.Log($"=== 在 {direction} 方向没有检测到实现IGetObjectClass接口的对象，找到空位置 ===");
+                    Debug.Log($"=== 在 {direction} 方向没有检测到实现IGetObjectClass接口的对象，检查地面 ===");
                 }
-                emptyPosition = checkPosition;
-                return true;
+
+                // 进一步检查该位置下方是否有地面
+                if (CheckGroundBelow(checkPosition))
+                {
+                    if (enableDetailedLogging)
+                    {
+                        Debug.Log($"=== 在 {direction} 方向找到合适的繁殖位置（有地面支撑） ===");
+                    }
+                    emptyPosition = checkPosition;
+                    return true;
+                }
+                else
+                {
+                    if (enableDetailedLogging)
+                    {
+                        Debug.Log($"=== {direction} 方向位置为空但下方没有地面，继续检查下一个方向 ===");
+                    }
+                }
             }
         }
 
@@ -174,5 +194,57 @@ public static class SphereDetectionUtility
         }
 
         return false; // 没有找到任何实现接口的对象
+    }
+
+    /// <summary>
+    /// 检查指定位置下方是否有地面（通过标签检测）
+    /// </summary>
+    /// <param name="position">要检查的位置</param>
+    /// <returns>是否检测到地面</returns>
+    private static bool CheckGroundBelow(Vector3 position)
+    {
+        // 从指定位置向下发射射线
+        Vector3 rayOrigin = position;
+        Vector3 rayDirection = Vector3.down;
+
+        if (enableDetailedLogging)
+        {
+            Debug.Log($"开始地面检测：从位置 {rayOrigin} 向下发射射线，检测距离 {groundCheckDistance}");
+        }
+
+        // 发射射线检测地面
+        if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, groundCheckDistance))
+        {
+            if (enableDetailedLogging)
+            {
+                Debug.Log($"射线击中物体：{hit.collider.name}，标签：{hit.collider.tag}，距离：{hit.distance:F2}");
+            }
+
+            // 检查击中的物体是否有Ground标签
+            if (hit.collider.CompareTag(groundTag))
+            {
+                if (enableDetailedLogging)
+                {
+                    Debug.Log($"找到地面：{hit.collider.name}，位置合适进行繁殖");
+                }
+                return true;
+            }
+            else
+            {
+                if (enableDetailedLogging)
+                {
+                    Debug.Log($"击中物体 {hit.collider.name} 但标签不是 '{groundTag}'，继续检查");
+                }
+            }
+        }
+        else
+        {
+            if (enableDetailedLogging)
+            {
+                Debug.Log($"射线未击中任何物体，该位置下方没有地面");
+            }
+        }
+
+        return false; // 没有找到合适的地面
     }
 }

@@ -8,12 +8,19 @@ public class PerformanceManager : MonoBehaviour
     [Header("全局性能设置")]
     [Tooltip("启用详细的调试日志输出（会显著影响性能）")]
     public bool enableDetailedLogging = false;
-    
+
     [Tooltip("启用调试球体显示（会影响性能和内存）")]
     public bool enableDebugSpheres = false;
-    
+
     [Tooltip("启用繁殖系统日志")]
     public bool enableReproductionLogging = false;
+
+    [Header("地面检测设置")]
+    [Tooltip("向下检测地面的距离")]
+    public float groundCheckDistance = 10f;
+
+    [Tooltip("地面物体的标签名称")]
+    public string groundTag = "Ground";
     
     [Header("性能监控")]
     [Tooltip("显示性能统计信息")]
@@ -92,14 +99,16 @@ public class PerformanceManager : MonoBehaviour
         // 应用到球形检测工具
         SphereDetectionUtility.enableDetailedLogging = enableDetailedLogging;
         SphereDetectionUtility.enableDebugSpheres = enableDebugSpheres;
-        
+        SphereDetectionUtility.groundCheckDistance = groundCheckDistance;
+        SphereDetectionUtility.groundTag = groundTag;
+
         // 应用到所有繁殖检测组件
         SimpleReproductionCheck[] reproductionChecks = FindObjectsOfType<SimpleReproductionCheck>();
         foreach (var check in reproductionChecks)
         {
             check.enableReproductionLogging = enableReproductionLogging;
         }
-        
+
         reproductionObjectCount = reproductionChecks.Length;
     }
     
