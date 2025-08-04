@@ -131,9 +131,50 @@ public class CreateManager : MonoBehaviour
             return null;
         }
 
+        // 检查对象是否实现了数量限制接口
+        IGetQuantityLimits quantityLimitInterface = prefab.GetComponent<IGetQuantityLimits>();
+        if (quantityLimitInterface != null)
+        {
+            // 获取当前对象数量统计管理器
+            ObjectStatisticsManager statsManager = FindObjectOfType<ObjectStatisticsManager>();
+            if (statsManager != null)
+            {
+                // 获取预制体的小类名称（假设预制体的名称就是小类名称）
+                string smallClass = prefab.name;
+                int currentCount = 0;
+                
+                // 根据小类获取当前数量
+                if (statsManager.smallClassCount.ContainsKey(smallClass))
+                {
+                    currentCount = statsManager.smallClassCount[smallClass];
+                }
+                
+                // 检查是否超过数量限制
+                if (currentCount >= quantityLimitInterface.QuantityLimits)
+                {
+                    Debug.LogWarning($"无法生成 {prefab.name}，当前数量 {currentCount} 已达到限制 {quantityLimitInterface.QuantityLimits}");
+                    return null;
+                }
+                
+                Debug.Log($"检查数量限制：{prefab.name}，当前数量 {currentCount}，限制数量 {quantityLimitInterface.QuantityLimits}");
+            }
+            else
+            {
+                Debug.LogWarning("未找到 ObjectStatisticsManager 实例，无法进行数量限制检查");
+            }
+        }
+
         // 在指定位置生成预制体
         GameObject newObject = Instantiate(prefab, position, Quaternion.identity);
         Debug.Log("在位置 " + position + " 生成了预制体：" + prefab.name);
+        
+        // 触发生成事件
+        IGetObjectClass objectClass = newObject.GetComponent<IGetObjectClass>();
+        if (objectClass != null)
+        {
+            Events.OnCreateObject.Invoke(objectClass);
+        }
+        
         return newObject;
     }
 
