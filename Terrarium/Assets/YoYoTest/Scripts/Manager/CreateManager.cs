@@ -168,12 +168,7 @@ public class CreateManager : MonoBehaviour
         GameObject newObject = Instantiate(prefab, position, Quaternion.identity);
         Debug.Log("在位置 " + position + " 生成了预制体：" + prefab.name);
         
-        // 触发生成事件
-        IGetObjectClass objectClass = newObject.GetComponent<IGetObjectClass>();
-        if (objectClass != null)
-        {
-            Events.OnCreateObject.Invoke(objectClass);
-        }
+        // 不在这里触发生成事件，让对象自己的 Start() 方法来触发
         
         return newObject;
     }
