@@ -2,11 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Grass : MonoBehaviour, IGetObjectClass
+public class Grass : MonoBehaviour, IGetObjectClass, IGetQuantityLimits
 {
     public string BigClass => "Plant";
 
     public string SmallClass => "Grass";
+
+    public int quantityLimits = 10;
+    public int QuantityLimits => quantityLimits;
 
     private float growthSpeed = 3f;
 

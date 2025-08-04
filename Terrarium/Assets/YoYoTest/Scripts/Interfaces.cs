@@ -11,6 +11,11 @@ public interface IGetObjectClass
     string SmallClass { get; }
 }
 
+public interface IGetQuantityLimits
+{
+    int QuantityLimits { get; }
+}
+
 public interface IGrowth
 {
     //生长速度
