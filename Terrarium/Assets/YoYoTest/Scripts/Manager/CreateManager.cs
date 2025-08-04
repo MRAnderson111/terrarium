@@ -90,7 +90,7 @@ public class CreateManager : MonoBehaviour
     /// <param name="prefab">要生成的预制体</param>
     /// <param name="position">生成位置</param>
     /// <returns>生成的GameObject实例</returns>
-    private GameObject CreatePrefab(GameObject prefab, Vector3 position)
+    public GameObject CreatePrefab(GameObject prefab, Vector3 position)
     {
         if (prefab == null)
         {
