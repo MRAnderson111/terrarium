@@ -7,12 +7,13 @@ public class SelectButton : MonoBehaviour
 {
     public GameObject selectPrefab;
     private Button button;
-    public GameObject selectPosition;
+    private GameObject selectPosition;
     // Start is called before the first frame update
     void Start()
     {
         button = GetComponent<Button>();
         button.onClick.AddListener(OnClick);
+        selectPosition =  Resources.Load<GameObject>("Prefabs/SelectPosition");
     }
 
     // Update is called once per frame
