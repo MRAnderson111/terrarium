@@ -13,36 +13,24 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
 
     [Header("繁殖控制")]
     public string smallClass = null;
-    public float reproductionInterval = 3f; // 繁殖检测间隔（秒）
     public float coolDownTime = 3f; // 冷却时间
     public bool enableReproductionLogging = false; // 是否启用繁殖日志
-    private bool isReproductionActive = false; // 是否正在进行繁殖检测循环
 
     private GameObject reproductionPrefab; // 缓存加载的预制体
-    private ObjectStatisticsManager statisticsManager; // 对象统计管理器引用
 
     /// <summary>
-    /// 初始化，检查CreateManager实例
+    /// 初始化
     /// </summary>
     private void Start()
     {
-        // 检查CreateManager实例是否存在
-        if (CreateManager.Instance == null)
-        {
-            Debug.LogError("场景中未找到CreateManager，无法使用其生成方法");
-        }
-
-        // 获取ObjectStatisticsManager实例
-        statisticsManager = FindObjectOfType<ObjectStatisticsManager>();
-        if (statisticsManager == null)
-        {
-            Debug.LogError("场景中未找到ObjectStatisticsManager，无法使用全局冷却时间功能");
-        }
-
         smallClass = GetComponent<IGetObjectClass>().SmallClass;
-        
     }
 
+    private void Update()
+    {
+        ReproductionCheck();
+    }
+    
     /// <summary>
     /// 从Resources文件夹加载预制体
     /// </summary>
@@ -74,74 +62,22 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
 
     public void ReproductionCheck()
     {
-        // 如果繁殖检测循环还没有开始，则启动它
-        if (!isReproductionActive)
+        // 检查全局冷却时间是否就绪
+        if (ObjectStatisticsManager.Instance.IsGlobalCoolDownReady(smallClass, coolDownTime))
         {
-            StartCoroutine(ReproductionLoop());
-        }
-    }
-
-    /// <summary>
-    /// 繁殖检测循环，每隔指定时间进行一次检测
-    /// </summary>
-    private IEnumerator ReproductionLoop()
-    {
-        isReproductionActive = true;
-        if (enableReproductionLogging)
-        {
-            Debug.Log("开始繁殖检测循环，每隔" + reproductionInterval + "秒检测一次");
-        }
-
-        while (true)
-        {
-            // 检查全局冷却时间
-            bool canReproduce = true;
-            
-            if (statisticsManager != null && statisticsManager.globalCoolDown.ContainsKey(smallClass))
+            // 执行繁殖检测
+            if (PerformSingleReproductionCheck())
             {
-                float currentCoolDown = statisticsManager.globalCoolDown[smallClass];
-                if (currentCoolDown < coolDownTime)
-                {
-                    canReproduce = false;
-                    if (enableReproductionLogging)
-                    {
-                        Debug.Log($"小类 {smallClass} 的全局冷却时间未到，当前冷却时间: {currentCoolDown:F2}秒，需要冷却时间: {coolDownTime}秒，跳过本次繁殖");
-                    }
-                }
-            }
-            
-            // 如果冷却时间已到，执行繁殖检测
-            if (canReproduce)
-            {
-                // 执行一次繁殖检测，并获取是否成功繁殖
-                bool reproductionSuccess = PerformSingleReproductionCheck();
-                
-                // 如果成功繁殖，重置对应的全局冷却时间为零
-                if (reproductionSuccess && statisticsManager != null && statisticsManager.globalCoolDown.ContainsKey(smallClass))
-                {
-                    statisticsManager.globalCoolDown[smallClass] = 0f;
-                    if (enableReproductionLogging)
-                    {
-                        Debug.Log($"小类 {smallClass} 的全局冷却时间已重置为0");
-                    }
-                }
-            }
-            else
-            {
+                // 如果成功，则重置全局冷却时间
+                ObjectStatisticsManager.Instance.ResetGlobalCoolDown(smallClass);
                 if (enableReproductionLogging)
                 {
-                    Debug.Log($"小类 {smallClass} 的全局冷却时间未到，将在{reproductionInterval}秒后重新检测");
+                    Debug.Log($"小类 {smallClass} 的全局冷却时间已重置为0");
                 }
             }
-
-            // 等待指定的时间间隔
-            yield return new WaitForSeconds(reproductionInterval);
         }
     }
 
-    /// <summary>
-    /// 执行单次繁殖检测
-    /// </summary>
     /// <summary>
     /// 执行单次繁殖检测
     /// </summary>
@@ -190,7 +126,7 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
         {
             if (enableReproductionLogging)
             {
-                Debug.Log("没有找到合适的空位置进行繁殖，将在" + reproductionInterval + "秒后重新检测");
+                Debug.Log("没有找到合适的空位置进行繁殖");
             }
             return false; // 未成功繁殖
         }
@@ -201,12 +137,7 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
     /// </summary>
     public void StopReproductionLoop()
     {
-        if (isReproductionActive)
-        {
-            StopAllCoroutines();
-            isReproductionActive = false;
-            Debug.Log("繁殖检测循环已停止");
-        }
+        // 由于不再使用协程，此方法可以保留为空或移除
     }
 
     /// <summary>
@@ -214,6 +145,6 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
     /// </summary>
     private void OnDestroy()
     {
-        StopReproductionLoop();
+        // 由于不再使用协程，此方法可以保留为空或移除
     }
 }

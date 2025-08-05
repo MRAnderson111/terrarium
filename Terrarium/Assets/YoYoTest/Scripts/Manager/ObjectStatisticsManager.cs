@@ -6,6 +6,20 @@ using UnityEngine;
 /// </summary>
 public class ObjectStatisticsManager : MonoBehaviour
 {
+    public static ObjectStatisticsManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    
     /// <summary>
     /// 存储大类对象的数量统计，键为BigClass，值为该大类对象的总数量。
     /// </summary>
@@ -105,6 +119,33 @@ public class ObjectStatisticsManager : MonoBehaviour
         Debug.Log("小类 " + arg0.SmallClass + " 已添加到全局冷却时间中");
 
         UpdateStatistics(); // 更新并打印统计信息
+    }
+
+    /// <summary>
+    /// 检查指定小类的全局冷却时间是否准备就绪。
+    /// </summary>
+    /// <param name="smallClass">要检查的小类名称。</param>
+    /// <param name="requiredCoolDown">所需的冷却时间。</param>
+    /// <returns>如果冷却时间已到或不存在记录，则返回true；否则返回false。</returns>
+    public bool IsGlobalCoolDownReady(string smallClass, float requiredCoolDown)
+    {
+        if (globalCoolDown.TryGetValue(smallClass, out float currentCoolDown))
+        {
+            return currentCoolDown >= requiredCoolDown;
+        }
+        return true; // 如果没有记录，说明可以立即执行
+    }
+
+    /// <summary>
+    /// 重置指定小类的全局冷却时间。
+    /// </summary>
+    /// <param name="smallClass">要重置的小类名称。</param>
+    public void ResetGlobalCoolDown(string smallClass)
+    {
+        if (globalCoolDown.ContainsKey(smallClass))
+        {
+            globalCoolDown[smallClass] = 0f;
+        }
     }
 
     /// <summary>

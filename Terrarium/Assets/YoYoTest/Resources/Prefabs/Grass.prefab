@@ -256,7 +256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02d8504d3e72fd24a87393173c49bcec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  quantityLimits: 5
+  quantityLimits: 6
 --- !u!114 &917345852478823218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,8 +301,7 @@ MonoBehaviour:
   sphereRadius: 0.5
   drawDebugSphere: 1
   smallClass: 
-  reproductionInterval: 3
-  coolDownTime: 3
+  coolDownTime: 1
   enableReproductionLogging: 0
 --- !u!1 &7472400939293495386
 GameObject:
