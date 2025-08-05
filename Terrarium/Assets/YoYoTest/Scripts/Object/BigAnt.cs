@@ -23,6 +23,12 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
 
     public float moveSpeed = 10;
 
+    //营养度
+    public float nutrition = 0;
+
+
+    public string prefabPath = "Prefabs/BigAnt";
+
 
     // Start is called before the first frame update
     void Start()
@@ -36,18 +42,39 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
     {
 
         CheckTargetState();
+        CheckNutrition();
 
         if(hasTarget)
         {
-            //thisRb.velocity = (target.transform.position - transform.position).normalized * 10;
+            // 检查目标是否仍然有效
+            if (target == null || !target.gameObject.activeInHierarchy)
+            {
+                hasTarget = false;
+                isTouchTarget = false;
+                target = null;
+                return;
+            }
+
             MoveToTarget();
 
             if(isTouchTarget)
             {
-                // 攻击目标
-                target.GetComponent<IBeHurt>().BeHurt(hurtForce*Time.deltaTime);
+                // 再次确认目标仍然有效且有IBeHurt组件
+                IBeHurt beHurtComponent = target.GetComponent<IBeHurt>();
+                if (beHurtComponent != null)
+                {
+                    // 攻击目标
+                    beHurtComponent.BeHurt(hurtForce*Time.deltaTime);
+                    nutrition += 10*Time.deltaTime;
+                    // Debug.Log("蚂蚁正在攻击植物：" + target.name + "，营养度：" + nutrition);
+                }
+                else
+                {
+                    // 如果目标没有IBeHurt组件，重置状态
+                    isTouchTarget = false;
+                    // Debug.LogWarning("目标植物没有IBeHurt组件：" + target.name);
+                }
             }
-
         }
         else
         {
@@ -57,15 +84,30 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
         }
     }
 
+    private void CheckNutrition()
+    {
+        if(nutrition >= 100)
+        {
+            Reproduction();
+            nutrition = 0;
+            
+            
+        }
+    }
+
+    private void Reproduction()
+    {
+        Instantiate(Resources.Load<GameObject>(prefabPath), transform.position, Quaternion.identity);
+    }
+
     private void CheckTargetState()
     {
-        if(target == null)
+        // 检查目标是否仍然有效
+        if (target == null || !target.gameObject.activeInHierarchy)
         {
             hasTarget = false;
-        }
-        else
-        {
-            
+            isTouchTarget = false;
+            target = null;
         }
     }
 
@@ -101,9 +143,27 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.collider.attachedRigidbody.GetComponent<IGetObjectClass>().SmallClass == target.GetComponent<IGetObjectClass>().SmallClass)
+        // 检查是否有目标且目标仍然有效
+        if (target == null || !target.gameObject.activeInHierarchy)
+        {
+            hasTarget = false;
+            isTouchTarget = false;
+            return;
+        }
+
+        // 检查碰撞对象是否有刚体和IGetObjectClass组件
+        if (collision.collider.attachedRigidbody == null)
+            return;
+
+        IGetObjectClass collisionObject = collision.collider.attachedRigidbody.GetComponent<IGetObjectClass>();
+        if (collisionObject == null)
+            return;
+
+        // 精确检查：碰撞对象是否就是当前目标对象
+        if (collision.gameObject == target.gameObject)
         {
             isTouchTarget = true;
+            Debug.Log("蚂蚁碰撞到目标植物：" + target.name);
         }
     }
 
