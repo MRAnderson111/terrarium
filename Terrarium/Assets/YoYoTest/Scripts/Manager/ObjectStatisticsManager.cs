@@ -203,4 +203,47 @@ public class ObjectStatisticsManager : MonoBehaviour
             Debug.Log("小类：" + item.Key + " 数量：" + item.Value);
         }
     }
+
+    /// <summary>
+    /// 获取所有植物类的游戏对象
+    /// </summary>
+    /// <returns>植物类游戏对象的列表</returns>
+    public List<GameObject> GetAllPlantObjects()
+    {
+        List<GameObject> plantObjects = new List<GameObject>();
+        
+        // 查找所有游戏对象
+        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
+        
+        foreach (GameObject obj in allGameObjects)
+        {
+            // 检查是否实现了 IGetObjectClass 接口
+            IGetObjectClass objectClass = obj.GetComponent<IGetObjectClass>();
+            if (objectClass != null && objectClass.BigClass == "Plant")
+            {
+                plantObjects.Add(obj);
+            }
+        }
+        
+        return plantObjects;
+    }
+
+    /// <summary>
+    /// 随机获取一个植物类的游戏对象
+    /// </summary>
+    /// <returns>随机植物类游戏对象，如果没有植物则返回null</returns>
+    public GameObject GetRandomPlantObject()
+    {
+        List<GameObject> plantObjects = GetAllPlantObjects();
+        
+        if (plantObjects.Count == 0)
+        {
+            Debug.LogWarning("没有找到任何植物类对象");
+            return null;
+        }
+        
+        // 随机选择一个植物对象
+        int randomIndex = UnityEngine.Random.Range(0, plantObjects.Count);
+        return plantObjects[randomIndex];
+    }
 }
