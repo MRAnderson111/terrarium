@@ -29,5 +29,9 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
     {
         Events.OnDestroyObject.Invoke(this);
     }
-    
+
+    public void Death()
+    {
+        throw new System.NotImplementedException();
+    }
 }

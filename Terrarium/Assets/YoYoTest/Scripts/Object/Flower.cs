@@ -43,6 +43,11 @@ public class Flower : MonoBehaviour, IGetObjectClass, IGetQuantityLimits
         Events.OnDestroyObject.Invoke(this);
     }
 
+    public void Death()
+    {
+        Destroy(gameObject);
+    }
+
 
 
 }

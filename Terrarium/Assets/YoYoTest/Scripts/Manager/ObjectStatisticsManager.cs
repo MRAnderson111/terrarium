@@ -65,18 +65,18 @@ public class ObjectStatisticsManager : MonoBehaviour
         }
 
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            // 检查字典中是否包含 "Grass" 键
-            if (globalCoolDown.ContainsKey("Grass"))
-            {
-                Debug.LogError("全局冷却时间：" + globalCoolDown["Grass"]);
-            }
-            else
-            {
-                Debug.LogError("Grass 不在全局冷却时间字典中");
-            }
-        }
+        // if (Input.GetKeyDown(KeyCode.A))
+        // {
+        //     // 检查字典中是否包含 "Grass" 键
+        //     if (globalCoolDown.ContainsKey("Grass"))
+        //     {
+        //         Debug.LogError("全局冷却时间：" + globalCoolDown["Grass"]);
+        //     }
+        //     else
+        //     {
+        //         Debug.LogError("Grass 不在全局冷却时间字典中");
+        //     }
+        // }
     }
 
     /// <summary>

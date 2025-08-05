@@ -43,6 +43,11 @@ public class Grass : MonoBehaviour, IGetObjectClass, IGetQuantityLimits
         Events.OnDestroyObject.Invoke(this);
     }
 
+    public void Death()
+    {
+        Destroy(gameObject);
+    }
+
 
 
 }

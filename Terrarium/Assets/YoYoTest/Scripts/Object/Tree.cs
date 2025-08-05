@@ -43,6 +43,9 @@ public class Tree : MonoBehaviour, IGetObjectClass, IGetQuantityLimits
         Events.OnDestroyObject.Invoke(this);
     }
 
-
+    public void Death()
+    {
+        Destroy(gameObject);
+    }
 
 }

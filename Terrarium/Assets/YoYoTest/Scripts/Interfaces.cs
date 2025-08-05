@@ -9,6 +9,7 @@ public interface IGetObjectClass
 {
     string BigClass { get; }
     string SmallClass { get; }
+    void Death();
 }
 
 public interface IGetQuantityLimits
@@ -42,11 +43,16 @@ public interface IReproductionCheck
 }
 
 
-
+public interface IBeHurt
+{
+    void BeHurt(float hurtValue);
+}
 public interface IGetGroundClass
 {
     int Fertility { get; }
 }
+
+// 死亡接口
 
 
 

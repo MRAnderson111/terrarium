@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: 7177617027138277366}
   - component: {fileID: 5113849948432085656}
   - component: {fileID: -1959249429765978297}
+  - component: {fileID: -525399044809987110}
   m_Layer: 0
   m_Name: Flower
   m_TagString: Untagged
@@ -303,6 +304,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   quantityLimits: 3
+--- !u!114 &-525399044809987110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7340170426973155689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baf16d7e291f5aa49a70b9a628284e87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthLimit: 100
+  currentHealth: 0
+  recoverySpeed: 2
 --- !u!1 &7472400939293495386
 GameObject:
   m_ObjectHideFlags: 0
