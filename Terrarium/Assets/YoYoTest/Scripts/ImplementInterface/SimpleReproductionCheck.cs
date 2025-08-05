@@ -113,11 +113,11 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
             // 如果冷却时间已到，执行繁殖检测
             if (canReproduce)
             {
-                // 执行一次繁殖检测
-                PerformSingleReproductionCheck();
+                // 执行一次繁殖检测，并获取是否成功繁殖
+                bool reproductionSuccess = PerformSingleReproductionCheck();
                 
-                // 重置对应的全局冷却时间为零
-                if (statisticsManager != null && statisticsManager.globalCoolDown.ContainsKey(smallClass))
+                // 如果成功繁殖，重置对应的全局冷却时间为零
+                if (reproductionSuccess && statisticsManager != null && statisticsManager.globalCoolDown.ContainsKey(smallClass))
                 {
                     statisticsManager.globalCoolDown[smallClass] = 0f;
                     if (enableReproductionLogging)
@@ -142,7 +142,11 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
     /// <summary>
     /// 执行单次繁殖检测
     /// </summary>
-    private void PerformSingleReproductionCheck()
+    /// <summary>
+    /// 执行单次繁殖检测
+    /// </summary>
+    /// <returns>是否成功繁殖</returns>
+    private bool PerformSingleReproductionCheck()
     {
         // 尝试加载预制体
         if (!LoadReproductionPrefab())
@@ -151,7 +155,7 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
             {
                 Debug.LogError("无法加载繁殖预制体，跳过本次检测");
             }
-            return;
+            return false;
         }
 
         // 调用静态工具类进行球形检测
@@ -171,6 +175,7 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
                 {
                     Debug.Log($"使用CreateManager在位置 {emptyPosition} 生成了预制体：{reproductionPrefab.name}");
                 }
+                return true; // 成功繁殖
             }
             else
             {
@@ -178,6 +183,7 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
                 {
                     Debug.LogError("CreateManager引用为空，无法生成预制体");
                 }
+                return false; // 未成功繁殖
             }
         }
         else
@@ -186,6 +192,7 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
             {
                 Debug.Log("没有找到合适的空位置进行繁殖，将在" + reproductionInterval + "秒后重新检测");
             }
+            return false; // 未成功繁殖
         }
     }
 
