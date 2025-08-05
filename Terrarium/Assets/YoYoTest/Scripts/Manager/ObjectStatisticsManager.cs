@@ -73,12 +73,12 @@ public class ObjectStatisticsManager : MonoBehaviour
     {
         Debug.Log("生成物种：" + arg0.BigClass + " " + arg0.SmallClass);
 
-        // 检查这个小类是否已经在全局冷却时间中
-        if (globalCoolDown.ContainsKey(arg0.SmallClass))
-        {
-            Debug.Log("小类 " + arg0.SmallClass + " 已在全局冷却时间中，跳过生成");
-            return;
-        }
+        // // 检查这个小类是否已经在全局冷却时间中
+        // if (globalCoolDown.ContainsKey(arg0.SmallClass))
+        // {
+        //     Debug.Log("小类 " + arg0.SmallClass + " 已在全局冷却时间中，跳过生成");
+        //     return;
+        // }
 
         // 更新BigClass数量统计
         if (bigClassCount.ContainsKey(arg0.BigClass))

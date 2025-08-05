@@ -1336,7 +1336,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &583514251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1351,7 +1351,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enableDetailedLogging: 0
   enableDebugSpheres: 0
-  enableReproductionLogging: 0
+  enableReproductionLogging: 1
   groundCheckDistance: 10
   groundTag: Ground
   showPerformanceStats: 1
