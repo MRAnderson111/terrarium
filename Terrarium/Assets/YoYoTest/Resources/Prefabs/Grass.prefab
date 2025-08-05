@@ -300,7 +300,9 @@ MonoBehaviour:
   checkDistance: 1
   sphereRadius: 0.5
   drawDebugSphere: 1
+  smallClass: 
   reproductionInterval: 3
+  coolDownTime: 3
   enableReproductionLogging: 0
 --- !u!1 &7472400939293495386
 GameObject:
