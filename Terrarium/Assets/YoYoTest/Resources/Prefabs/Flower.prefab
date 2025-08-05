@@ -120,9 +120,9 @@ GameObject:
   - component: {fileID: 6389254637753849302}
   - component: {fileID: 917345852478823218}
   - component: {fileID: 7177617027138277366}
-  - component: {fileID: 5113849948432085656}
   - component: {fileID: -1959249429765978297}
   - component: {fileID: -525399044809987110}
+  - component: {fileID: 2625782630142022927}
   m_Layer: 0
   m_Name: Flower
   m_TagString: Untagged
@@ -272,25 +272,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPrefab: {fileID: 8890730158753521650, guid: ff562ef537548344a9a398e79e2a7757, type: 3}
---- !u!114 &5113849948432085656
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7340170426973155689}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a084edb07abd0004781c574ec3cd7f0a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reproductionPrefabPath: Prefabs/Flower
-  checkDistance: 1
-  sphereRadius: 0.5
-  drawDebugSphere: 1
-  smallClass: 
-  coolDownTime: 1
-  enableReproductionLogging: 0
 --- !u!114 &-1959249429765978297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,7 +284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 056dbd65df19ec04f8188c6d47f8754b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  quantityLimits: 3
+  quantityLimits: 15
 --- !u!114 &-525399044809987110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,6 +300,25 @@ MonoBehaviour:
   healthLimit: 100
   currentHealth: 0
   recoverySpeed: 2
+--- !u!114 &2625782630142022927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7340170426973155689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64f40375cd3be08409f585feb905365a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reproductionPrefabPath: Prefabs/Flower
+  checkDistance: 1
+  sphereRadius: 0.5
+  drawDebugSphere: 0
+  smallClass: 
+  coolDownTime: 1
+  enableReproductionLogging: 0
 --- !u!1 &7472400939293495386
 GameObject:
   m_ObjectHideFlags: 0
