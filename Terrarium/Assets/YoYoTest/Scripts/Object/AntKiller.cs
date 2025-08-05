@@ -5,11 +5,11 @@ using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class BigAnt : MonoBehaviour, IGetObjectClass
+public class AntKiller : MonoBehaviour, IGetObjectClass
 {
-    public string BigClass => "Animal";
+    public string BigClass => "Killer";
 
-    public string SmallClass => "BigAnt";
+    public string SmallClass => "AntKiller";
 
     private Rigidbody thisRb;
 
@@ -71,20 +71,20 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
 
     private void FindATarget()
     {
-        // 从ObjectStatisticsManager获取随机植物对象
+        // 从ObjectStatisticsManager获取随机动物对象
         if (ObjectStatisticsManager.Instance != null)
         {
-            GameObject randomPlant = ObjectStatisticsManager.Instance.GetRandomPlantObject();
-            if (randomPlant != null)
+            GameObject randomAnimal = ObjectStatisticsManager.Instance.GetRandomAnimalObject();
+            if (randomAnimal != null)
             {
-                target = randomPlant;
+                target = randomAnimal;
                 hasTarget = true;
                 isTouchTarget = false; // 重置碰撞状态，确保需要重新碰撞才能攻击
-                Debug.Log("找到植物目标：" + target.name);
+                Debug.Log("找到动物目标：" + target.name);
             }
             else
             {
-                Debug.LogWarning("没有找到任何植物目标");
+                Debug.LogWarning("没有找到任何动物目标");
             }
         }
         else
@@ -119,7 +119,7 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
 
     public void Death()
     {
-        Destroy(gameObject);
+        throw new System.NotImplementedException();
     }
 
 

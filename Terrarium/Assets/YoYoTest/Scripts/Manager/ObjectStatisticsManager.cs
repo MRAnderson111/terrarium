@@ -246,4 +246,47 @@ public class ObjectStatisticsManager : MonoBehaviour
         int randomIndex = UnityEngine.Random.Range(0, plantObjects.Count);
         return plantObjects[randomIndex];
     }
+
+    /// <summary>
+    /// 获取所有动物类的游戏对象
+    /// </summary>
+    /// <returns>动物类游戏对象的列表</returns>
+    public List<GameObject> GetAllAnimalObjects()
+    {
+        List<GameObject> animalObjects = new List<GameObject>();
+        
+        // 查找所有游戏对象
+        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
+        
+        foreach (GameObject obj in allGameObjects)
+        {
+            // 检查是否实现了 IGetObjectClass 接口
+            IGetObjectClass objectClass = obj.GetComponent<IGetObjectClass>();
+            if (objectClass != null && objectClass.BigClass == "Animal")
+            {
+                animalObjects.Add(obj);
+            }
+        }
+        
+        return animalObjects;
+    }
+
+    /// <summary>
+    /// 随机获取一个动物类的游戏对象
+    /// </summary>
+    /// <returns>随机动物类游戏对象，如果没有动物则返回null</returns>
+    public GameObject GetRandomAnimalObject()
+    {
+        List<GameObject> animalObjects = GetAllAnimalObjects();
+        
+        if (animalObjects.Count == 0)
+        {
+            Debug.LogWarning("没有找到任何动物类对象");
+            return null;
+        }
+        
+        // 随机选择一个动物对象
+        int randomIndex = UnityEngine.Random.Range(0, animalObjects.Count);
+        return animalObjects[randomIndex];
+    }
 }
