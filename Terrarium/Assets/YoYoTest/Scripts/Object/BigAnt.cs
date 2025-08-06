@@ -35,16 +35,17 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
     {
         Events.OnCreateObject.Invoke(this);
         thisRb = GetComponent<Rigidbody>();
-    } 
+    }
 
     // Update is called once per frame
     void Update()
     {
-
+        //每帧检查食物目标状态
         CheckTargetState();
+        //每帧检查营养度
         CheckNutrition();
 
-        if(hasTarget)
+        if (hasTarget)
         {
             // 检查目标是否仍然有效
             if (target == null || !target.gameObject.activeInHierarchy)
@@ -57,15 +58,15 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
 
             MoveToTarget();
 
-            if(isTouchTarget)
+            if (isTouchTarget)
             {
                 // 再次确认目标仍然有效且有IBeHurt组件
                 IBeHurt beHurtComponent = target.GetComponent<IBeHurt>();
                 if (beHurtComponent != null)
                 {
                     // 攻击目标
-                    beHurtComponent.BeHurt(hurtForce*Time.deltaTime);
-                    nutrition += 10*Time.deltaTime;
+                    beHurtComponent.BeHurt(hurtForce * Time.deltaTime);
+                    nutrition += 10 * Time.deltaTime;
                     // Debug.Log("蚂蚁正在攻击植物：" + target.name + "，营养度：" + nutrition);
                 }
                 else
@@ -86,12 +87,12 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
 
     private void CheckNutrition()
     {
-        if(nutrition >= 100)
+        if (nutrition >= 100)
         {
             Reproduction();
             nutrition = 0;
-            
-            
+
+
         }
     }
 

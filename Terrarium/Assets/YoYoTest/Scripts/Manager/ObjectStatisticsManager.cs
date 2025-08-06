@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 对象统计管理器：负责追踪游戏中各类对象的生成和销毁，并维护其数量统计。
+/// 对象统计管理器：负责追踪游戏中各类对象的生成和销毁事件，并维护其数量统计。
 /// </summary>
 public class ObjectStatisticsManager : MonoBehaviour
 {
