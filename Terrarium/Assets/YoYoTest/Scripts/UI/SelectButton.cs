@@ -10,9 +10,7 @@ public class SelectButton : MonoBehaviour
     private Button button;
     public Text quantityText;
     public int quantity;
-    
-    // 声明一个C# Action，用于数量减一的操作
-    public Action onQuantityDecrease;
+
     
     // Start is called before the first frame update
     void Start()
@@ -20,8 +18,7 @@ public class SelectButton : MonoBehaviour
         button = GetComponent<Button>();
         button.onClick.AddListener(OnClick);
         
-        // 订阅数量减一的action
-        onQuantityDecrease += DecrementQuantity;
+
         quantityText.text = quantity.ToString();
     }
 
