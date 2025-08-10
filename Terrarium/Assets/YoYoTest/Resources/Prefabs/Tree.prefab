@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: 5113849948432085656}
   - component: {fileID: 3408914636625868702}
   - component: {fileID: 3419133823235634074}
-  - component: {fileID: 5050343629123757833}
+  - component: {fileID: -8077734801347911386}
   m_Layer: 0
   m_Name: Tree
   m_TagString: Untagged
@@ -322,7 +322,7 @@ MonoBehaviour:
   healthLimit: 100
   currentHealth: 0
   recoverySpeed: 2
---- !u!114 &5050343629123757833
+--- !u!114 &-8077734801347911386
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -331,7 +331,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7340170426973155689}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35ae86205ebb77342a1eb83bfef469d9, type: 3}
+  m_Script: {fileID: 11500000, guid: 6c63272a63d2bbe4f93b7165942e3bd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7472400939293495386
