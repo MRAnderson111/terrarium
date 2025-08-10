@@ -37,7 +37,7 @@ public class ObjectSelectUI : MonoBehaviour
 
 
         //tset
-        LoadFromJson();
+        // LoadFromJson();
     }
 
     void Update()
@@ -45,16 +45,19 @@ public class ObjectSelectUI : MonoBehaviour
 
     }
 
-    void LoadFromJson()
+    public void LoadFromJson(TextAsset externalJsonFile = null)
     {
-        if (jsonFile == null)
+        // 如果传入了外部JSON文件，则使用外部文件，否则使用内部的jsonFile
+        TextAsset jsonAsset = externalJsonFile != null ? externalJsonFile : jsonFile;
+        
+        if (jsonAsset == null)
         {
             Debug.LogError("JSON文件未分配！");
             return;
         }
 
         // 解析JSON数据
-        string json = jsonFile.text;
+        string json = jsonAsset.text;
         
         // 配置按钮生成参数
         var buttonConfigs = new UIJsonButtonGenerator.ButtonSectionConfig[]

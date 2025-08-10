@@ -6,6 +6,7 @@ public class YoYoGameManager : MonoBehaviour
 {
     // 单例实例
     private static YoYoGameManager _instance;
+    public TextAsset infoTestJson;
 
     // 公共访问点
     public static YoYoGameManager Instance
@@ -59,6 +60,27 @@ public class YoYoGameManager : MonoBehaviour
             StartGame();
         }
 
+        if(Input.GetKeyDown(KeyCode.A))
+        {
+            LoadInfoTestJson();
+        }
+
+    }
+
+    void LoadInfoTestJson()
+    {
+        // 在场景中查找ObjectSelectUI组件
+        ObjectSelectUI objectSelectUI = FindObjectOfType<ObjectSelectUI>();
+        if (objectSelectUI != null)
+        {
+            // 将JSON数据传递给ObjectSelectUI
+            objectSelectUI.LoadFromJson(infoTestJson);
+            Debug.Log("成功加载JSON数据到ObjectSelectUI");
+        }
+        else
+        {
+            Debug.LogError("在场景中未找到ObjectSelectUI组件");
+        }
     }
 
     [ContextMenu("StartGame")]
