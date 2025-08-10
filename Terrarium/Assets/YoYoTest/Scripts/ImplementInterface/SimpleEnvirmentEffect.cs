@@ -41,6 +41,12 @@ public class SimpleEnvirmentEffect : MonoBehaviour
                 isSpeedSet = true;
                 maxGrowthSpeed = growthComponent.GrowthSpeed;
                 Debug.Log("哈哈哈");
+                
+                // 主动获取当前环境参数
+                EnvironmentalData currentData = EnvironmentalParaManager.Instance.EnvironmentalData;
+                
+                // 使用环境数据手动设置生长速度
+                growthComponent.GrowthSpeed = maxGrowthSpeed * currentData.sunshine;
             }
         }
     }
