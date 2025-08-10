@@ -8,6 +8,8 @@ public class ObjectSelectUI : MonoBehaviour
     public  GameObject plantButtonGroup;
     public  GameObject animalButtonGroup;
     public  GameObject killerButtonGroup;
+    public  GameObject buttonPrefab;
+    public TextAsset jsonFile;
 
     
 
