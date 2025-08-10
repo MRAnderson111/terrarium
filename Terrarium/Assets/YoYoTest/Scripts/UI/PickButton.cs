@@ -25,6 +25,6 @@ public class PickButton : MonoBehaviour
     public void OnClick()
     {
         Debug.Log("选择预制体：" + selectPrefab.name);
-        PickPrefabUI.AddPrefabToJson();
+        PickPrefabUI.Instance.AddPrefabToClass(selectPrefab);
     }
 }
