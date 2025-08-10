@@ -58,12 +58,13 @@ public class YoYoGameManager : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space))
         {
             StartGame();
-        }
-
-        if(Input.GetKeyDown(KeyCode.A))
-        {
             LoadInfoTestJson();
         }
+
+        // if(Input.GetKeyDown(KeyCode.A))
+        // {
+        //     LoadInfoTestJson();
+        // }
 
     }
 
