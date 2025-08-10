@@ -98,7 +98,16 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
 
     private void Reproduction()
     {
-        Instantiate(Resources.Load<GameObject>(prefabPath), transform.position, Quaternion.identity);
+        // 使用CreateManager来生成新的蚂蚁，而不是自己生成自己
+        GameObject bigAntPrefab = Resources.Load<GameObject>(prefabPath);
+        if (bigAntPrefab != null)
+        {
+            CreateManager.Instance.CreatePrefab(bigAntPrefab, transform.position);
+        }
+        else
+        {
+            Debug.LogError($"无法加载预制体：{prefabPath}");
+        }
     }
 
     private void CheckTargetState()

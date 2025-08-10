@@ -86,10 +86,10 @@ public class ObjectStatisticsManager : MonoBehaviour
             }
         }
 
-        TTimer.StartTimer("CalculateTotalPlantHealth");
+        
         // 计算所有植物的总血量
         CalculateTotalPlantHealth();
-        TTimer.StopTimer("CalculateTotalPlantHealth");
+        
 
         // if (Input.GetKeyDown(KeyCode.A))
         // {
