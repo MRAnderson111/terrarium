@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PickButton : MonoBehaviour
 {
     public GameObject selectPrefab;
-    public PickPrefabUI PickPrefabUI;
+    private PickPrefabUI PickPrefabUI;
     private Button button;
     // Start is called before the first frame update
     void Start()

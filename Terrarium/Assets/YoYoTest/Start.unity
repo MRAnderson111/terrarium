@@ -179,7 +179,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: BigAnt
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -902,8 +902,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f9092dd27835c9429a98d1432e5f2a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectPrefab: {fileID: 7340170426973155689, guid: 05853b104df29d34dbb1a3dcbeff98e7, type: 3}
-  PickPrefabUI: {fileID: 0}
+  selectPrefab: {fileID: 7340170426973155689, guid: 9e763d3049188094589499bf24b2eb35, type: 3}
 --- !u!1 &855601576
 GameObject:
   m_ObjectHideFlags: 0
@@ -961,7 +960,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Tree
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1095,7 +1094,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Killer
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1281,7 +1280,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Grass
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1652,8 +1651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f9092dd27835c9429a98d1432e5f2a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectPrefab: {fileID: 7340170426973155689, guid: be31219a241788e4f8356c1cd466123d, type: 3}
-  PickPrefabUI: {fileID: 0}
+  selectPrefab: {fileID: 7340170426973155689, guid: 021533bf83e842040bab255560ee60c5, type: 3}
 --- !u!1 &1913085575
 GameObject:
   m_ObjectHideFlags: 0
@@ -1788,8 +1786,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f9092dd27835c9429a98d1432e5f2a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectPrefab: {fileID: 7340170426973155689, guid: 021533bf83e842040bab255560ee60c5, type: 3}
-  PickPrefabUI: {fileID: 0}
+  selectPrefab: {fileID: 7340170426973155689, guid: 05853b104df29d34dbb1a3dcbeff98e7, type: 3}
 --- !u!1 &2028477637
 GameObject:
   m_ObjectHideFlags: 0
@@ -2026,8 +2023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f9092dd27835c9429a98d1432e5f2a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectPrefab: {fileID: 7340170426973155689, guid: 9e763d3049188094589499bf24b2eb35, type: 3}
-  PickPrefabUI: {fileID: 0}
+  selectPrefab: {fileID: 7340170426973155689, guid: 852a42ee2e4f23a46a35081f1e10679f, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
