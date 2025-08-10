@@ -23,6 +23,8 @@ public interface IGrowth
     float GrowthSpeed { get; set; }
     //生长进度
     float GrowthProgress { get; set; }
+    //速度设置完成
+    bool IsSpeedSet { get; set; }
     //生长
     void Growth();
 }

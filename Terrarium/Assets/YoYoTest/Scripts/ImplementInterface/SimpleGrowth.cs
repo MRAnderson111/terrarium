@@ -16,8 +16,12 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
     //保存原始scale
     private Vector3 originalScale;
 
-    // 默认生长速度
-    private float defaultGrowthSpeed = 3f;
+    // 基础生长速度
+    public float defaultGrowthSpeed = 1f;
+
+    // 速度设置完成
+    public bool isSpeedSet = false;
+    public bool IsSpeedSet { get => isSpeedSet; set => isSpeedSet = value; }
 
     // Start is called before the first frame update
     void Awake()
@@ -52,6 +56,8 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
             GrowthSpeed = defaultGrowthSpeed;
             Debug.LogWarning("未检测到有效地面，使用默认生长速度: " + GrowthSpeed);
         }
+
+        isSpeedSet = true;
         
         // 设置好生长速度后自动开始生长
         Growth();
