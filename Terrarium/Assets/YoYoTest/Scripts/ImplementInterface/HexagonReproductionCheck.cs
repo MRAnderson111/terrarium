@@ -65,6 +65,30 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
         // 检查全局冷却时间是否就绪
         if (ObjectStatisticsManager.Instance.IsGlobalCoolDownReady(smallClass, coolDownTime))
         {
+            // 检查当前数量是否已经达到限制
+            ObjectStatisticsManager statsManager = FindObjectOfType<ObjectStatisticsManager>();
+            if (statsManager != null)
+            {
+                int currentCount = 0;
+                if (statsManager.smallClassCount.ContainsKey(smallClass))
+                {
+                    currentCount = statsManager.smallClassCount[smallClass];
+                }
+                
+                // 获取最新的数量限制值
+                int currentQuantityLimit = CreateManager.Instance.GetCurrentQuantityLimit(smallClass);
+                
+                // 检查是否超过数量限制
+                if (currentCount >= currentQuantityLimit)
+                {
+                    if (enableReproductionLogging)
+                    {
+                        Debug.Log($"小类 {smallClass} 当前数量 {currentCount} 已达到限制 {currentQuantityLimit}，无法繁殖");
+                    }
+                    return;
+                }
+            }
+            
             // 执行繁殖检测
             if (PerformSingleReproductionCheck())
             {

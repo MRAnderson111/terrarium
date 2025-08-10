@@ -135,8 +135,8 @@ public class CreateManager : MonoBehaviour
 
 
         // 检查对象是否实现了数量限制接口
-        IGetQuantityLimits quantityLimitInterface = prefab.GetComponent<IGetQuantityLimits>();
-        if (quantityLimitInterface != null)
+        IGetQuantityLimits prefabQuantityLimitInterface = prefab.GetComponent<IGetQuantityLimits>();
+        if (prefabQuantityLimitInterface != null)
         {
             // 获取当前对象数量统计管理器
             ObjectStatisticsManager statsManager = FindObjectOfType<ObjectStatisticsManager>();
@@ -152,14 +152,17 @@ public class CreateManager : MonoBehaviour
                     currentCount = statsManager.smallClassCount[smallClass];
                 }
 
+                // 从场景中已存在的同类对象获取最新的数量限制值
+                int currentQuantityLimit = GetCurrentQuantityLimit(smallClass);
+                
                 // 检查是否超过数量限制
-                if (currentCount >= quantityLimitInterface.QuantityLimits)
+                if (currentCount >= currentQuantityLimit)
                 {
-                    Debug.LogWarning($"无法生成 {prefab.name}，当前数量 {currentCount} 已达到限制 {quantityLimitInterface.QuantityLimits}");
+                    Debug.LogWarning($"无法生成 {prefab.name}，当前数量 {currentCount} 已达到限制 {currentQuantityLimit}");
                     return null;
                 }
 
-                Debug.Log($"检查数量限制：{prefab.name}，当前数量 {currentCount}，限制数量 {quantityLimitInterface.QuantityLimits}");
+                Debug.Log($"检查数量限制：{prefab.name}，当前数量 {currentCount}，限制数量 {currentQuantityLimit}");
             }
             else
             {
@@ -214,5 +217,42 @@ public class CreateManager : MonoBehaviour
     private void OnDestroy()
     {
         Events.OnSelectPrefab.RemoveListener(OnSelectPrefab);
+    }
+
+    /// <summary>
+    /// 获取场景中已存在的同类对象的最新的数量限制值
+    /// </summary>
+    /// <param name="smallClass">小类名称</param>
+    /// <returns>最新的数量限制值</returns>
+    public int GetCurrentQuantityLimit(string smallClass)
+    {
+        // 查找场景中所有实现了IGetQuantityLimits接口的对象
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+        
+        // 默认使用预制体的默认值
+        int currentQuantityLimit = 10;
+        
+        foreach (var gameObject in allObjects)
+        {
+            // 检查对象是否实现了IGetQuantityLimits接口
+            IGetQuantityLimits quantityLimitInterface = gameObject.GetComponent<IGetQuantityLimits>();
+            if (quantityLimitInterface != null)
+            {
+                // 获取对象的IGetObjectClass组件
+                IGetObjectClass objectClassInterface = gameObject.GetComponent<IGetObjectClass>();
+                if (objectClassInterface != null)
+                {
+                    // 检查是否是同类对象
+                    if (objectClassInterface.SmallClass == smallClass)
+                    {
+                        // 找到同类对象，使用其最新的数量限制值
+                        currentQuantityLimit = quantityLimitInterface.QuantityLimits;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        return currentQuantityLimit;
     }
 }
