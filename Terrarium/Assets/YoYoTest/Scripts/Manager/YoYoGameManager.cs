@@ -33,7 +33,14 @@ public class YoYoGameManager : MonoBehaviour
     // Awake is called when the script instance is being loaded
     void Awake()
     {
-        // 确保单例被初始化，这样DontDestroyOnLoad才会生效
+        // 如果已经存在实例，销毁当前重复的实例
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        
+        // 设置当前实例为单例
         _instance = this;
         DontDestroyOnLoad(gameObject);
     }
