@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
+    #region 单例模式相关
     // 单例实例
     private static StageManager _instance;
 
@@ -25,13 +26,15 @@ public class StageManager : MonoBehaviour
                     _instance = singletonObject.AddComponent<StageManager>();
 
                     // 确保在场景切换时不被销毁
-                    // DontDestroyOnLoad(singletonObject); 
+                    // DontDestroyOnLoad(singletonObject);
                 }
             }
             return _instance;
         }
     }
+    #endregion
 
+    #region 字段和属性
     //总时间
     public float allTimeLimit = 100f;
     // 当前时间
@@ -54,12 +57,12 @@ public class StageManager : MonoBehaviour
     private int previousStage = -1;
 
     //当前食物数量
-    public int foodQuantity = 0;
+    public float foodQuantity = 0;
     //切换阶段食物数量
     public int switchStageFoodQuantity = 40;
+    #endregion
 
-
-
+    #region Unity生命周期方法
     // 确保只有一个实例存在
     private void Awake()
     {
@@ -105,6 +108,9 @@ public class StageManager : MonoBehaviour
             }
         }
 
+
+        foodQuantity = ObjectStatisticsManager.Instance.totalPlantHealth;
+
         // 第二阶段独立计时器
         if (isSecondStageTimerRunning && secondStageRemainingTime > 0)
         {
@@ -133,15 +139,18 @@ public class StageManager : MonoBehaviour
     {
         Events.OnGameStart.RemoveListener(OnGameStart);
     }
+    #endregion
 
-
+    #region 游戏控制方法
     public void OnGameStart()
     {
         Debug.Log("游戏开始");
         StartTime();
         ChangeStage(1);
     }
+    #endregion
 
+    #region 阶段管理方法
     /// <summary>
     /// 优雅地切换阶段并触发相应事件
     /// </summary>
@@ -161,8 +170,9 @@ public class StageManager : MonoBehaviour
 
         Debug.Log($"阶段切换：从阶段{previousStage}切换到阶段{newStage}");
     }
+    #endregion
 
-
+    #region 计时器相关方法
     /// <summary>
     /// 开始计时
     /// </summary>
@@ -223,4 +233,5 @@ public class StageManager : MonoBehaviour
         Debug.Log("第二阶段时间到！进入阶段3");
         // 在这里可以添加进入阶段3后的逻辑
     }
+    #endregion
 }
