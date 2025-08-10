@@ -195,6 +195,8 @@ public class StageManager : MonoBehaviour
     private void OnTimeUp()
     {
         Debug.Log("时间到！");
+        // 触发游戏结束事件
+        Events.OnGameEnd.Invoke();
         // 在这里可以添加时间用完后的逻辑
     }
 
