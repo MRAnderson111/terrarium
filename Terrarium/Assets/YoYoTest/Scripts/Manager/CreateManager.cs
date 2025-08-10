@@ -43,7 +43,7 @@ public class CreateManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject);
+            
 
             // 监听预制体选择事件
             Events.OnSelectPrefab.AddListener(OnSelectPrefab);

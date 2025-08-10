@@ -30,6 +30,14 @@ public class YoYoGameManager : MonoBehaviour
             return _instance;
         }
     }
+    // Awake is called when the script instance is being loaded
+    void Awake()
+    {
+        // 确保单例被初始化，这样DontDestroyOnLoad才会生效
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
