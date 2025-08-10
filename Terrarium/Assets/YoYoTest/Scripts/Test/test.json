@@ -1,0 +1,13 @@
+{
+    "Plant": {
+      "Grass": 0,
+      "Flower": 0,
+      "Tree": 0
+    },
+    "Animal": {
+      "BigAnt": 0
+    },
+    "Killer": {
+      "AntKiller": 0
+    }
+  }
