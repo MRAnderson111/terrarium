@@ -8,6 +8,7 @@ public class SelectButton : MonoBehaviour
 {
     public GameObject selectPrefab;
     private Button button;
+    public Text nameText;
     public Text quantityText;
     public int quantity;
 

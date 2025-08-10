@@ -97,6 +97,16 @@ public class ObjectSelectUI : MonoBehaviour
             selectButton.selectPrefab = prefab;
             selectButton.quantity = quantity;
             selectButton.quantityText.text = quantity.ToString();
+            
+            // 设置按钮名称为预制体名称
+            if (selectButton.nameText != null)
+            {
+                selectButton.nameText.text = prefab.name;
+            }
+            else
+            {
+                Debug.LogWarning("按钮预制体上没有nameText组件！");
+            }
         }
         else
         {
