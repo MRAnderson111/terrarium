@@ -41,6 +41,21 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// </summary>
     public float totalPlantHealth = 0f;
 
+    /// <summary>
+    /// 植物对象的缓存列表，避免每帧都重新查找
+    /// </summary>
+    private List<GameObject> plantObjectsCache = new List<GameObject>();
+
+    /// <summary>
+    /// 植物IBeHurt接口的缓存列表，避免每帧都重新获取组件
+    /// </summary>
+    private List<IBeHurt> plantBeHurtCache = new List<IBeHurt>();
+
+    /// <summary>
+    /// 标记缓存是否需要更新
+    /// </summary>
+    private bool plantCacheDirty = true;
+
 
 
     void Start()
@@ -69,8 +84,12 @@ public class ObjectStatisticsManager : MonoBehaviour
             }
         }
 
+
+
+        TTimer.StartTimer("CalculateTotalPlantHealth");
         // 计算所有植物的总血量
         CalculateTotalPlantHealth();
+        TTimer.StopTimer("CalculateTotalPlantHealth");
 
         // if (Input.GetKeyDown(KeyCode.A))
         // {
@@ -124,6 +143,12 @@ public class ObjectStatisticsManager : MonoBehaviour
         // 将这个小类添加到全局冷却时间中
         globalCoolDown[arg0.SmallClass] = 0f;
         Debug.Log("小类 " + arg0.SmallClass + " 已添加到全局冷却时间中");
+
+        // 如果是植物类对象，更新缓存
+        if (arg0.BigClass == "Plant")
+        {
+            UpdatePlantCache();
+        }
 
         UpdateStatistics(); // 更新并打印统计信息
     }
@@ -182,15 +207,21 @@ public class ObjectStatisticsManager : MonoBehaviour
                 smallClassCount.Remove(arg0.SmallClass);
                 
                 // 如果小类数量小于等于0，重置全局冷却时间
-                if (globalCoolDown.ContainsKey(arg0.SmallClass))
-                {
-                    globalCoolDown[arg0.SmallClass] = 0f;
-                    Debug.Log("小类 " + arg0.SmallClass + " 数量已为0，重置全局冷却时间");
+                        if (globalCoolDown.ContainsKey(arg0.SmallClass))
+                        {
+                            globalCoolDown[arg0.SmallClass] = 0f;
+                            Debug.Log("小类 " + arg0.SmallClass + " 数量已为0，重置全局冷却时间");
+                        }
+                    }
                 }
-            }
-        }
-
-        UpdateStatistics(); // 更新并打印统计信息
+        
+                // 如果是植物类对象，更新缓存
+                if (arg0.BigClass == "Plant")
+                {
+                    UpdatePlantCache();
+                }
+        
+                UpdateStatistics(); // 更新并打印统计信息
     }
 
     /// <summary>
@@ -209,6 +240,47 @@ public class ObjectStatisticsManager : MonoBehaviour
         {
             Debug.Log("小类：" + item.Key + " 数量：" + item.Value);
         }
+    }
+
+    /// <summary>
+    /// 更新植物缓存列表
+    /// </summary>
+    private void UpdatePlantCache()
+    {
+        plantCacheDirty = true;
+    }
+
+    /// <summary>
+    /// 获取或刷新植物缓存
+    /// </summary>
+    private void RefreshPlantCache()
+    {
+        if (!plantCacheDirty) return;
+
+        plantObjectsCache.Clear();
+        plantBeHurtCache.Clear();
+
+        // 查找所有游戏对象
+        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
+        
+        foreach (GameObject obj in allGameObjects)
+        {
+            // 检查是否实现了 IGetObjectClass 接口
+            IGetObjectClass objectClass = obj.GetComponent<IGetObjectClass>();
+            if (objectClass != null && objectClass.BigClass == "Plant")
+            {
+                plantObjectsCache.Add(obj);
+                
+                // 获取IBeHurt接口并添加到缓存
+                IBeHurt beHurt = obj.GetComponent<IBeHurt>();
+                if (beHurt != null)
+                {
+                    plantBeHurtCache.Add(beHurt);
+                }
+            }
+        }
+        
+        plantCacheDirty = false;
     }
 
     /// <summary>
@@ -304,21 +376,14 @@ public class ObjectStatisticsManager : MonoBehaviour
     {
         totalPlantHealth = 0f;
         
-        // 获取所有植物对象
-        List<GameObject> plantObjects = GetAllPlantObjects();
+        // 刷新缓存（如果需要）
+        RefreshPlantCache();
         
-        foreach (GameObject plantObj in plantObjects)
+        // 使用缓存的IBeHurt接口列表直接计算总血量
+        foreach (IBeHurt beHurt in plantBeHurtCache)
         {
-            // 获取植物身上的IBeHurt接口
-            IBeHurt beHurt = plantObj.GetComponent<IBeHurt>();
-            if (beHurt != null)
-            {
-                // 累加当前血量
-                totalPlantHealth += beHurt.CurrentHealth;
-            }
+            // 累加当前血量
+            totalPlantHealth += beHurt.CurrentHealth;
         }
-        
-        // 可选：调试输出总血量
-        // Debug.Log("所有植物总血量：" + totalPlantHealth);
     }
 }
