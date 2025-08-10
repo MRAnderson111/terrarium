@@ -6,6 +6,7 @@ using UnityEngine;
 /// </summary>
 public class ObjectStatisticsManager : MonoBehaviour
 {
+#region 单例模式
     public static ObjectStatisticsManager Instance { get; private set; }
 
     private void Awake()
@@ -19,7 +20,9 @@ public class ObjectStatisticsManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    
+#endregion
+
+#region 字段和属性
     /// <summary>
     /// 存储大类对象的数量统计，键为BigClass，值为该大类对象的总数量。
     /// </summary>
@@ -29,7 +32,6 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// 存储小类对象的数量统计，键为SmallClass，值为该小类对象的数量。
     /// </summary>
     public Dictionary<string, int> smallClassCount = new();
-
 
     /// <summary>
     /// 存储全局冷却时间，键为SmallClass，值为冷却时间。
@@ -55,9 +57,9 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// 标记缓存是否需要更新
     /// </summary>
     private bool plantCacheDirty = true;
+#endregion
 
-
-
+#region Unity 生命周期方法
     void Start()
     {
         // 注册对象生成和销毁事件的监听器
@@ -84,8 +86,6 @@ public class ObjectStatisticsManager : MonoBehaviour
             }
         }
 
-
-
         TTimer.StartTimer("CalculateTotalPlantHealth");
         // 计算所有植物的总血量
         CalculateTotalPlantHealth();
@@ -104,7 +104,9 @@ public class ObjectStatisticsManager : MonoBehaviour
         //     }
         // }
     }
+#endregion
 
+#region 事件处理方法
     /// <summary>
     /// 处理对象生成事件。当有新对象生成时，更新BigClass和SmallClass的统计数量。
     /// </summary>
@@ -154,33 +156,6 @@ public class ObjectStatisticsManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 检查指定小类的全局冷却时间是否准备就绪。
-    /// </summary>
-    /// <param name="smallClass">要检查的小类名称。</param>
-    /// <param name="requiredCoolDown">所需的冷却时间。</param>
-    /// <returns>如果冷却时间已到或不存在记录，则返回true；否则返回false。</returns>
-    public bool IsGlobalCoolDownReady(string smallClass, float requiredCoolDown)
-    {
-        if (globalCoolDown.TryGetValue(smallClass, out float currentCoolDown))
-        {
-            return currentCoolDown >= requiredCoolDown;
-        }
-        return true; // 如果没有记录，说明可以立即执行
-    }
-
-    /// <summary>
-    /// 重置指定小类的全局冷却时间。
-    /// </summary>
-    /// <param name="smallClass">要重置的小类名称。</param>
-    public void ResetGlobalCoolDown(string smallClass)
-    {
-        if (globalCoolDown.ContainsKey(smallClass))
-        {
-            globalCoolDown[smallClass] = 0f;
-        }
-    }
-
-    /// <summary>
     /// 处理对象销毁事件。当对象被销毁时，更新BigClass和SmallClass的统计数量。
     /// </summary>
     /// <param name="arg0">实现了 IGetObjectClass 接口的被销毁对象。</param>
@@ -207,41 +182,54 @@ public class ObjectStatisticsManager : MonoBehaviour
                 smallClassCount.Remove(arg0.SmallClass);
                 
                 // 如果小类数量小于等于0，重置全局冷却时间
-                        if (globalCoolDown.ContainsKey(arg0.SmallClass))
-                        {
-                            globalCoolDown[arg0.SmallClass] = 0f;
-                            Debug.Log("小类 " + arg0.SmallClass + " 数量已为0，重置全局冷却时间");
-                        }
-                    }
-                }
-        
-                // 如果是植物类对象，更新缓存
-                if (arg0.BigClass == "Plant")
+                if (globalCoolDown.ContainsKey(arg0.SmallClass))
                 {
-                    UpdatePlantCache();
+                    globalCoolDown[arg0.SmallClass] = 0f;
+                    Debug.Log("小类 " + arg0.SmallClass + " 数量已为0，重置全局冷却时间");
                 }
+            }
+        }
         
-                UpdateStatistics(); // 更新并打印统计信息
+        // 如果是植物类对象，更新缓存
+        if (arg0.BigClass == "Plant")
+        {
+            UpdatePlantCache();
+        }
+        
+        UpdateStatistics(); // 更新并打印统计信息
+    }
+#endregion
+
+#region 冷却时间管理
+    /// <summary>
+    /// 检查指定小类的全局冷却时间是否准备就绪。
+    /// </summary>
+    /// <param name="smallClass">要检查的小类名称。</param>
+    /// <param name="requiredCoolDown">所需的冷却时间。</param>
+    /// <returns>如果冷却时间已到或不存在记录，则返回true；否则返回false。</returns>
+    public bool IsGlobalCoolDownReady(string smallClass, float requiredCoolDown)
+    {
+        if (globalCoolDown.TryGetValue(smallClass, out float currentCoolDown))
+        {
+            return currentCoolDown >= requiredCoolDown;
+        }
+        return true; // 如果没有记录，说明可以立即执行
     }
 
     /// <summary>
-    /// 更新并打印当前所有物种的数量统计信息。
+    /// 重置指定小类的全局冷却时间。
     /// </summary>
-    private void UpdateStatistics()
+    /// <param name="smallClass">要重置的小类名称。</param>
+    public void ResetGlobalCoolDown(string smallClass)
     {
-        Debug.Log("=== 大类统计 ===");
-        foreach (var item in bigClassCount)
+        if (globalCoolDown.ContainsKey(smallClass))
         {
-            Debug.Log("大类：" + item.Key + " 总数量：" + item.Value);
-        }
-
-        Debug.Log("=== 小类统计 ===");
-        foreach (var item in smallClassCount)
-        {
-            Debug.Log("小类：" + item.Key + " 数量：" + item.Value);
+            globalCoolDown[smallClass] = 0f;
         }
     }
+#endregion
 
+#region 植物缓存管理
     /// <summary>
     /// 更新植物缓存列表
     /// </summary>
@@ -282,7 +270,9 @@ public class ObjectStatisticsManager : MonoBehaviour
         
         plantCacheDirty = false;
     }
+#endregion
 
+#region 对象获取方法
     /// <summary>
     /// 获取所有植物类的游戏对象
     /// </summary>
@@ -368,6 +358,26 @@ public class ObjectStatisticsManager : MonoBehaviour
         int randomIndex = UnityEngine.Random.Range(0, animalObjects.Count);
         return animalObjects[randomIndex];
     }
+#endregion
+
+#region 统计信息计算
+    /// <summary>
+    /// 更新并打印当前所有物种的数量统计信息。
+    /// </summary>
+    private void UpdateStatistics()
+    {
+        Debug.Log("=== 大类统计 ===");
+        foreach (var item in bigClassCount)
+        {
+            Debug.Log("大类：" + item.Key + " 总数量：" + item.Value);
+        }
+
+        Debug.Log("=== 小类统计 ===");
+        foreach (var item in smallClassCount)
+        {
+            Debug.Log("小类：" + item.Key + " 数量：" + item.Value);
+        }
+    }
 
     /// <summary>
     /// 计算所有植物的总血量
@@ -386,4 +396,5 @@ public class ObjectStatisticsManager : MonoBehaviour
             totalPlantHealth += beHurt.CurrentHealth;
         }
     }
+#endregion
 }
