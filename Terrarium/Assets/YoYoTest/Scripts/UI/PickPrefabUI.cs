@@ -92,6 +92,9 @@ public class PickPrefabUI : MonoBehaviour
         classData[bigClass][smallClass]++;
         
         Debug.Log($"添加预制体: {prefab.name} -> 大类: {bigClass}, 小类: {smallClass}, 当前数量: {classData[bigClass][smallClass]}");
+        
+        // 数据更新后，同步到YoYoGameManager
+        SyncDataToGameManager();
     }
     
     // 减少预制体计数（当预制体被销毁时调用）
@@ -123,6 +126,9 @@ public class PickPrefabUI : MonoBehaviour
             }
             
             Debug.Log($"移除预制体: {prefab.name} -> 大类: {bigClass}, 小类: {smallClass}, 当前数量: {classData[bigClass][smallClass]}");
+            
+            // 数据更新后，同步到YoYoGameManager
+            SyncDataToGameManager();
         }
     }
     
@@ -195,5 +201,39 @@ public class PickPrefabUI : MonoBehaviour
             }
         }
         Debug.Log("所有分类计数已重置");
+        
+        // 数据重置后，同步到YoYoGameManager
+        SyncDataToGameManager();
+    }
+    
+    // 同步数据到YoYoGameManager
+    private void SyncDataToGameManager()
+    {
+        try
+        {
+            // 获取当前分类数据的JSON字符串
+            string jsonData = GetClassDataJson();
+            
+            // 同步到YoYoGameManager
+            if (YoYoGameManager.Instance != null)
+            {
+                YoYoGameManager.Instance.UpdateJsonData(jsonData);
+            }
+            else
+            {
+                Debug.LogWarning("YoYoGameManager实例不存在，无法同步数据");
+            }
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"同步数据到YoYoGameManager时发生错误: {e.Message}");
+        }
+    }
+    
+    // 手动同步数据到YoYoGameManager（公共方法）
+    public void ForceSyncToGameManager()
+    {
+        SyncDataToGameManager();
+        Debug.Log("手动同步分类数据到YoYoGameManager完成");
     }
 }

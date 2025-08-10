@@ -31,6 +31,7 @@ public class YoYoGameManager : MonoBehaviour
             return _instance;
         }
     }
+    
     // Awake is called when the script instance is being loaded
     void Awake()
     {
@@ -82,6 +83,30 @@ public class YoYoGameManager : MonoBehaviour
         {
             Debug.LogError("在场景中未找到ObjectSelectUI组件");
         }
+    }
+
+    // 更新JSON数据
+    public void UpdateJsonData(string jsonData)
+    {
+        // 创建临时的TextAsset来替换现有的JSON数据
+        TextAsset newJsonData = new TextAsset(jsonData);
+        
+        // 替换现有的JSON数据
+        infoTestJson = newJsonData;
+        
+        // 立即更新ObjectSelectUI中的数据
+        ObjectSelectUI objectSelectUI = FindObjectOfType<ObjectSelectUI>();
+        if (objectSelectUI != null)
+        {
+            objectSelectUI.LoadFromJson(newJsonData);
+            Debug.Log("成功更新JSON数据到ObjectSelectUI");
+        }
+        else
+        {
+            Debug.LogError("在场景中未找到ObjectSelectUI组件");
+        }
+        
+        Debug.Log("JSON数据已更新");
     }
 
     [ContextMenu("StartGame")]
