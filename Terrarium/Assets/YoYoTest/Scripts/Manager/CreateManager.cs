@@ -190,7 +190,7 @@ public class CreateManager : MonoBehaviour
                 if(selectButton.quantity > 0)
                 {
                     CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * 0.5f);
-                    selectButton.quantity--;
+                    selectButton.DecrementQuantity();
                 }
             }
             else if (!isHit)

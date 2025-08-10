@@ -8,6 +8,7 @@ public class SelectButton : MonoBehaviour
 {
     public GameObject selectPrefab;
     private Button button;
+    public Text quantityText;
     public int quantity;
     
     // 声明一个C# Action，用于数量减一的操作
@@ -21,6 +22,7 @@ public class SelectButton : MonoBehaviour
         
         // 订阅数量减一的action
         onQuantityDecrease += DecrementQuantity;
+        quantityText.text = quantity.ToString();
     }
 
     // Update is called once per frame
@@ -42,6 +44,7 @@ public class SelectButton : MonoBehaviour
     public void DecrementQuantity()
     {
         quantity--;
-        Debug.Log("当前数量：" + quantity);
+        quantityText.text = quantity.ToString();
+        // Debug.Log("当前数量：" + quantity);
     }
 }
