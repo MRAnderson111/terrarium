@@ -3399,7 +3399,7 @@ MonoBehaviour:
   animalButtonGroup: {fileID: 193526949}
   killerButtonGroup: {fileID: 2123420317}
   selectButtonPrefab: {fileID: 1858850185}
-  jsonFile: {fileID: 0}
+  jsonFile: {fileID: 4900000, guid: 1df53bc3e0514da4594c329df7ae4d2e, type: 3}
 --- !u!1 &1282512741
 GameObject:
   m_ObjectHideFlags: 0
