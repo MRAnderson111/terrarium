@@ -7,7 +7,7 @@ public class CreateManager : MonoBehaviour
 {
     // 单例实例
     private static CreateManager instance;
-    
+
     // 公共访问点
     public static CreateManager Instance
     {
@@ -26,8 +26,9 @@ public class CreateManager : MonoBehaviour
             return instance;
         }
     }
-    
+
     public GameObject selectPrefab;// button选择的植物预制体
+    public SelectButton selectButton; // 当前选中的SelectButton脚本引用
     public GameObject hitPrefab; // 用于显示鼠标射线指向位置的GameObject
     public GameObject selectPosition; // 用于显示鼠标射线指向位置的GameObject
 
@@ -43,7 +44,7 @@ public class CreateManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
-            
+
             // 监听预制体选择事件
             Events.OnSelectPrefab.AddListener(OnSelectPrefab);
 
@@ -123,12 +124,18 @@ public class CreateManager : MonoBehaviour
     /// <param name="prefab">要生成的预制体</param>
     /// <param name="position">生成位置</param>
     /// <returns>生成的GameObject实例</returns>
-    public GameObject CreatePrefab(GameObject prefab, Vector3 position)
+    public GameObject CreatePrefab(GameObject prefab, Vector3 position, bool isFromButton = false)
     {
         if (prefab == null)
         {
             Debug.LogWarning("预制体为空，无法生成");
             return null;
+        }
+
+        if(isFromButton)
+        {
+            selectButton.quantity--;
+            
         }
 
         // 检查对象是否实现了数量限制接口
@@ -142,20 +149,20 @@ public class CreateManager : MonoBehaviour
                 // 获取预制体的小类名称（假设预制体的名称就是小类名称）
                 string smallClass = prefab.name;
                 int currentCount = 0;
-                
+
                 // 根据小类获取当前数量
                 if (statsManager.smallClassCount.ContainsKey(smallClass))
                 {
                     currentCount = statsManager.smallClassCount[smallClass];
                 }
-                
+
                 // 检查是否超过数量限制
                 if (currentCount >= quantityLimitInterface.QuantityLimits)
                 {
                     Debug.LogWarning($"无法生成 {prefab.name}，当前数量 {currentCount} 已达到限制 {quantityLimitInterface.QuantityLimits}");
                     return null;
                 }
-                
+
                 Debug.Log($"检查数量限制：{prefab.name}，当前数量 {currentCount}，限制数量 {quantityLimitInterface.QuantityLimits}");
             }
             else
@@ -167,9 +174,9 @@ public class CreateManager : MonoBehaviour
         // 在指定位置生成预制体
         GameObject newObject = Instantiate(prefab, position, Quaternion.identity);
         Debug.Log("在位置 " + position + " 生成了预制体：" + prefab.name);
-        
+
         // 不在这里触发生成事件，让对象自己的 Start() 方法来触发
-        
+
         return newObject;
     }
 
@@ -184,7 +191,7 @@ public class CreateManager : MonoBehaviour
             // 只有当射线击中物体且有选择的预制体时才生成
             if (isHit && selectPrefab != null)
             {
-                CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * 0.5f);
+                CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * 0.5f,true);
             }
             else if (!isHit)
             {
@@ -197,10 +204,11 @@ public class CreateManager : MonoBehaviour
         }
     }
 
-    public void OnSelectPrefab(GameObject prefab)
+    public void OnSelectPrefab(GameObject prefab, SelectButton button)
     {
         selectPrefab = prefab;
-        Debug.Log("选择预制体：" + selectPrefab.name);
+        selectButton = button;
+        Debug.Log("选择预制体：" + selectPrefab.name + "，SelectButton：" + button.name);
     }
 
     private void OnDestroy()

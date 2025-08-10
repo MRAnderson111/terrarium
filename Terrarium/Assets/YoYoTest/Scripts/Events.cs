@@ -9,8 +9,8 @@ public static class Events
     // 游戏进入阶段事件 (参数: 阶段编号 1-第一阶段, 2-第二阶段, 3-第三阶段)
     public static UnityEvent<int> OnGameEnterStage = new();
 
-    // 选择预制体事件 (参数: 预制体)
-    public static UnityEvent<GameObject> OnSelectPrefab = new();
+    // 选择预制体事件 (参数: 预制体, SelectButton脚本)
+    public static UnityEvent<GameObject, SelectButton> OnSelectPrefab = new();
 
     // 物种生成,销毁事件 (参数: 物种信息接口)
     public static UnityEvent<IGetObjectClass> OnCreateObject = new();

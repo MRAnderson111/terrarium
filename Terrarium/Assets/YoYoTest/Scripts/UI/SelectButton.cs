@@ -32,7 +32,7 @@ public class SelectButton : MonoBehaviour
     public void OnClick()
     {
         Debug.Log("选择预制体：" + selectPrefab.name);
-        Events.OnSelectPrefab.Invoke(selectPrefab);
+        Events.OnSelectPrefab.Invoke(selectPrefab, this);
         
         // 触发数量减一的action
         // onQuantityDecrease?.Invoke();

@@ -104,6 +104,12 @@ public class ObjectStatisticsManager : MonoBehaviour
         //     }
         // }
     }
+
+    void OnDestroy()
+    {
+        Events.OnCreateObject.RemoveListener(OnCreateObject);
+        Events.OnDestroyObject.RemoveListener(OnDestroyObject);
+    }
 #endregion
 
 #region 事件处理方法
