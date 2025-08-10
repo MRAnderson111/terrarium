@@ -124,7 +124,7 @@ public class CreateManager : MonoBehaviour
     /// <param name="prefab">要生成的预制体</param>
     /// <param name="position">生成位置</param>
     /// <returns>生成的GameObject实例</returns>
-    public GameObject CreatePrefab(GameObject prefab, Vector3 position, bool isFromButton = false)
+    public GameObject CreatePrefab(GameObject prefab, Vector3 position)
     {
         if (prefab == null)
         {
@@ -132,11 +132,7 @@ public class CreateManager : MonoBehaviour
             return null;
         }
 
-        if(isFromButton)
-        {
-            selectButton.quantity--;
-            
-        }
+
 
         // 检查对象是否实现了数量限制接口
         IGetQuantityLimits quantityLimitInterface = prefab.GetComponent<IGetQuantityLimits>();
@@ -191,7 +187,11 @@ public class CreateManager : MonoBehaviour
             // 只有当射线击中物体且有选择的预制体时才生成
             if (isHit && selectPrefab != null)
             {
-                CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * 0.5f,true);
+                if(selectButton.quantity > 0)
+                {
+                    CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * 0.5f);
+                    selectButton.quantity--;
+                }
             }
             else if (!isHit)
             {
