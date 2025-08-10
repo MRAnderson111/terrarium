@@ -6,6 +6,7 @@ public class SimpleBeHurt : MonoBehaviour, IBeHurt
 {
     public float healthLimit;
     public float currentHealth;
+    public float CurrentHealth { get => currentHealth; set => currentHealth = value; }
     public float recoverySpeed;
 
     public void BeHurt(float hurtValue)

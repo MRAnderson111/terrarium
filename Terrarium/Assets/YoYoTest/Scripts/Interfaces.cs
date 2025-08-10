@@ -46,6 +46,7 @@ public interface IReproductionCheck
 public interface IBeHurt
 {
     void BeHurt(float hurtValue);
+    float CurrentHealth { get; set; }
 }
 public interface IGetGroundClass
 {

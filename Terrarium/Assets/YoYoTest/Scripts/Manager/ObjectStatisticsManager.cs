@@ -36,6 +36,11 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// </summary>
     public Dictionary<string, float> globalCoolDown = new();
 
+    /// <summary>
+    /// 存储所有植物的总血量
+    /// </summary>
+    public float totalPlantHealth = 0f;
+
 
 
     void Start()
@@ -64,6 +69,8 @@ public class ObjectStatisticsManager : MonoBehaviour
             }
         }
 
+        // 计算所有植物的总血量
+        CalculateTotalPlantHealth();
 
         // if (Input.GetKeyDown(KeyCode.A))
         // {
@@ -288,5 +295,30 @@ public class ObjectStatisticsManager : MonoBehaviour
         // 随机选择一个动物对象
         int randomIndex = UnityEngine.Random.Range(0, animalObjects.Count);
         return animalObjects[randomIndex];
+    }
+
+    /// <summary>
+    /// 计算所有植物的总血量
+    /// </summary>
+    private void CalculateTotalPlantHealth()
+    {
+        totalPlantHealth = 0f;
+        
+        // 获取所有植物对象
+        List<GameObject> plantObjects = GetAllPlantObjects();
+        
+        foreach (GameObject plantObj in plantObjects)
+        {
+            // 获取植物身上的IBeHurt接口
+            IBeHurt beHurt = plantObj.GetComponent<IBeHurt>();
+            if (beHurt != null)
+            {
+                // 累加当前血量
+                totalPlantHealth += beHurt.CurrentHealth;
+            }
+        }
+        
+        // 可选：调试输出总血量
+        // Debug.Log("所有植物总血量：" + totalPlantHealth);
     }
 }
