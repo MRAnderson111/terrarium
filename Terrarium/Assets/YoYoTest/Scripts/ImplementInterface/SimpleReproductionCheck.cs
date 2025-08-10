@@ -62,6 +62,14 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
 
     public void ReproductionCheck()
     {
+        // 检查是否拥有生长组件且生长已完成
+        SimpleGrowth growthComponent = GetComponent<SimpleGrowth>();
+        if (growthComponent != null && growthComponent.GrowthProgress < 100f)
+        {
+            // 生长未完成，不进行繁殖检查
+            return;
+        }
+        
         // 检查全局冷却时间是否就绪
         if (ObjectStatisticsManager.Instance.IsGlobalCoolDownReady(smallClass, coolDownTime))
         {

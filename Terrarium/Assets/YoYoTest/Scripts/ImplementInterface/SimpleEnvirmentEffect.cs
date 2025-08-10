@@ -7,7 +7,7 @@ using UnityEngine;
 public class SimpleEnvirmentEffect : MonoBehaviour
 {
     private bool isSpeedSet = false;
-    public float maxGrowthSpeed ;
+    private float maxGrowthSpeed ;
     private IGrowth growthComponent;
     // Start is called before the first frame update
     void Start()
