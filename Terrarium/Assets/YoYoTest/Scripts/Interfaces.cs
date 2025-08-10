@@ -14,7 +14,7 @@ public interface IGetObjectClass
 
 public interface IGetQuantityLimits
 {
-    int QuantityLimits { get; }
+    int QuantityLimits { get; set; }
 }
 
 public interface IGrowth

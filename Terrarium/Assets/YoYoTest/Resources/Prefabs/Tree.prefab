@@ -260,7 +260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   growthProgress: 0
   meshObject: {fileID: 1679764535709896645}
-  defaultGrowthSpeed: 1
+  defaultGrowthSpeed: 5
   isSpeedSet: 0
 --- !u!114 &7177617027138277366
 MonoBehaviour:
@@ -306,7 +306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51427ecd61580e74386532cbf7c78ea5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  quantityLimits: 2
+  quantityLimits: 10
 --- !u!114 &3419133823235634074
 MonoBehaviour:
   m_ObjectHideFlags: 0

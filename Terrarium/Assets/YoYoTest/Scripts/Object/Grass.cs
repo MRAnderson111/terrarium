@@ -9,7 +9,11 @@ public class Grass : MonoBehaviour, IGetObjectClass, IGetQuantityLimits
     public string SmallClass => "Grass";
 
     public int quantityLimits = 10;
-    public int QuantityLimits => quantityLimits;
+    public int QuantityLimits
+    {
+        get => quantityLimits;
+        set => quantityLimits = value;
+    }
 
     // Start is called before the first frame update
     void Start()
