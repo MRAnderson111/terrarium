@@ -248,23 +248,18 @@ public class ObjectStatisticsManager : MonoBehaviour
         plantObjectsCache.Clear();
         plantBeHurtCache.Clear();
 
-        // 查找所有游戏对象
-        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
+        // 使用通用方法获取所有植物对象
+        List<GameObject> plantObjects = GetObjectsByBigClass("Plant");
         
-        foreach (GameObject obj in allGameObjects)
+        foreach (GameObject obj in plantObjects)
         {
-            // 检查是否实现了 IGetObjectClass 接口
-            IGetObjectClass objectClass = obj.GetComponent<IGetObjectClass>();
-            if (objectClass != null && objectClass.BigClass == "Plant")
+            plantObjectsCache.Add(obj);
+            
+            // 获取IBeHurt接口并添加到缓存
+            IBeHurt beHurt = obj.GetComponent<IBeHurt>();
+            if (beHurt != null)
             {
-                plantObjectsCache.Add(obj);
-                
-                // 获取IBeHurt接口并添加到缓存
-                IBeHurt beHurt = obj.GetComponent<IBeHurt>();
-                if (beHurt != null)
-                {
-                    plantBeHurtCache.Add(beHurt);
-                }
+                plantBeHurtCache.Add(beHurt);
             }
         }
         
@@ -274,27 +269,54 @@ public class ObjectStatisticsManager : MonoBehaviour
 
 #region 对象获取方法
     /// <summary>
+    /// 根据大类名称获取所有游戏对象
+    /// </summary>
+    /// <param name="bigClass">大类名称</param>
+    /// <returns>指定大类游戏对象的列表</returns>
+    private List<GameObject> GetObjectsByBigClass(string bigClass)
+    {
+        List<GameObject> objects = new List<GameObject>();
+        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
+        
+        foreach (GameObject obj in allGameObjects)
+        {
+            IGetObjectClass objectClass = obj.GetComponent<IGetObjectClass>();
+            if (objectClass != null && objectClass.BigClass == bigClass)
+            {
+                objects.Add(obj);
+            }
+        }
+        
+        return objects;
+    }
+
+    /// <summary>
+    /// 根据大类名称随机获取一个游戏对象
+    /// </summary>
+    /// <param name="bigClass">大类名称</param>
+    /// <param name="className">用于警告信息的类名称</param>
+    /// <returns>随机游戏对象，如果没有找到则返回null</returns>
+    private GameObject GetRandomObjectByBigClass(string bigClass, string className)
+    {
+        List<GameObject> objects = GetObjectsByBigClass(bigClass);
+        
+        if (objects.Count == 0)
+        {
+            Debug.LogWarning($"没有找到任何{className}类对象");
+            return null;
+        }
+        
+        int randomIndex = UnityEngine.Random.Range(0, objects.Count);
+        return objects[randomIndex];
+    }
+
+    /// <summary>
     /// 获取所有植物类的游戏对象
     /// </summary>
     /// <returns>植物类游戏对象的列表</returns>
     public List<GameObject> GetAllPlantObjects()
     {
-        List<GameObject> plantObjects = new List<GameObject>();
-        
-        // 查找所有游戏对象
-        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
-        
-        foreach (GameObject obj in allGameObjects)
-        {
-            // 检查是否实现了 IGetObjectClass 接口
-            IGetObjectClass objectClass = obj.GetComponent<IGetObjectClass>();
-            if (objectClass != null && objectClass.BigClass == "Plant")
-            {
-                plantObjects.Add(obj);
-            }
-        }
-        
-        return plantObjects;
+        return GetObjectsByBigClass("Plant");
     }
 
     /// <summary>
@@ -303,17 +325,7 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// <returns>随机植物类游戏对象，如果没有植物则返回null</returns>
     public GameObject GetRandomPlantObject()
     {
-        List<GameObject> plantObjects = GetAllPlantObjects();
-        
-        if (plantObjects.Count == 0)
-        {
-            Debug.LogWarning("没有找到任何植物类对象");
-            return null;
-        }
-        
-        // 随机选择一个植物对象
-        int randomIndex = UnityEngine.Random.Range(0, plantObjects.Count);
-        return plantObjects[randomIndex];
+        return GetRandomObjectByBigClass("Plant", "植物");
     }
 
     /// <summary>
@@ -322,22 +334,7 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// <returns>动物类游戏对象的列表</returns>
     public List<GameObject> GetAllAnimalObjects()
     {
-        List<GameObject> animalObjects = new List<GameObject>();
-        
-        // 查找所有游戏对象
-        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
-        
-        foreach (GameObject obj in allGameObjects)
-        {
-            // 检查是否实现了 IGetObjectClass 接口
-            IGetObjectClass objectClass = obj.GetComponent<IGetObjectClass>();
-            if (objectClass != null && objectClass.BigClass == "Animal")
-            {
-                animalObjects.Add(obj);
-            }
-        }
-        
-        return animalObjects;
+        return GetObjectsByBigClass("Animal");
     }
 
     /// <summary>
@@ -346,17 +343,7 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// <returns>随机动物类游戏对象，如果没有动物则返回null</returns>
     public GameObject GetRandomAnimalObject()
     {
-        List<GameObject> animalObjects = GetAllAnimalObjects();
-        
-        if (animalObjects.Count == 0)
-        {
-            Debug.LogWarning("没有找到任何动物类对象");
-            return null;
-        }
-        
-        // 随机选择一个动物对象
-        int randomIndex = UnityEngine.Random.Range(0, animalObjects.Count);
-        return animalObjects[randomIndex];
+        return GetRandomObjectByBigClass("Animal", "动物");
     }
 #endregion
 
