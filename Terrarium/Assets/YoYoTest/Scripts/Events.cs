@@ -16,7 +16,8 @@ public static class Events
     public static UnityEvent<IGetObjectClass> OnCreateObject = new();
     public static UnityEvent<IGetObjectClass> OnDestroyObject = new();
 
-
+    // 统计更新事件 (参数: 更新的大类名称, 新的数量)
+    public static UnityEvent<string, int> OnStatisticsUpdate = new();
 
     // 游戏结束事件
     public static UnityEvent OnGameEnd = new();
@@ -53,6 +54,9 @@ public static class Events
     {
         OnGameStart.RemoveAllListeners();
         OnGameEnterStage.RemoveAllListeners();
+        OnCreateObject.RemoveAllListeners();
+        OnDestroyObject.RemoveAllListeners();
+        OnStatisticsUpdate.RemoveAllListeners();
         OnGameEnd.RemoveAllListeners();
         OnGamePause.RemoveAllListeners();
         OnGameResume.RemoveAllListeners();

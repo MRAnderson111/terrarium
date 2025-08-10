@@ -60,6 +60,8 @@ public class StageManager : MonoBehaviour
     public float foodQuantity = 0;
     //切换阶段食物数量
     public int switchStageFoodQuantity = 40;
+
+    public GameObject EndCheckPrefab;
     #endregion
 
     #region Unity生命周期方法
@@ -131,6 +133,7 @@ public class StageManager : MonoBehaviour
             {
                 ChangeStage(2);
                 StartSecondStageTimer(); // 开始第二阶段计时
+                Instantiate(EndCheckPrefab, transform);
             }
         }
     }

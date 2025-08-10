@@ -961,6 +961,7 @@ MonoBehaviour:
   stage: 0
   foodQuantity: 83
   switchStageFoodQuantity: 40
+  EndCheckPrefab: {fileID: 2754243824069796768, guid: baa1939c525b04a44b12a936b3e2bdfe, type: 3}
 --- !u!1 &446017394
 GameObject:
   m_ObjectHideFlags: 0

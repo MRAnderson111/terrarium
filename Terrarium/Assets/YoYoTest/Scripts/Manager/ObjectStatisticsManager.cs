@@ -132,6 +132,9 @@ public class ObjectStatisticsManager : MonoBehaviour
             bigClassCount[arg0.BigClass] = 1;
         }
 
+        // 触发统计更新事件
+        Events.OnStatisticsUpdate?.Invoke(arg0.BigClass, bigClassCount[arg0.BigClass]);
+
         // 更新SmallClass数量统计
         if (smallClassCount.ContainsKey(arg0.SmallClass))
         {
@@ -171,6 +174,16 @@ public class ObjectStatisticsManager : MonoBehaviour
             {
                 bigClassCount.Remove(arg0.BigClass);
             }
+        }
+
+        // 触发统计更新事件
+        if (bigClassCount.ContainsKey(arg0.BigClass))
+        {
+            Events.OnStatisticsUpdate?.Invoke(arg0.BigClass, bigClassCount[arg0.BigClass]);
+        }
+        else
+        {
+            Events.OnStatisticsUpdate?.Invoke(arg0.BigClass, 0);
         }
 
         // 更新SmallClass数量统计
