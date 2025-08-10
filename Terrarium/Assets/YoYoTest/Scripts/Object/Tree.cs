@@ -11,19 +11,12 @@ public class Tree : MonoBehaviour, IGetObjectClass, IGetQuantityLimits
     public int quantityLimits = 10;
     public int QuantityLimits => quantityLimits;
 
-    private float growthSpeed = 3f;
-
     // Start is called before the first frame update
     void Start()
     {
         Events.OnCreateObject.Invoke(this);
 
-        // 检测地面并设置生长速度
-        GroundDetectionUtils.SetGrowthSpeedFromGroundSimple(transform.position, (fertility) => growthSpeed = growthSpeed * fertility);
-
-        // 设置生长速度
-        GetComponent<IGrowth>().GrowthSpeed = growthSpeed;
-        GetComponent<IGrowth>().Growth();
+        // 生长速度和生长过程现在都由SimpleGrowth组件自己负责
     }
 
     // Update is called once per frame

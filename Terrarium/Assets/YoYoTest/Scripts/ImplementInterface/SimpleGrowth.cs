@@ -16,6 +16,9 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
     //保存原始scale
     private Vector3 originalScale;
 
+    // 默认生长速度
+    private float defaultGrowthSpeed = 3f;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -25,6 +28,33 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
 
         // 初始设置为原始scale的0.1倍
         meshObject.transform.localScale = originalScale * 0.1f;
+
+        // 检测地面并设置生长速度
+        SetGrowthSpeedFromGround();
+        
+    }
+
+    /// <summary>
+    /// 检测地面并设置生长速度，然后开始生长
+    /// </summary>
+    private void SetGrowthSpeedFromGround()
+    {
+        int fertility = GroundDetectionUtils.GetGroundFertility(transform.position);
+        if (fertility >= 0)
+        {
+            // 根据地面肥沃度调整生长速度
+            GrowthSpeed = defaultGrowthSpeed * fertility;
+            Debug.Log($"根据地面肥沃度设置生长速度为: {GrowthSpeed}");
+        }
+        else
+        {
+            // 使用默认生长速度
+            GrowthSpeed = defaultGrowthSpeed;
+            Debug.LogWarning("未检测到有效地面，使用默认生长速度: " + GrowthSpeed);
+        }
+        
+        // 设置好生长速度后自动开始生长
+        Growth();
     }
 
 
