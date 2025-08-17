@@ -62,6 +62,18 @@ public class NewAntTest : MonoBehaviour
             else
             {
                 Debug.Log("成虫夜晚");
+                if (isHaveHome)
+                {
+                    Debug.Log("成虫夜晚，有居住地，回家");
+                    GoHomeAndSleep();
+                }
+                else
+                {
+                    Debug.Log("成虫夜晚，没有居住地，新建居住地");
+                    CreateHome();
+                    Debug.Log("成虫夜晚，新建居住地后，回家");
+                    GoHomeAndSleep();
+                }
             }
         }
         else
@@ -77,12 +89,12 @@ public class NewAntTest : MonoBehaviour
 
     private void CreateHome()
     {
-        Debug.Log("成虫白天吃饱了，有居住地，完成繁殖，去散步");
+        Debug.Log("成虫白天吃饱了，没有居住地，新建居住地");
     }
 
     private void GoHomeAndStay()
     {
-        Debug.Log("成虫白天吃饱了，有居住地，完成繁殖，回家");
+        Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，回家");
     }
 
     private void FindAndEat()
@@ -93,7 +105,14 @@ public class NewAntTest : MonoBehaviour
         }
         else
         {
-            Debug.Log("没吃饱");
+            Debug.Log("没吃饱，找东西吃");
         }
+    }
+
+    private void GoHomeAndSleep()
+    {
+        // 成虫夜晚回家睡觉的具体方法实现
+        // TODO: 实现回家睡觉的逻辑
+        Debug.Log("成虫夜晚，有居住地，回家睡觉");
     }
 }
