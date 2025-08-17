@@ -196,6 +196,13 @@ public class NewAntTest : MonoBehaviour
 
     private void GoHomeAndStay()
     {
+        // 停止散步状态，避免与回家移动逻辑冲突
+        if (walkManager != null)
+        {
+            walkManager.StopWalking();
+            Debug.Log("停止散步状态，开始回家停留");
+        }
+        
         // 使用居住地管理器的回家方法
         homeManager.GoHomeAndStay(this, moveSpeed);
     }
@@ -246,6 +253,13 @@ public class NewAntTest : MonoBehaviour
 
     private void GoHomeAndSleep()
     {
+        // 停止散步状态，避免与回家移动逻辑冲突
+        if (walkManager != null)
+        {
+            walkManager.StopWalking();
+            Debug.Log("停止散步状态，开始回家睡觉");
+        }
+        
         // 使用居住地管理器的回家方法
         homeManager.GoHomeAndSleep(this, moveSpeed);
     }
