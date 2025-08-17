@@ -15,6 +15,8 @@ public class NewAntTest : MonoBehaviour
     public bool isFinishReproduction;
     //是否在"睡觉"
     public bool isSleeping;
+    //是否在"居住地内"
+    public bool isInHome;
     
     // 引用需求管理器
     private AntNeedsManager needsManager;
@@ -26,6 +28,8 @@ public class NewAntTest : MonoBehaviour
     //居住地相关
     public GameObject homePrefab;
     public GameObject homeTarget;
+    // 居住地组件引用
+    private AntHomeTest homeScript;
 
     //成虫睡觉时间
     public float toSleepTime = 20f; // 默认晚上8点睡觉
@@ -179,6 +183,15 @@ public class NewAntTest : MonoBehaviour
         // 生成居住地预制体
         homeObject = Instantiate(homePrefab, randomPosition, Quaternion.identity);
         homeTarget = homeObject;
+        
+        // 获取居住地脚本组件
+        homeScript = homeObject.GetComponent<AntHomeTest>();
+        if (homeScript == null)
+        {
+            Debug.LogError("居住地预制体上没有AntHomeTest组件");
+            return;
+        }
+        
         isHaveHome = true;
         
         Debug.Log("居住地已创建在位置: " + randomPosition);
@@ -196,7 +209,19 @@ public class NewAntTest : MonoBehaviour
             if (distance <= 1f)
             {
                 Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，已到达居住地");
-                // 到达居住地后的逻辑
+                
+                // 调用居住地的接口方法，通知蚂蚁已到达
+                if (homeScript != null)
+                {
+                    homeScript.OnAntEntered(this, (isInHome) => {
+                        this.isInHome = isInHome;
+                        Debug.Log($"蚂蚁已进入居住地，isInHome状态: {this.isInHome}");
+                    });
+                }
+                else
+                {
+                    Debug.LogError("居住地脚本组件未找到");
+                }
             }
             else
             {
@@ -249,7 +274,19 @@ public class NewAntTest : MonoBehaviour
             if (distance <= 1f)
             {
                 Debug.Log("成虫夜晚，有居住地，已到达居住地");
-                // 只判定到达，不进行其他设置
+                
+                // 调用居住地的接口方法，通知蚂蚁已到达
+                if (homeScript != null)
+                {
+                    homeScript.OnAntEntered(this, (isInHome) => {
+                        this.isInHome = isInHome;
+                        Debug.Log($"蚂蚁已进入居住地，isInHome状态: {this.isInHome}");
+                    });
+                }
+                else
+                {
+                    Debug.LogError("居住地脚本组件未找到");
+                }
             }
             else
             {
