@@ -167,7 +167,31 @@ public class NewAntTest : MonoBehaviour
 
     private void CreateHome()
     {
-        Debug.Log("成虫白天吃饱了，没有居住地，新建居住地");
+        Debug.Log("成虫白天吃饱了，没有居住地，准备创建居住地");
+        
+        // 首先在场景中搜索是否有名为"home"的对象
+        GameObject existingHome = GameObject.Find("home");
+        
+        if (existingHome != null)
+        {
+            Debug.Log("场景中已存在名为'home'的居住地，使用现有居住地");
+            homeObject = existingHome;
+            homeTarget = existingHome;
+            
+            // 获取居住地脚本组件
+            homeScript = homeObject.GetComponent<AntHomeTest>();
+            if (homeScript == null)
+            {
+                Debug.LogError("现有居住地对象上没有AntHomeTest组件");
+                return;
+            }
+            
+            isHaveHome = true;
+            return;
+        }
+        
+        // 如果场景中没有名为"home"的对象，则创建新的居住地
+        Debug.Log("场景中没有名为'home'的居住地，创建新的居住地");
         
         // 检查是否有预制体
         if (homePrefab == null)
