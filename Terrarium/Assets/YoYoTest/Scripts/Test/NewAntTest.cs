@@ -11,6 +11,12 @@ public class NewAntTest : MonoBehaviour
     public bool isDay;
     //是否“吃饱”
     public bool isFull;
+    //是否“喝过水”
+    public bool isDrinkWater;
+    //当前饱腹感
+    public float currentFullness;
+    //是否有食物目标
+    public bool isHaveFoodTarget;
     //是否“有居住地”
     public bool isHaveHome;
     //是否“完成繁殖”
@@ -22,10 +28,10 @@ public class NewAntTest : MonoBehaviour
     public float toSleepTime = 20f; // 默认晚上8点睡觉
     //成虫醒来时间
     public float toAwakeTime = 6f;  // 默认早上6点醒来
-    
+
     // 上一次的白天状态，用于检测状态变化
     private bool wasDayLastFrame = false;
-    
+
     // 白天开始事件
     public event System.Action OnDayStart;
 
@@ -104,7 +110,7 @@ public class NewAntTest : MonoBehaviour
     private void StateCheck()
     {
         IsDayCheck();
-        
+
     }
 
     private void IsDayCheck()
@@ -132,7 +138,7 @@ public class NewAntTest : MonoBehaviour
             OnDayStart?.Invoke();
             Debug.Log("白天开始了！触发事件");
         }
-        
+
         // 更新上一次的状态
         wasDayLastFrame = isDay;
 
@@ -165,7 +171,129 @@ public class NewAntTest : MonoBehaviour
         }
         else
         {
-            Debug.Log("没吃饱，找东西吃");
+            if (isDrinkWater)
+            {
+                Debug.Log("喝过水了");
+                if (isHaveFoodTarget)
+                {
+                    Debug.Log("有食物目标，去吃");
+                    EatFood();
+                }
+                else
+                {
+                    Debug.Log("没有食物目标，去寻找");
+                    FindFoodTarget();
+                }
+            }
+            else
+            {
+                Debug.Log("没喝过水，去喝水");
+                DrinkWater();
+            }
+
+        }
+    }
+
+    private void EatFood()
+    {
+        Debug.Log("吃食物");
+        currentFullness += 10 * Time.deltaTime;
+        if (currentFullness >= 100)
+        {
+            isFull = true;
+        }
+    }
+
+    
+    //水目标
+    public GameObject waterTarget;
+    //口渴度
+    public float currentThirst;
+    //是否碰到水目标
+    public bool isTouchWaterTarget;
+    private void DrinkWater()
+    {
+        if (waterTarget != null)
+        {
+            Debug.Log("有水目标，去喝水");
+            if (isTouchWaterTarget)
+            {
+                Debug.Log("碰到水目标，喝水");
+                currentThirst -= 10 * Time.deltaTime;
+                if (currentThirst <= 0)
+                {
+                    isDrinkWater = true;
+                }
+            }
+            else
+            {
+                Debug.Log("没碰到水目标，去喝水");
+                GoToWaterTarget();
+            }
+        }
+        else
+        {
+            Debug.Log("没有水目标，去寻找");
+            FindWaterTarget();
+        }
+        
+    }
+
+    private void GoToWaterTarget()
+    {
+        if (waterTarget != null)
+        {
+            // 计算从当前位置到水目标的方向
+            Vector3 direction = waterTarget.transform.position - transform.position;
+            
+            // 归一化方向向量，确保移动速度一致
+            direction.Normalize();
+            
+            // 设置移动速度
+            float moveSpeed = 2f;
+            
+            // 向水目标方向移动
+            transform.Translate(direction * moveSpeed * Time.deltaTime);
+            
+            Debug.Log("正在向水目标移动");
+        }
+        else
+        {
+            Debug.Log("水目标不存在");
+        }
+    }
+
+    private void FindWaterTarget()
+    {
+        // 在场景中寻找名为 "water" 的对象
+        GameObject waterObject = GameObject.Find("water");
+
+        if (waterObject != null)
+        {
+            Debug.Log("找到水目标: " + waterObject.name);
+            waterTarget = waterObject;
+        }
+        else
+        {
+            Debug.Log("未找到水目标");
+            waterTarget = null;
+        }
+    }
+
+    private void FindFoodTarget()
+    {
+        // 在场景中寻找名为 "food" 的对象
+        GameObject foodObject = GameObject.Find("food");
+
+        if (foodObject != null)
+        {
+            Debug.Log("找到食物目标: " + foodObject.name);
+            isHaveFoodTarget = true;
+        }
+        else
+        {
+            Debug.Log("未找到食物目标");
+            isHaveFoodTarget = false;
         }
     }
 
@@ -175,7 +303,7 @@ public class NewAntTest : MonoBehaviour
         // TODO: 实现回家睡觉的逻辑
         Debug.Log("成虫夜晚，有居住地，回家睡觉");
     }
-    
+
     /// <summary>
     /// 当白天开始时检查蚂蚁是否在睡觉状态
     /// </summary>
@@ -186,7 +314,10 @@ public class NewAntTest : MonoBehaviour
             isSleeping = false;
             ResetStates();
         }
-
+        else
+        {
+            // 
+        }
     }
 
     private void ResetStates()
