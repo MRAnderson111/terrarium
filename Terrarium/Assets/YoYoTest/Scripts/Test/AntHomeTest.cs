@@ -118,18 +118,39 @@ public class AntHomeTest : MonoBehaviour
             NewAntTest parent1 = unReproducedAdultAnts[0];
             NewAntTest parent2 = unReproducedAdultAnts[1];
             
-            // 生成新的蚂蚁
-            CreateNewAnt();
+            // 检查两只蚂蚁的睡觉状态
+            bool parent1IsSleeping = parent1.isSleeping;
+            bool parent2IsSleeping = parent2.isSleeping;
             
-            // 将两只蚂蚁的状态设置为已繁殖
-            parent1.isFinishReproduction = true;
-            parent2.isFinishReproduction = true;
-            
-            // 从列表中移除已经繁殖过的蚂蚁
-            unReproducedAdultAnts.Remove(parent1);
-            unReproducedAdultAnts.Remove(parent2);
-            
-            Debug.Log($"蚂蚁繁殖成功: {parent1.gameObject.name} 和 {parent2.gameObject.name} 已繁殖");
+            // 如果有任何一只蚂蚁处于睡觉状态，则不繁殖，但标记为已繁殖
+            if (parent1IsSleeping || parent2IsSleeping)
+            {
+                // 将两只蚂蚁的状态设置为已繁殖，但不进行繁殖
+                parent1.isFinishReproduction = true;
+                parent2.isFinishReproduction = true;
+                
+                Debug.Log($"蚂蚁繁殖取消: {parent1.gameObject.name} (睡觉: {parent1IsSleeping}) 和 {parent2.gameObject.name} (睡觉: {parent2IsSleeping})，因为至少有一只蚂蚁在睡觉");
+                
+                // 从列表中移除已经繁殖过的蚂蚁
+                unReproducedAdultAnts.Remove(parent1);
+                unReproducedAdultAnts.Remove(parent2);
+            }
+            else
+            {
+                // 两只蚂蚁都不在睡觉状态，正常进行繁殖
+                // 生成新的蚂蚁
+                CreateNewAnt();
+                
+                // 将两只蚂蚁的状态设置为已繁殖
+                parent1.isFinishReproduction = true;
+                parent2.isFinishReproduction = true;
+                
+                // 从列表中移除已经繁殖过的蚂蚁
+                unReproducedAdultAnts.Remove(parent1);
+                unReproducedAdultAnts.Remove(parent2);
+                
+                Debug.Log($"蚂蚁繁殖成功: {parent1.gameObject.name} 和 {parent2.gameObject.name} 已繁殖");
+            }
         }
     }
     
