@@ -131,7 +131,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09391d8f168dd0845b4086bbb8ecaadc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkRadius: 20
+  walkRadius: 5
   arrivalDistance: 0.5
 --- !u!1 &7603083561794476230
 GameObject:

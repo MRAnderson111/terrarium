@@ -3,8 +3,8 @@ using UnityEngine;
 public class AntWalkManager : MonoBehaviour
 {
     [Header("Walk Settings")]
-    [SerializeField] private float walkRadius = 20f; // 散步半径
-    [SerializeField] private float arrivalDistance = 0.5f; // 到达判定距离
+    [SerializeField] private float walkRadius = 1f; // 散步半径
+    [SerializeField] private float arrivalDistance = 0.1f; // 到达判定距离
     
     // 散步相关变量
     private Vector3 walkTargetPosition; // 散步目标位置

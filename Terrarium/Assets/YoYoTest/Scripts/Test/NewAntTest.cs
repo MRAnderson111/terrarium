@@ -174,6 +174,12 @@ public class NewAntTest : MonoBehaviour
 
     private void TakeAWalk()
     {
+        // 检查是否已经在散步，避免重复调用
+        if (walkManager != null && walkManager.IsWalking)
+        {
+            return;
+        }
+
         Debug.Log("成虫白天吃饱了，有居住地，完成繁殖，去散步");
         
         // 如果蚂蚁在居住地内，先离开居住地
