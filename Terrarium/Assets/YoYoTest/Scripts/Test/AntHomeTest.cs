@@ -51,6 +51,9 @@ public class AntHomeTest : MonoBehaviour
             
             // 回调蚂蚁的action，设置蚂蚁的布尔属性为true（表示已在居住地内）
             onAntEntered?.Invoke(true);
+            
+            // 检查是否有两只未繁殖的蚂蚁，如果有则繁殖
+            CheckAndReproduce();
         }
         else
         {
@@ -86,6 +89,66 @@ public class AntHomeTest : MonoBehaviour
     }
     
     /// <summary>
+    /// 检查是否有两只未繁殖的蚂蚁，如果有则繁殖
+    /// </summary>
+    private void CheckAndReproduce()
+    {
+        // 如果蚂蚁预制体未设置，则无法繁殖
+        if (antPrefab == null)
+        {
+            Debug.LogError("蚂蚁预制体未设置，无法繁殖");
+            return;
+        }
+        
+        // 查找所有未繁殖的成虫蚂蚁
+        List<NewAntTest> unReproducedAdultAnts = new List<NewAntTest>();
+        foreach (NewAntTest ant in antsInHome)
+        {
+            // 只考虑成虫且未繁殖的蚂蚁
+            if (ant.isAdult && !ant.isFinishReproduction)
+            {
+                unReproducedAdultAnts.Add(ant);
+            }
+        }
+        
+        // 如果有两只或更多未繁殖的蚂蚁，则进行繁殖
+        if (unReproducedAdultAnts.Count >= 2)
+        {
+            // 选择前两只蚂蚁进行繁殖
+            NewAntTest parent1 = unReproducedAdultAnts[0];
+            NewAntTest parent2 = unReproducedAdultAnts[1];
+            
+            // 生成新的蚂蚁
+            CreateNewAnt();
+            
+            // 将两只蚂蚁的状态设置为已繁殖
+            parent1.isFinishReproduction = true;
+            parent2.isFinishReproduction = true;
+            
+            Debug.Log($"蚂蚁繁殖成功: {parent1.gameObject.name} 和 {parent2.gameObject.name} 已繁殖");
+        }
+    }
+    
+    /// <summary>
+    /// 创建新的蚂蚁
+    /// </summary>
+    private void CreateNewAnt()
+    {
+        // 在居住地位置生成新的蚂蚁
+        Vector3 spawnPosition = transform.position + new Vector3(
+            UnityEngine.Random.Range(-1f, 1f),  // 在居住地周围随机位置生成
+            0f,
+            UnityEngine.Random.Range(-1f, 1f)
+        );
+        
+        // 生成蚂蚁预制体
+        GameObject newAntObject = Instantiate(antPrefab, spawnPosition, Quaternion.identity);
+        newAntObject.name = "NewAnt_" + DateTime.Now.ToString("HHmmssfff");
+        
+        Debug.Log($"新蚂蚁已生成: {newAntObject.name}");
+    }
+    
+    /// <summary>
     /// 获取居住地内的所有蚂蚁信息（用于调试）
     /// </summary>
     public void PrintAntsInHome()
@@ -93,7 +156,7 @@ public class AntHomeTest : MonoBehaviour
         Debug.Log($"居住地内共有 {antsInHome.Count} 只蚂蚁:");
         for (int i = 0; i < antsInHome.Count; i++)
         {
-            Debug.Log($"  {i + 1}. 蚂蚁 {antsInHome[i].gameObject.name}");
+            Debug.Log($"  {i + 1}. 蚂蚁 {antsInHome[i].gameObject.name} - 成虫: {antsInHome[i].isAdult}, 已繁殖: {antsInHome[i].isFinishReproduction}");
         }
     }
 }
