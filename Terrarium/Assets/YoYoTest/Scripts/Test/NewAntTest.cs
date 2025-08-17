@@ -184,10 +184,14 @@ public class NewAntTest : MonoBehaviour
         if (isSleeping)
         {
             isSleeping = false;
+            ResetStates();
         }
-        else
-        {
-            isSleeping = true;
-        }
+
+    }
+
+    private void ResetStates()
+    {
+        isFull = false;
+        isFinishReproduction = false;
     }
 }

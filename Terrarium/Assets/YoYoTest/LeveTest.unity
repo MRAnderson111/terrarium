@@ -2168,6 +2168,9 @@ MonoBehaviour:
   isFull: 0
   isHaveHome: 0
   isFinishReproduction: 0
+  isSleeping: 0
+  toSleepTime: 20
+  toAwakeTime: 6
 --- !u!4 &376882499
 Transform:
   m_ObjectHideFlags: 0
@@ -3072,7 +3075,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   realSecondsPerGameDay: 120
-  currentTime: 0
+  currentTime: 10
   currentDay: 0
   isTimeRunning: 0
   timeSpeed: 1
