@@ -207,10 +207,12 @@ public class NewAntTest : MonoBehaviour
     
     //水目标
     public GameObject waterTarget;
-    //口渴度
-    public float currentThirst;
+    //饮水满足度
+    public float currentWaterSatisfaction;
     //是否碰到水目标
     public bool isTouchWaterTarget;
+    private bool isTouchFoodTarget;
+
     private void DrinkWater()
     {
         if (waterTarget != null)
@@ -219,8 +221,8 @@ public class NewAntTest : MonoBehaviour
             if (isTouchWaterTarget)
             {
                 Debug.Log("碰到水目标，喝水");
-                currentThirst -= 10 * Time.deltaTime;
-                if (currentThirst <= 0)
+                currentWaterSatisfaction += 10 * Time.deltaTime;
+                if (currentWaterSatisfaction >= 100)
                 {
                     isDrinkWater = true;
                 }
@@ -317,6 +319,20 @@ public class NewAntTest : MonoBehaviour
         else
         {
             // 
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "water")
+        {
+            isTouchWaterTarget = true;
+            Debug.Log("碰到水目标");
+        }
+        if (other.gameObject.name == "food")
+        {
+            isTouchFoodTarget = true;
+            Debug.Log("碰到食物目标");
         }
     }
 
