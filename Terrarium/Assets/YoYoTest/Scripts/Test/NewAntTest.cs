@@ -35,6 +35,9 @@ public class NewAntTest : MonoBehaviour
     public float toSleepTime = 20f; // 默认晚上8点睡觉
     //成虫醒来时间
     public float toAwakeTime = 6f;  // 默认早上6点醒来
+    
+    // 蚂蚁移动速度
+    public float moveSpeed = 2f;
 
     // 上一次的白天状态，用于检测状态变化
     private bool wasDayLastFrame = false;
@@ -229,7 +232,7 @@ public class NewAntTest : MonoBehaviour
                 direction.Normalize();
                 
                 // 向居住地方向移动
-                transform.Translate(direction * 2f * Time.deltaTime);
+                transform.Translate(direction * moveSpeed * Time.deltaTime);
                 
                 Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，正在回家，距离: " + distance);
             }
@@ -294,7 +297,7 @@ public class NewAntTest : MonoBehaviour
                 direction.Normalize();
                 
                 // 向居住地方向移动
-                transform.Translate(direction * 2f * Time.deltaTime);
+                transform.Translate(direction * moveSpeed * Time.deltaTime);
                 
                 Debug.Log("成虫夜晚，有居住地，正在回家睡觉，距离: " + distance);
             }

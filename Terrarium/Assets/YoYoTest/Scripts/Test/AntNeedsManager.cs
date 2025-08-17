@@ -17,8 +17,8 @@ public class AntNeedsManager : MonoBehaviour
     public float currentFullness = 0f;  // 饱腹感，0-100
     public bool isFull = false;
     
-    // 移动速度
-    private float moveSpeed = 2f;
+    // 移动速度（从蚂蚁类获取）
+    private float moveSpeed;
     
     // 引用主蚂蚁对象
     private NewAntTest ant;
@@ -27,6 +27,17 @@ public class AntNeedsManager : MonoBehaviour
     {
         // 获取主蚂蚁组件引用
         ant = GetComponent<NewAntTest>();
+        
+        // 从蚂蚁类获取移动速度
+        if (ant != null)
+        {
+            moveSpeed = ant.moveSpeed;
+        }
+        else
+        {
+            Debug.LogError("无法获取蚂蚁组件，使用默认移动速度 2f");
+            moveSpeed = 2f;
+        }
     }
     
     // 更新饮水满足度
