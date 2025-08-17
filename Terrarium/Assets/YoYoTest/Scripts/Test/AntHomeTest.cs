@@ -14,6 +14,9 @@ public class AntHomeTest : MonoBehaviour
     // 属性：获取居住地内的所有蚂蚁
     public List<NewAntTest> AntsInHome => antsInHome;
 
+    //蚂蚁预制体
+    public GameObject antPrefab;
+
     // Start is called before the first frame update
     void Start()
     {

@@ -31,29 +31,22 @@ public class AntHomeManager : MonoBehaviour
     /// </summary>
     private void InitializeHome()
     {
-        // 首先在场景中搜索是否有名为"home"的对象
-        GameObject existingHome = GameObject.Find("home");
+        // 首先在场景中搜索是否有AntHomeTest组件的对象
+        AntHomeTest[] homeScripts = FindObjectsOfType<AntHomeTest>();
         
-        if (existingHome != null)
+        if (homeScripts != null && homeScripts.Length > 0)
         {
-            Debug.Log("场景中已存在名为'home'的居住地，使用现有居住地");
-            homeObject = existingHome;
-            
-            // 获取居住地脚本组件
-            homeScript = homeObject.GetComponent<AntHomeTest>();
-            if (homeScript == null)
-            {
-                Debug.LogError("现有居住地对象上没有AntHomeTest组件");
-                return;
-            }
-            
+            // 使用找到的第一个居住地
+            homeScript = homeScripts[0];
+            homeObject = homeScript.gameObject;
             isHaveHome = true;
             OnHomeFound?.Invoke(homeObject);
+            Debug.Log("场景中已存在AntHomeTest组件的居住地: " + homeObject.name + "，位置: " + homeObject.transform.position);
             return;
         }
         
-        // 如果场景中没有名为"home"的对象，则创建新的居住地
-        Debug.Log("场景中没有名为'home'的居住地，创建新的居住地");
+        // 如果场景中没有找到AntHomeTest组件的对象，则创建新的居住地
+        Debug.Log("场景中没有找到AntHomeTest组件的居住地，创建新的居住地");
         
         // 检查是否有预制体
         if (homePrefab == null)
