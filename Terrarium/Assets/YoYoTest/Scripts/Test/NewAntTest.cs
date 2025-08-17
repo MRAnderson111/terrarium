@@ -16,15 +16,25 @@ public class NewAntTest : MonoBehaviour
     //是否“完成繁殖”
     public bool isFinishReproduction;
 
+    //成虫睡觉时间
+    public float toSleepTime = 20f; // 默认晚上8点睡觉
+    //成虫醒来时间
+    public float toAwakeTime = 6f;  // 默认早上6点醒来
+
+
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        StateCheck();
+
+
         if (isAdult)
         {
             if (isDay)
@@ -34,7 +44,7 @@ public class NewAntTest : MonoBehaviour
                     Debug.Log("成虫白天吃饱了");
                     if (isHaveHome)
                     {
-                        if(isFinishReproduction)
+                        if (isFinishReproduction)
                         {
                             Debug.Log("成虫白天吃饱了，有居住地，完成繁殖");
                             TakeAWalk();
@@ -80,6 +90,34 @@ public class NewAntTest : MonoBehaviour
         {
             FindAndEat();
         }
+    }
+
+    private void StateCheck()
+    {
+        IsDayCheck();
+
+    }
+
+    private void IsDayCheck()
+    {
+        // 获取当前时间
+        float currentTime = DTimeManager.Instance.CurrentTime;
+
+        // 判断是否是白天
+        // 处理24小时循环逻辑：如果睡觉时间 > 醒来时间，说明跨天（比如20点睡觉，6点醒来）
+        if (toSleepTime > toAwakeTime)
+        {
+            // 跨天情况：白天是醒来时间到睡觉时间之间
+            isDay = currentTime >= toAwakeTime && currentTime < toSleepTime;
+        }
+        else
+        {
+            // 不跨天情况：白天是睡觉时间到醒来时间之间
+            isDay = currentTime >= toSleepTime || currentTime < toAwakeTime;
+        }
+
+        // 调试输出
+        Debug.Log($"当前时间: {currentTime:F2}, 睡觉时间: {toSleepTime:F2}, 醒来时间: {toAwakeTime:F2}, 是否白天: {isDay}");
     }
 
     private void TakeAWalk()
