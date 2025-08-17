@@ -15,11 +15,19 @@ public class NewAntTest : MonoBehaviour
     public bool isHaveHome;
     //是否“完成繁殖”
     public bool isFinishReproduction;
+    //是否在“睡觉”
+    public bool isSleeping;
 
     //成虫睡觉时间
     public float toSleepTime = 20f; // 默认晚上8点睡觉
     //成虫醒来时间
     public float toAwakeTime = 6f;  // 默认早上6点醒来
+    
+    // 上一次的白天状态，用于检测状态变化
+    private bool wasDayLastFrame = false;
+    
+    // 白天开始事件
+    public event System.Action OnDayStart;
 
 
 
@@ -95,7 +103,7 @@ public class NewAntTest : MonoBehaviour
     private void StateCheck()
     {
         IsDayCheck();
-
+        
     }
 
     private void IsDayCheck()
@@ -116,9 +124,22 @@ public class NewAntTest : MonoBehaviour
             isDay = currentTime >= toSleepTime || currentTime < toAwakeTime;
         }
 
+        // 检测从黑夜切换到白天的瞬间
+        if (!wasDayLastFrame && isDay)
+        {
+            // 触发白天开始事件
+            OnDayStart?.Invoke();
+            Debug.Log("白天开始了！触发事件");
+        }
+        
+        // 更新上一次的状态
+        wasDayLastFrame = isDay;
+
         // 调试输出
         Debug.Log($"当前时间: {currentTime:F2}, 睡觉时间: {toSleepTime:F2}, 醒来时间: {toAwakeTime:F2}, 是否白天: {isDay}");
     }
+
+
 
     private void TakeAWalk()
     {
