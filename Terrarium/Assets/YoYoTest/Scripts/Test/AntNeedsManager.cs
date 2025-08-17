@@ -212,5 +212,14 @@ public class AntNeedsManager : MonoBehaviour
         isFull = false;
         currentWaterSatisfaction = 0f;
         isDrinkWater = false;
+        
+        // 重置接触目标的标志位
+        isTouchWaterTarget = false;
+        isTouchFoodTarget = false;
+
+        // 重置目标对象，强制蚂蚁在新的一天重新寻找
+        waterTarget = null;
+        foodTarget = null;
+        isHaveFoodTarget = false;
     }
 }

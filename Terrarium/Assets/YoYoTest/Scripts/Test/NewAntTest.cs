@@ -9,8 +9,6 @@ public class NewAntTest : MonoBehaviour
     public bool isAdult;
     //是否是"白天"
     public bool isDay;
-    //是否"有居住地"
-    public bool isHaveHome;
     //是否"完成繁殖"
     public bool isFinishReproduction;
     //是否在"睡觉"
@@ -63,6 +61,12 @@ public class NewAntTest : MonoBehaviour
     void Update()
     {
         StateCheck();
+        
+        // 如果蚂蚁正在睡觉，则不执行任何操作
+        if (isSleeping)
+        {
+            return;
+        }
         
         // 更新散步状态
         if (walkManager != null)
@@ -163,7 +167,7 @@ public class NewAntTest : MonoBehaviour
         wasDayLastFrame = isDay;
 
         // 调试输出
-        Debug.Log($"当前时间: {currentTime:F2}, 睡觉时间: {toSleepTime:F2}, 醒来时间: {toAwakeTime:F2}, 是否白天: {isDay}");
+        // Debug.Log($"当前时间: {currentTime:F2}, 睡觉时间: {toSleepTime:F2}, 醒来时间: {toAwakeTime:F2}, 是否白天: {isDay}");
     }
 
 
@@ -229,15 +233,10 @@ public class NewAntTest : MonoBehaviour
     /// </summary>
     private void CheckIfAntIsSleepingWhenDayStarts()
     {
-        if (isSleeping)
-        {
-            isSleeping = false;
-            ResetStates();
-        }
-        else
-        {
-            // 
-        }
+        // 当白天开始时，无论蚂蚁是否在睡觉，都重置其状态
+        // 这确保了在回家途中被清晨打断的蚂蚁也能正确开始新的一天
+        Debug.Log("白天开始了，重置蚂蚁状态。");
+        ResetStates();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -256,8 +255,21 @@ public class NewAntTest : MonoBehaviour
 
     private void ResetStates()
     {
+        // 重置需求状态
         needsManager.isFull = false;
-        isFinishReproduction = false;
         needsManager.ResetStates();
+        
+        // 重置蚂蚁自身状态
+        isFinishReproduction = false;
+        isSleeping = false;
+        isInHome = false;
+        
+        // 停止散步状态
+        if (walkManager != null)
+        {
+            walkManager.StopWalking();
+        }
+        
+        Debug.Log("蚂蚁状态已重置，开始新的一天");
     }
 }

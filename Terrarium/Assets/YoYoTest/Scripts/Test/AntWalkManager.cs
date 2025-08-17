@@ -25,7 +25,7 @@ public class AntWalkManager : MonoBehaviour
         // 生成随机目标位置
         walkTargetPosition = GetRandomWalkPosition();
         
-        Debug.Log($"蚂蚁开始散步，目标位置: {walkTargetPosition}");
+        // Debug.Log($"蚂蚁开始散步，目标位置: {walkTargetPosition}");
     }
     
     /// <summary>

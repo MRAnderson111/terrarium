@@ -238,6 +238,10 @@ public class AntHomeManager : MonoBehaviour
         {
             Debug.Log("成虫夜晚，有居住地，已到达居住地");
             
+            // 设置蚂蚁为睡觉状态
+            ant.isSleeping = true;
+            Debug.Log("蚂蚁开始睡觉");
+            
             // 调用居住地的接口方法，通知蚂蚁已到达
             if (HomeScript != null)
             {

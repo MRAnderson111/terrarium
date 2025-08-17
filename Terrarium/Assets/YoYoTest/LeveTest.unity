@@ -3290,8 +3290,8 @@ MonoBehaviour:
   realSecondsPerGameDay: 120
   currentTime: 10
   currentDay: 0
-  isTimeRunning: 0
-  timeSpeed: 1
+  isTimeRunning: 1
+  timeSpeed: 7
 --- !u!1 &928157643
 GameObject:
   m_ObjectHideFlags: 0

@@ -111,8 +111,8 @@ public class AntHomeTest : MonoBehaviour
             }
         }
         
-        // 如果有两只或更多未繁殖的蚂蚁，则进行繁殖
-        if (unReproducedAdultAnts.Count >= 2)
+        // 循环处理所有可繁殖的蚂蚁对
+        while (unReproducedAdultAnts.Count >= 2)
         {
             // 选择前两只蚂蚁进行繁殖
             NewAntTest parent1 = unReproducedAdultAnts[0];
@@ -124,6 +124,10 @@ public class AntHomeTest : MonoBehaviour
             // 将两只蚂蚁的状态设置为已繁殖
             parent1.isFinishReproduction = true;
             parent2.isFinishReproduction = true;
+            
+            // 从列表中移除已经繁殖过的蚂蚁
+            unReproducedAdultAnts.Remove(parent1);
+            unReproducedAdultAnts.Remove(parent2);
             
             Debug.Log($"蚂蚁繁殖成功: {parent1.gameObject.name} 和 {parent2.gameObject.name} 已繁殖");
         }
