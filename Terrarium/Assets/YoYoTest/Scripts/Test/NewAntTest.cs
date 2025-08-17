@@ -34,7 +34,8 @@ public class NewAntTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        // 绑定事件监听器
+        OnDayStart += CheckIfAntIsSleepingWhenDayStarts;
     }
 
     // Update is called once per frame
@@ -173,5 +174,20 @@ public class NewAntTest : MonoBehaviour
         // 成虫夜晚回家睡觉的具体方法实现
         // TODO: 实现回家睡觉的逻辑
         Debug.Log("成虫夜晚，有居住地，回家睡觉");
+    }
+    
+    /// <summary>
+    /// 当白天开始时检查蚂蚁是否在睡觉状态
+    /// </summary>
+    private void CheckIfAntIsSleepingWhenDayStarts()
+    {
+        if (isSleeping)
+        {
+            isSleeping = false;
+        }
+        else
+        {
+            isSleeping = true;
+        }
     }
 }
