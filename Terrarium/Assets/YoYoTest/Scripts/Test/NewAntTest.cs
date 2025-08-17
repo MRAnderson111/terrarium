@@ -179,8 +179,8 @@ public class NewAntTest : MonoBehaviour
         // 如果蚂蚁在居住地内，先离开居住地
         if (isInHome)
         {
-            homeManager.LeaveHome(this, (isInHome) => {
-                this.isInHome = isInHome;
+            homeManager.LeaveHome(this, (isNowInHome) => {
+                this.isInHome = isNowInHome; // 这里回调会传入false
                 Debug.Log($"蚂蚁已离开居住地，isInHome状态: {this.isInHome}");
                 // 离开居住地后开始散步
                 walkManager.StartWalking(this);
@@ -202,22 +202,44 @@ public class NewAntTest : MonoBehaviour
 
     private void FindAndEat()
     {
-        if (needsManager.isFull)
+        // 在寻找食物前，检查是否需要先离开居住地
+        if (isInHome)
         {
-            Debug.Log("吃饱了");
+            Debug.Log("需要寻找食物，但当前在居住地内，先离开。");
+            homeManager.LeaveHome(this, (isNowInHome) => {
+                this.isInHome = isNowInHome; // 回调会传入false
+                Debug.Log($"为寻找食物而离开居住地，isInHome状态: {this.isInHome}");
+                // 离开居住地后开始寻找食物
+                ExecuteFindAndEatSequence();
+            });
         }
         else
         {
-            if (needsManager.isDrinkWater)
-            {
-                Debug.Log("喝过水了");
-                needsManager.EatFood();
-            }
-            else
-            {
-                Debug.Log("没喝过水，去喝水");
-                needsManager.DrinkWater();
-            }
+            // 如果不在居住地内，直接开始寻找食物
+            ExecuteFindAndEatSequence();
+        }
+    }
+
+    /// <summary>
+    /// 执行寻找食物和水的具体逻辑
+    /// </summary>
+    private void ExecuteFindAndEatSequence()
+    {
+        if (needsManager.isFull)
+        {
+            Debug.Log("吃饱了");
+            return;
+        }
+
+        if (needsManager.isDrinkWater)
+        {
+            Debug.Log("喝过水了，去吃东西");
+            needsManager.EatFood();
+        }
+        else
+        {
+            Debug.Log("没喝过水，去喝水");
+            needsManager.DrinkWater();
         }
     }
 
@@ -258,6 +280,14 @@ public class NewAntTest : MonoBehaviour
         // 重置需求状态
         needsManager.isFull = false;
         needsManager.ResetStates();
+        
+        // 如果蚂蚁在重置状态时仍在居住地内，则需要先执行离开逻辑
+        if (isInHome)
+        {
+            // 调用LeaveHome来确保蚂蚁从居住地的列表中被移除
+            // 这里我们不需要回调，因为我们将在下面手动设置isInHome为false
+            homeManager.LeaveHome(this, null);
+        }
         
         // 重置蚂蚁自身状态
         isFinishReproduction = false;
