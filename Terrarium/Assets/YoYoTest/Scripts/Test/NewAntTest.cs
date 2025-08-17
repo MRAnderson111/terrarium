@@ -196,11 +196,28 @@ public class NewAntTest : MonoBehaviour
 
     private void EatFood()
     {
-        Debug.Log("吃食物");
-        currentFullness += 10 * Time.deltaTime;
-        if (currentFullness >= 100)
+        if (foodTarget != null)
         {
-            isFull = true;
+            Debug.Log("有食物目标，去吃");
+            if (isTouchFoodTarget)
+            {
+                Debug.Log("碰到食物目标，吃食物");
+                currentFullness += 10 * Time.deltaTime;
+                if (currentFullness >= 100)
+                {
+                    isFull = true;
+                }
+            }
+            else
+            {
+                Debug.Log("没碰到食物目标，去吃");
+                GoToFoodTarget();
+            }
+        }
+        else
+        {
+            Debug.Log("没有食物目标，去寻找");
+            FindFoodTarget();
         }
     }
 
@@ -211,7 +228,11 @@ public class NewAntTest : MonoBehaviour
     public float currentWaterSatisfaction;
     //是否碰到水目标
     public bool isTouchWaterTarget;
-    private bool isTouchFoodTarget;
+    
+    //食物目标
+    public GameObject foodTarget;
+    //是否碰到食物目标
+    public bool isTouchFoodTarget;
 
     private void DrinkWater()
     {
@@ -282,6 +303,30 @@ public class NewAntTest : MonoBehaviour
         }
     }
 
+    private void GoToFoodTarget()
+    {
+        if (foodTarget != null)
+        {
+            // 计算从当前位置到食物目标的方向
+            Vector3 direction = foodTarget.transform.position - transform.position;
+            
+            // 归一化方向向量，确保移动速度一致
+            direction.Normalize();
+            
+            // 设置移动速度
+            float moveSpeed = 2f;
+            
+            // 向食物目标方向移动
+            transform.Translate(direction * moveSpeed * Time.deltaTime);
+            
+            Debug.Log("正在向食物目标移动");
+        }
+        else
+        {
+            Debug.Log("食物目标不存在");
+        }
+    }
+
     private void FindFoodTarget()
     {
         // 在场景中寻找名为 "food" 的对象
@@ -290,11 +335,13 @@ public class NewAntTest : MonoBehaviour
         if (foodObject != null)
         {
             Debug.Log("找到食物目标: " + foodObject.name);
+            foodTarget = foodObject;
             isHaveFoodTarget = true;
         }
         else
         {
             Debug.Log("未找到食物目标");
+            foodTarget = null;
             isHaveFoodTarget = false;
         }
     }
