@@ -23,6 +23,9 @@ public class NewAntTest : MonoBehaviour
     
     // 引用居住地管理器
     private AntHomeManager homeManager;
+    
+    // 引用散步管理器
+    private AntWalkManager walkManager;
 
     //成虫睡觉时间
     public float toSleepTime = 20f; // 默认晚上8点睡觉
@@ -31,11 +34,6 @@ public class NewAntTest : MonoBehaviour
     
     // 蚂蚁移动速度
     public float moveSpeed = 2f;
-    
-    // 散步相关变量
-    private Vector3 walkTargetPosition; // 散步目标位置
-    private bool isWalking = false; // 是否正在散步
-    private float walkRadius = 20f; // 散步半径
 
     // 上一次的白天状态，用于检测状态变化
     private bool wasDayLastFrame = false;
@@ -53,6 +51,9 @@ public class NewAntTest : MonoBehaviour
         
         // 获取居住地管理器组件
         homeManager = GetComponent<AntHomeManager>();
+        
+        // 获取散步管理器组件
+        walkManager = GetComponent<AntWalkManager>();
 
         // 绑定事件监听器
         OnDayStart += CheckIfAntIsSleepingWhenDayStarts;
@@ -64,7 +65,10 @@ public class NewAntTest : MonoBehaviour
         StateCheck();
         
         // 更新散步状态
-        UpdateWalking();
+        if (walkManager != null)
+        {
+            walkManager.UpdateWalking();
+        }
 
         if (isAdult)
         {
@@ -166,7 +170,7 @@ public class NewAntTest : MonoBehaviour
 
     private void TakeAWalk()
     {
-        Debug.Log("成虫白天吃饱了，有居住地，开始散步");
+        Debug.Log("成虫白天吃饱了，有居住地，完成繁殖，去散步");
         
         // 如果蚂蚁在居住地内，先离开居住地
         if (isInHome)
@@ -175,63 +179,13 @@ public class NewAntTest : MonoBehaviour
                 this.isInHome = isInHome;
                 Debug.Log($"蚂蚁已离开居住地，isInHome状态: {this.isInHome}");
                 // 离开居住地后开始散步
-                StartWalking();
+                walkManager.StartWalking(this);
             });
         }
         else
         {
             // 不在居住地内，直接开始散步
-            StartWalking();
-        }
-    }
-    
-    /// <summary>
-    /// 开始散步
-    /// </summary>
-    private void StartWalking()
-    {
-        // 设置散步状态
-        isWalking = true;
-        
-        // 生成随机目标位置
-        walkTargetPosition = GetRandomWalkPosition();
-        
-        Debug.Log($"蚂蚁开始散步，目标位置: {walkTargetPosition}");
-    }
-    
-    /// <summary>
-    /// 获取随机散步位置
-    /// </summary>
-    /// <returns>随机位置</returns>
-    private Vector3 GetRandomWalkPosition()
-    {
-        // 在当前位置周围随机半径内生成目标位置
-        Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * walkRadius;
-        randomDirection.y = 0; // 保持Y轴为0，确保在平面上移动
-        
-        return transform.position + randomDirection;
-    }
-    
-    /// <summary>
-    /// 更新散步状态
-    /// </summary>
-    private void UpdateWalking()
-    {
-        if (!isWalking)
-            return;
-            
-        // 检查是否到达目标位置
-        if (Vector3.Distance(transform.position, walkTargetPosition) < 0.5f)
-        {
-            // 到达目标位置，生成新的目标位置
-            walkTargetPosition = GetRandomWalkPosition();
-            Debug.Log($"蚂蚁到达目标位置，设置新目标: {walkTargetPosition}");
-        }
-        else
-        {
-            // 向目标位置移动
-            Vector3 direction = (walkTargetPosition - transform.position).normalized;
-            transform.Translate(direction * moveSpeed * Time.deltaTime);
+            walkManager.StartWalking(this);
         }
     }
 
