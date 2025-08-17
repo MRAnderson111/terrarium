@@ -2303,6 +2303,8 @@ MonoBehaviour:
   isHaveHome: 0
   isFinishReproduction: 0
   isSleeping: 0
+  homePrefab: {fileID: 2109754380365222939, guid: 0477e1b071cc3974196884c378a27d48, type: 3}
+  homeTarget: {fileID: 0}
   toSleepTime: 20
   toAwakeTime: 6
 --- !u!4 &376882499

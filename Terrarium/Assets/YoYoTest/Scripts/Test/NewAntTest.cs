@@ -15,9 +15,14 @@ public class NewAntTest : MonoBehaviour
     public bool isFinishReproduction;
     //是否在"睡觉"
     public bool isSleeping;
-    
+
     // 引用需求管理器
     private AntNeedsManager needsManager;
+
+
+    //居住地相关
+    public GameObject homePrefab;
+    public GameObject homeTarget;
 
     //成虫睡觉时间
     public float toSleepTime = 20f; // 默认晚上8点睡觉
@@ -37,7 +42,7 @@ public class NewAntTest : MonoBehaviour
     {
         // 获取需求管理器组件
         needsManager = GetComponent<AntNeedsManager>();
-        
+
         // 绑定事件监听器
         OnDayStart += CheckIfAntIsSleepingWhenDayStarts;
     }
@@ -152,7 +157,7 @@ public class NewAntTest : MonoBehaviour
 
     private void CreateHome()
     {
-        Debug.Log("成虫白天吃饱了，没有居住地，新建居住地");
+
     }
 
     private void GoHomeAndStay()

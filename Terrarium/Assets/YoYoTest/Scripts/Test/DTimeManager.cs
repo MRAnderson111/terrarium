@@ -210,7 +210,7 @@ public class DTimeManager : MonoBehaviour
     /// </summary>
     public void ResetTime()
     {
-        currentTime = 0f;
+        currentTime = 10f;
         currentDay = 1;
         isTimeRunning = false;
         Debug.Log($"时间已重置 - {FormattedDateTime}");
