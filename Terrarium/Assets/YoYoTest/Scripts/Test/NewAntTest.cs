@@ -5,24 +5,19 @@ using UnityEngine;
 
 public class NewAntTest : MonoBehaviour
 {
-    //是否是“成虫”
+    //是否是"成虫"
     public bool isAdult;
-    //是否是“白天”
+    //是否是"白天"
     public bool isDay;
-    //是否“吃饱”
-    public bool isFull;
-    //是否“喝过水”
-    public bool isDrinkWater;
-    //当前饱腹感
-    public float currentFullness;
-    //是否有食物目标
-    public bool isHaveFoodTarget;
-    //是否“有居住地”
+    //是否"有居住地"
     public bool isHaveHome;
-    //是否“完成繁殖”
+    //是否"完成繁殖"
     public bool isFinishReproduction;
-    //是否在“睡觉”
+    //是否在"睡觉"
     public bool isSleeping;
+    
+    // 引用需求管理器
+    private AntNeedsManager needsManager;
 
     //成虫睡觉时间
     public float toSleepTime = 20f; // 默认晚上8点睡觉
@@ -40,6 +35,9 @@ public class NewAntTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // 获取需求管理器组件
+        needsManager = GetComponent<AntNeedsManager>();
+        
         // 绑定事件监听器
         OnDayStart += CheckIfAntIsSleepingWhenDayStarts;
     }
@@ -49,12 +47,11 @@ public class NewAntTest : MonoBehaviour
     {
         StateCheck();
 
-
         if (isAdult)
         {
             if (isDay)
             {
-                if (isFull)
+                if (needsManager.isFull)
                 {
                     Debug.Log("成虫白天吃饱了");
                     if (isHaveHome)
@@ -165,186 +162,25 @@ public class NewAntTest : MonoBehaviour
 
     private void FindAndEat()
     {
-        if (isFull)
+        if (needsManager.isFull)
         {
             Debug.Log("吃饱了");
         }
         else
         {
-            if (isDrinkWater)
+            if (needsManager.isDrinkWater)
             {
                 Debug.Log("喝过水了");
-                if (isHaveFoodTarget)
-                {
-                    Debug.Log("有食物目标，去吃");
-                    EatFood();
-                }
-                else
-                {
-                    Debug.Log("没有食物目标，去寻找");
-                    FindFoodTarget();
-                }
+                needsManager.EatFood();
             }
             else
             {
                 Debug.Log("没喝过水，去喝水");
-                DrinkWater();
-            }
-
-        }
-    }
-
-    private void EatFood()
-    {
-        if (foodTarget != null)
-        {
-            Debug.Log("有食物目标，去吃");
-            if (isTouchFoodTarget)
-            {
-                Debug.Log("碰到食物目标，吃食物");
-                currentFullness += 10 * Time.deltaTime;
-                if (currentFullness >= 100)
-                {
-                    isFull = true;
-                }
-            }
-            else
-            {
-                Debug.Log("没碰到食物目标，去吃");
-                GoToFoodTarget();
+                needsManager.DrinkWater();
             }
         }
-        else
-        {
-            Debug.Log("没有食物目标，去寻找");
-            FindFoodTarget();
-        }
     }
 
-    
-    //水目标
-    public GameObject waterTarget;
-    //饮水满足度
-    public float currentWaterSatisfaction;
-    //是否碰到水目标
-    public bool isTouchWaterTarget;
-    
-    //食物目标
-    public GameObject foodTarget;
-    //是否碰到食物目标
-    public bool isTouchFoodTarget;
-
-    private void DrinkWater()
-    {
-        if (waterTarget != null)
-        {
-            Debug.Log("有水目标，去喝水");
-            if (isTouchWaterTarget)
-            {
-                Debug.Log("碰到水目标，喝水");
-                currentWaterSatisfaction += 10 * Time.deltaTime;
-                if (currentWaterSatisfaction >= 100)
-                {
-                    isDrinkWater = true;
-                }
-            }
-            else
-            {
-                Debug.Log("没碰到水目标，去喝水");
-                GoToWaterTarget();
-            }
-        }
-        else
-        {
-            Debug.Log("没有水目标，去寻找");
-            FindWaterTarget();
-        }
-        
-    }
-
-    private void GoToWaterTarget()
-    {
-        if (waterTarget != null)
-        {
-            // 计算从当前位置到水目标的方向
-            Vector3 direction = waterTarget.transform.position - transform.position;
-            
-            // 归一化方向向量，确保移动速度一致
-            direction.Normalize();
-            
-            // 设置移动速度
-            float moveSpeed = 2f;
-            
-            // 向水目标方向移动
-            transform.Translate(direction * moveSpeed * Time.deltaTime);
-            
-            Debug.Log("正在向水目标移动");
-        }
-        else
-        {
-            Debug.Log("水目标不存在");
-        }
-    }
-
-    private void FindWaterTarget()
-    {
-        // 在场景中寻找名为 "water" 的对象
-        GameObject waterObject = GameObject.Find("water");
-
-        if (waterObject != null)
-        {
-            Debug.Log("找到水目标: " + waterObject.name);
-            waterTarget = waterObject;
-        }
-        else
-        {
-            Debug.Log("未找到水目标");
-            waterTarget = null;
-        }
-    }
-
-    private void GoToFoodTarget()
-    {
-        if (foodTarget != null)
-        {
-            // 计算从当前位置到食物目标的方向
-            Vector3 direction = foodTarget.transform.position - transform.position;
-            
-            // 归一化方向向量，确保移动速度一致
-            direction.Normalize();
-            
-            // 设置移动速度
-            float moveSpeed = 2f;
-            
-            // 向食物目标方向移动
-            transform.Translate(direction * moveSpeed * Time.deltaTime);
-            
-            Debug.Log("正在向食物目标移动");
-        }
-        else
-        {
-            Debug.Log("食物目标不存在");
-        }
-    }
-
-    private void FindFoodTarget()
-    {
-        // 在场景中寻找名为 "food" 的对象
-        GameObject foodObject = GameObject.Find("food");
-
-        if (foodObject != null)
-        {
-            Debug.Log("找到食物目标: " + foodObject.name);
-            foodTarget = foodObject;
-            isHaveFoodTarget = true;
-        }
-        else
-        {
-            Debug.Log("未找到食物目标");
-            foodTarget = null;
-            isHaveFoodTarget = false;
-        }
-    }
 
     private void GoHomeAndSleep()
     {
@@ -373,19 +209,20 @@ public class NewAntTest : MonoBehaviour
     {
         if (other.gameObject.name == "water")
         {
-            isTouchWaterTarget = true;
+            needsManager.isTouchWaterTarget = true;
             Debug.Log("碰到水目标");
         }
         if (other.gameObject.name == "food")
         {
-            isTouchFoodTarget = true;
+            needsManager.isTouchFoodTarget = true;
             Debug.Log("碰到食物目标");
         }
     }
 
     private void ResetStates()
     {
-        isFull = false;
+        needsManager.isFull = false;
         isFinishReproduction = false;
+        needsManager.ResetStates();
     }
 }

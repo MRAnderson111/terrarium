@@ -2278,6 +2278,7 @@ GameObject:
   - component: {fileID: 376882499}
   - component: {fileID: 376882498}
   - component: {fileID: 376882500}
+  - component: {fileID: 376882501}
   m_Layer: 0
   m_Name: NewAnt
   m_TagString: Untagged
@@ -2299,18 +2300,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAdult: 0
   isDay: 0
-  isFull: 0
-  isDrinkWater: 0
-  currentFullness: 0
-  isHaveFoodTarget: 0
   isHaveHome: 0
   isFinishReproduction: 0
   isSleeping: 0
   toSleepTime: 20
   toAwakeTime: 6
-  waterTarget: {fileID: 0}
-  currentWaterSatisfaction: 0
-  isTouchWaterTarget: 0
 --- !u!4 &376882499
 Transform:
   m_ObjectHideFlags: 0
@@ -2354,6 +2348,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &376882501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 376882497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53762c6776f908d4c83e019db3ba6c87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterTarget: {fileID: 0}
+  currentWaterSatisfaction: 0
+  isTouchWaterTarget: 0
+  isDrinkWater: 0
+  foodTarget: {fileID: 0}
+  isTouchFoodTarget: 0
+  isHaveFoodTarget: 0
+  currentFullness: 0
+  isFull: 0
 --- !u!1 &418836129
 GameObject:
   m_ObjectHideFlags: 0
@@ -3184,7 +3199,7 @@ Transform:
   m_GameObject: {fileID: 746628453}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.95, y: 3.3319206, z: 1.04}
+  m_LocalPosition: {x: -5.18, y: 3.3319206, z: -3.48}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
