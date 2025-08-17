@@ -15,9 +15,12 @@ public class NewAntTest : MonoBehaviour
     public bool isFinishReproduction;
     //是否在"睡觉"
     public bool isSleeping;
-
+    
     // 引用需求管理器
     private AntNeedsManager needsManager;
+    
+    // 居住地对象
+    private GameObject homeObject;
 
 
     //居住地相关
@@ -157,12 +160,59 @@ public class NewAntTest : MonoBehaviour
 
     private void CreateHome()
     {
-
+        Debug.Log("成虫白天吃饱了，没有居住地，新建居住地");
+        
+        // 检查是否有预制体
+        if (homePrefab == null)
+        {
+            Debug.LogError("Home预制体未设置，请在Inspector中设置Home预制体");
+            return;
+        }
+        
+        // 在随机位置生成居住地
+        Vector3 randomPosition = transform.position + new Vector3(
+            UnityEngine.Random.Range(-10f, 10f),
+            0f,
+            UnityEngine.Random.Range(-10f, 10f)
+        );
+        
+        // 生成居住地预制体
+        homeObject = Instantiate(homePrefab, randomPosition, Quaternion.identity);
+        homeTarget = homeObject;
+        isHaveHome = true;
+        
+        Debug.Log("居住地已创建在位置: " + randomPosition);
     }
 
     private void GoHomeAndStay()
     {
-        Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，回家");
+        if (homeTarget != null)
+        {
+            // 计算从当前位置到居住地的方向
+            Vector3 direction = homeTarget.transform.position - transform.position;
+            
+            // 检查是否到达居住地（1米以内）
+            float distance = direction.magnitude;
+            if (distance <= 1f)
+            {
+                Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，已到达居住地");
+                // 到达居住地后的逻辑
+            }
+            else
+            {
+                // 归一化方向向量，确保移动速度一致
+                direction.Normalize();
+                
+                // 向居住地方向移动
+                transform.Translate(direction * 2f * Time.deltaTime);
+                
+                Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，正在回家，距离: " + distance);
+            }
+        }
+        else
+        {
+            Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，但居住地不存在");
+        }
     }
 
     private void FindAndEat()
@@ -189,9 +239,33 @@ public class NewAntTest : MonoBehaviour
 
     private void GoHomeAndSleep()
     {
-        // 成虫夜晚回家睡觉的具体方法实现
-        // TODO: 实现回家睡觉的逻辑
-        Debug.Log("成虫夜晚，有居住地，回家睡觉");
+        if (homeTarget != null)
+        {
+            // 计算从当前位置到居住地的方向
+            Vector3 direction = homeTarget.transform.position - transform.position;
+            
+            // 检查是否到达居住地（1米以内）
+            float distance = direction.magnitude;
+            if (distance <= 1f)
+            {
+                Debug.Log("成虫夜晚，有居住地，已到达居住地");
+                // 只判定到达，不进行其他设置
+            }
+            else
+            {
+                // 归一化方向向量，确保移动速度一致
+                direction.Normalize();
+                
+                // 向居住地方向移动
+                transform.Translate(direction * 2f * Time.deltaTime);
+                
+                Debug.Log("成虫夜晚，有居住地，正在回家睡觉，距离: " + distance);
+            }
+        }
+        else
+        {
+            Debug.Log("成虫夜晚，有居住地，但居住地不存在");
+        }
     }
 
     /// <summary>
