@@ -173,42 +173,8 @@ public class NewAntTest : MonoBehaviour
 
     private void GoHomeAndStay()
     {
-        // 使用居住地管理器获取方向和距离
-        Vector3 direction = homeManager.GetHomeDirection();
-        float distance = homeManager.GetHomeDistance();
-        
-        // 检查是否到达居住地（1米以内）
-        if (homeManager.IsAtHome(1f))
-        {
-            Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，已到达居住地");
-            
-            // 调用居住地的接口方法，通知蚂蚁已到达
-            if (homeManager.HomeScript != null)
-            {
-                homeManager.HomeScript.OnAntEntered(this, (isInHome) => {
-                    this.isInHome = isInHome;
-                    Debug.Log($"蚂蚁已进入居住地，isInHome状态: {this.isInHome}");
-                });
-            }
-            else
-            {
-                Debug.LogError("居住地脚本组件未找到");
-            }
-        }
-        else if (direction != Vector3.zero)
-        {
-            // 归一化方向向量，确保移动速度一致
-            direction.Normalize();
-            
-            // 向居住地方向移动
-            transform.Translate(direction * moveSpeed * Time.deltaTime);
-            
-            Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，正在回家，距离: " + distance);
-        }
-        else
-        {
-            Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，但居住地不存在");
-        }
+        // 使用居住地管理器的回家方法
+        homeManager.GoHomeAndStay(this, moveSpeed);
     }
 
     private void FindAndEat()
@@ -235,42 +201,8 @@ public class NewAntTest : MonoBehaviour
 
     private void GoHomeAndSleep()
     {
-        // 使用居住地管理器获取方向和距离
-        Vector3 direction = homeManager.GetHomeDirection();
-        float distance = homeManager.GetHomeDistance();
-        
-        // 检查是否到达居住地（1米以内）
-        if (homeManager.IsAtHome(1f))
-        {
-            Debug.Log("成虫夜晚，有居住地，已到达居住地");
-            
-            // 调用居住地的接口方法，通知蚂蚁已到达
-            if (homeManager.HomeScript != null)
-            {
-                homeManager.HomeScript.OnAntEntered(this, (isInHome) => {
-                    this.isInHome = isInHome;
-                    Debug.Log($"蚂蚁已进入居住地，isInHome状态: {this.isInHome}");
-                });
-            }
-            else
-            {
-                Debug.LogError("居住地脚本组件未找到");
-            }
-        }
-        else if (direction != Vector3.zero)
-        {
-            // 归一化方向向量，确保移动速度一致
-            direction.Normalize();
-            
-            // 向居住地方向移动
-            transform.Translate(direction * moveSpeed * Time.deltaTime);
-            
-            Debug.Log("成虫夜晚，有居住地，正在回家睡觉，距离: " + distance);
-        }
-        else
-        {
-            Debug.Log("成虫夜晚，有居住地，但居住地不存在");
-        }
+        // 使用居住地管理器的回家方法
+        homeManager.GoHomeAndSleep(this, moveSpeed);
     }
 
     /// <summary>
