@@ -24,6 +24,9 @@ public class NewAntTest : MonoBehaviour
     
     // 引用散步管理器
     private AntWalkManager walkManager;
+    
+    // 当前食物目标对象
+    private GameObject currentFoodTarget;
 
     //成虫睡觉时间
     public float toSleepTime = 20f; // 默认晚上8点睡觉
@@ -248,6 +251,8 @@ public class NewAntTest : MonoBehaviour
         {
             Debug.Log("喝过水了，去吃东西");
             needsManager.EatFood();
+            // 更新当前食物目标
+            currentFoodTarget = needsManager.foodTarget;
         }
         else
         {
@@ -288,11 +293,32 @@ public class NewAntTest : MonoBehaviour
             needsManager.isTouchWaterTarget = true;
             Debug.Log("碰到水目标");
         }
-        if (other.gameObject.name == "food")
+        
+        // 精确检查：碰撞对象是否就是当前食物目标对象
+        if (currentFoodTarget != null && other.attachedRigidbody.gameObject == currentFoodTarget.gameObject)
         {
             needsManager.isTouchFoodTarget = true;
-            Debug.Log("碰到食物目标");
+            Debug.Log("蚂蚁碰撞到食物目标：" + currentFoodTarget.name);
+            return;
         }
+        
+        // 检查碰撞对象是否有刚体和IGetObjectClass组件
+        if (other.attachedRigidbody == null)
+        {
+            Debug.LogError("碰撞对象没有刚体");
+            return;
+        }
+            
+
+        IGetObjectClass objectClass = other.attachedRigidbody.GetComponent<IGetObjectClass>();
+        if (objectClass == null)
+        {
+            Debug.LogError("碰撞对象没有IGetObjectClass组件");
+            return;
+        }
+        
+
+
     }
 
     private void ResetStates()
@@ -300,6 +326,9 @@ public class NewAntTest : MonoBehaviour
         // 重置需求状态
         needsManager.isFull = false;
         needsManager.ResetStates();
+        
+        // 重置当前食物目标
+        currentFoodTarget = null;
         
         // 如果蚂蚁在重置状态时仍在居住地内，则需要先执行离开逻辑
         if (isInHome)

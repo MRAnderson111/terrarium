@@ -23,6 +23,9 @@ public class AntNeedsManager : MonoBehaviour
     // 引用主蚂蚁对象
     private NewAntTest ant;
     
+    // 伤害力（用于扣植物的血）
+    public float hurtForce = 10;
+    
     private void Start()
     {
         // 获取主蚂蚁组件引用
@@ -95,19 +98,27 @@ public class AntNeedsManager : MonoBehaviour
     // 寻找食物目标
     public void FindFoodTarget()
     {
-        // 在场景中寻找名为 "food" 的对象
-        GameObject foodObject = GameObject.Find("food");
-
-        if (foodObject != null)
+        // 从ObjectStatisticsManager获取随机植物对象
+        if (ObjectStatisticsManager.Instance != null)
         {
-            Debug.Log("找到食物目标: " + foodObject.name);
-            foodTarget = foodObject;
-            isHaveFoodTarget = true;
-            isTouchFoodTarget = false;
+            GameObject randomPlant = ObjectStatisticsManager.Instance.GetRandomPlantObject();
+            if (randomPlant != null)
+            {
+                foodTarget = randomPlant;
+                isHaveFoodTarget = true;
+                isTouchFoodTarget = false;
+                Debug.Log("找到植物目标: " + foodTarget.name);
+            }
+            else
+            {
+                Debug.LogWarning("未找到植物目标");
+                foodTarget = null;
+                isHaveFoodTarget = false;
+            }
         }
         else
         {
-            Debug.Log("未找到食物目标");
+            Debug.LogError("ObjectStatisticsManager.Instance 为空");
             foodTarget = null;
             isHaveFoodTarget = false;
         }
@@ -186,21 +197,41 @@ public class AntNeedsManager : MonoBehaviour
     {
         if (foodTarget != null)
         {
-            Debug.Log("有食物目标，去吃");
+            Debug.Log("有植物目标，去吃");
             if (isTouchFoodTarget)
             {
-                Debug.Log("碰到食物目标，吃食物");
-                UpdateFullness();
+                Debug.Log("碰到植物目标，吃植物");
+                // 检查植物是否有IBeHurt组件
+                IBeHurt beHurtComponent = foodTarget.GetComponent<IBeHurt>();
+                if (beHurtComponent != null)
+                {
+                    // 扣植物的血
+                    beHurtComponent.BeHurt(hurtForce * Time.deltaTime);
+                    // 增加饱腹感（相当于营养度）
+                    currentFullness += 10 * Time.deltaTime;
+                    if (currentFullness >= 100)
+                    {
+                        currentFullness = 100;
+                        isFull = true;
+                        Debug.Log("蚂蚁吃饱了");
+                        //变成成虫
+                        ant.isAdult = true;
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning("植物目标没有IBeHurt组件：" + foodTarget.name);
+                }
             }
             else
             {
-                Debug.Log("没碰到食物目标，去吃");
+                Debug.Log("没碰到植物目标，去吃");
                 GoToFoodTarget();
             }
         }
         else
         {
-            Debug.Log("没有食物目标，去寻找");
+            Debug.Log("没有植物目标，去寻找");
             FindFoodTarget();
         }
     }
