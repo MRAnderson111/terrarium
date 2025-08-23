@@ -9,34 +9,34 @@ public class AntNeedsManager : MonoBehaviour
     public float currentWaterSatisfaction = 0f;  // 饮水满足度，0-100
     public bool isTouchWaterTarget = false;
     public bool isDrinkWater = false;
-    
+
     // 食物相关属性
     public GameObject foodTarget;
     public bool isTouchFoodTarget = false;
     public bool isHaveFoodTarget = false;
     public float currentFullness = 0f;  // 饱腹感，0-100
     public bool isFull = false;
-    
+
     // 移动速度（从蚂蚁类获取）
     private float moveSpeed;
-    
+
     // 引用主蚂蚁对象
     private NewAntTest ant;
-    
+
     // 引用导航移动组件
     private AnimalNavMove navMove;
-    
+
     // 伤害力（用于扣植物的血）
     public float hurtForce = 10;
-    
+
     private void Start()
     {
-        // 获取主蚂蚁组件引用
         ant = GetComponent<NewAntTest>();
-        
         // 获取导航移动组件
         navMove = GetComponent<AnimalNavMove>();
-        
+
+
+
         // 从蚂蚁类获取移动速度
         if (ant != null)
         {
@@ -48,7 +48,31 @@ public class AntNeedsManager : MonoBehaviour
             moveSpeed = 2f;
         }
     }
-    
+
+    /// <summary>
+    /// 当蚂蚁碰到水目标时停止移动
+    /// </summary>
+    public void OnTouchWaterTarget()
+    {
+        if (navMove != null)
+        {
+            Debug.Log("碰到水目标，停止移动");
+            navMove.StopMoving();
+        }
+    }
+
+    /// <summary>
+    /// 当蚂蚁碰到食物目标时停止移动
+    /// </summary>
+    public void OnTouchFoodTarget()
+    {
+        if (navMove != null)
+        {
+            Debug.Log("碰到食物目标，停止移动");
+            navMove.StopMoving();
+        }
+    }
+
     // 更新饮水满足度
     public void UpdateWaterSatisfaction()
     {
@@ -63,7 +87,7 @@ public class AntNeedsManager : MonoBehaviour
             }
         }
     }
-    
+
     // 更新饱腹感
     public void UpdateFullness()
     {
@@ -80,7 +104,7 @@ public class AntNeedsManager : MonoBehaviour
             }
         }
     }
-    
+
     // 寻找水目标
     public void FindWaterTarget()
     {
@@ -100,7 +124,7 @@ public class AntNeedsManager : MonoBehaviour
             isDrinkWater = false;
         }
     }
-    
+
     // 寻找食物目标
     public void FindFoodTarget()
     {
@@ -129,7 +153,7 @@ public class AntNeedsManager : MonoBehaviour
             isHaveFoodTarget = false;
         }
     }
-    
+
     // 移动到水目标
     public void GoToWaterTarget()
     {
@@ -144,7 +168,7 @@ public class AntNeedsManager : MonoBehaviour
             Debug.Log("水目标不存在");
         }
     }
-    
+
     // 移动到食物目标
     public void GoToFoodTarget()
     {
@@ -159,7 +183,7 @@ public class AntNeedsManager : MonoBehaviour
             Debug.Log("食物目标不存在");
         }
     }
-    
+
     // 喝水逻辑
     public void DrinkWater()
     {
@@ -169,6 +193,7 @@ public class AntNeedsManager : MonoBehaviour
             if (isTouchWaterTarget)
             {
                 Debug.Log("碰到水目标，喝水");
+                OnTouchWaterTarget(); // 触发停止移动
                 UpdateWaterSatisfaction();
             }
             else
@@ -183,7 +208,7 @@ public class AntNeedsManager : MonoBehaviour
             FindWaterTarget();
         }
     }
-    
+
     // 吃食物逻辑
     public void EatFood()
     {
@@ -193,6 +218,7 @@ public class AntNeedsManager : MonoBehaviour
             if (isTouchFoodTarget)
             {
                 Debug.Log("碰到植物目标，吃植物");
+                OnTouchFoodTarget(); // 触发停止移动
                 // 检查植物是否有IBeHurt组件
                 IBeHurt beHurtComponent = foodTarget.GetComponent<IBeHurt>();
                 if (beHurtComponent != null)
@@ -227,7 +253,7 @@ public class AntNeedsManager : MonoBehaviour
             FindFoodTarget();
         }
     }
-    
+
     // 重置状态
     public void ResetStates()
     {
@@ -235,7 +261,7 @@ public class AntNeedsManager : MonoBehaviour
         isFull = false;
         currentWaterSatisfaction = 0f;
         isDrinkWater = false;
-        
+
         // 重置接触目标的标志位
         isTouchWaterTarget = false;
         isTouchFoodTarget = false;
