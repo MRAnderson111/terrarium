@@ -73,16 +73,7 @@ public class AntWalkManager : MonoBehaviour
         else
         {
             // 向目标位置移动
-            if (navMove != null)
-            {
-                navMove.SetTarget(walkTargetPosition);
-            }
-            else
-            {
-                // 如果没有导航组件，使用原来的translate方式作为备用
-                Vector3 direction = (walkTargetPosition - ant.transform.position).normalized;
-                ant.transform.Translate(direction * ant.moveSpeed * Time.deltaTime);
-            }
+            navMove.SetTarget(walkTargetPosition);
         }
     }
     

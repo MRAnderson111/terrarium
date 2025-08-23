@@ -136,19 +136,8 @@ public class AntNeedsManager : MonoBehaviour
         if (waterTarget != null)
         {
             // 使用导航移动组件移动到水目标
-            if (navMove != null)
-            {
-                navMove.SetTarget(waterTarget.transform.position);
-                Debug.Log("正在向水目标移动（使用导航）");
-            }
-            else
-            {
-                // 如果没有导航组件，使用原来的translate方式作为备用
-                Vector3 direction = waterTarget.transform.position - transform.position;
-                direction.Normalize();
-                transform.Translate(direction * moveSpeed * Time.deltaTime);
-                Debug.Log("正在向水目标移动（使用translate备用）");
-            }
+            navMove.SetTarget(waterTarget.transform.position);
+            Debug.Log("正在向水目标移动");
         }
         else
         {
@@ -162,19 +151,8 @@ public class AntNeedsManager : MonoBehaviour
         if (foodTarget != null)
         {
             // 使用导航移动组件移动到食物目标
-            if (navMove != null)
-            {
-                navMove.SetTarget(foodTarget.transform.position);
-                Debug.Log("正在向食物目标移动（使用导航）");
-            }
-            else
-            {
-                // 如果没有导航组件，使用原来的translate方式作为备用
-                Vector3 direction = foodTarget.transform.position - transform.position;
-                direction.Normalize();
-                transform.Translate(direction * moveSpeed * Time.deltaTime);
-                Debug.Log("正在向食物目标移动（使用translate备用）");
-            }
+            navMove.SetTarget(foodTarget.transform.position);
+            Debug.Log("正在向食物目标移动");
         }
         else
         {

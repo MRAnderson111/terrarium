@@ -212,18 +212,8 @@ public class AntHomeManager : MonoBehaviour
         else if (direction != Vector3.zero)
         {
             // 使用导航移动组件移动到居住地
-            if (navMove != null)
-            {
-                navMove.SetTarget(GetHomePosition());
-                Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，正在回家（使用导航），距离: " + distance);
-            }
-            else
-            {
-                // 如果没有导航组件，使用原来的translate方式作为备用
-                direction.Normalize();
-                ant.transform.Translate(direction * moveSpeed * Time.deltaTime);
-                Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，正在回家（使用translate备用），距离: " + distance);
-            }
+            navMove.SetTarget(GetHomePosition());
+            Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，正在回家，距离: " + distance);
         }
         else
         {
@@ -270,18 +260,8 @@ public class AntHomeManager : MonoBehaviour
         else if (direction != Vector3.zero)
         {
             // 使用导航移动组件移动到居住地
-            if (navMove != null)
-            {
-                navMove.SetTarget(GetHomePosition());
-                Debug.Log("成虫夜晚，有居住地，正在回家睡觉（使用导航），距离: " + distance);
-            }
-            else
-            {
-                // 如果没有导航组件，使用原来的translate方式作为备用
-                direction.Normalize();
-                ant.transform.Translate(direction * moveSpeed * Time.deltaTime);
-                Debug.Log("成虫夜晚，有居住地，正在回家睡觉（使用translate备用），距离: " + distance);
-            }
+            navMove.SetTarget(GetHomePosition());
+            Debug.Log("成虫夜晚，有居住地，正在回家睡觉，距离: " + distance);
         }
         else
         {
