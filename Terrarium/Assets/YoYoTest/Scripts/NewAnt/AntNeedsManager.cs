@@ -23,6 +23,9 @@ public class AntNeedsManager : MonoBehaviour
     // 引用主蚂蚁对象
     private NewAntTest ant;
     
+    // 引用导航移动组件
+    private AnimalNavMove navMove;
+    
     // 伤害力（用于扣植物的血）
     public float hurtForce = 10;
     
@@ -30,6 +33,9 @@ public class AntNeedsManager : MonoBehaviour
     {
         // 获取主蚂蚁组件引用
         ant = GetComponent<NewAntTest>();
+        
+        // 获取导航移动组件
+        navMove = GetComponent<AnimalNavMove>();
         
         // 从蚂蚁类获取移动速度
         if (ant != null)
@@ -129,16 +135,20 @@ public class AntNeedsManager : MonoBehaviour
     {
         if (waterTarget != null)
         {
-            // 计算从当前位置到水目标的方向
-            Vector3 direction = waterTarget.transform.position - transform.position;
-            
-            // 归一化方向向量，确保移动速度一致
-            direction.Normalize();
-            
-            // 向水目标方向移动
-            transform.Translate(direction * moveSpeed * Time.deltaTime);
-            
-            Debug.Log("正在向水目标移动");
+            // 使用导航移动组件移动到水目标
+            if (navMove != null)
+            {
+                navMove.SetTarget(waterTarget.transform.position);
+                Debug.Log("正在向水目标移动（使用导航）");
+            }
+            else
+            {
+                // 如果没有导航组件，使用原来的translate方式作为备用
+                Vector3 direction = waterTarget.transform.position - transform.position;
+                direction.Normalize();
+                transform.Translate(direction * moveSpeed * Time.deltaTime);
+                Debug.Log("正在向水目标移动（使用translate备用）");
+            }
         }
         else
         {
@@ -151,16 +161,20 @@ public class AntNeedsManager : MonoBehaviour
     {
         if (foodTarget != null)
         {
-            // 计算从当前位置到食物目标的方向
-            Vector3 direction = foodTarget.transform.position - transform.position;
-            
-            // 归一化方向向量，确保移动速度一致
-            direction.Normalize();
-            
-            // 向食物目标方向移动
-            transform.Translate(direction * moveSpeed * Time.deltaTime);
-            
-            Debug.Log("正在向食物目标移动");
+            // 使用导航移动组件移动到食物目标
+            if (navMove != null)
+            {
+                navMove.SetTarget(foodTarget.transform.position);
+                Debug.Log("正在向食物目标移动（使用导航）");
+            }
+            else
+            {
+                // 如果没有导航组件，使用原来的translate方式作为备用
+                Vector3 direction = foodTarget.transform.position - transform.position;
+                direction.Normalize();
+                transform.Translate(direction * moveSpeed * Time.deltaTime);
+                Debug.Log("正在向食物目标移动（使用translate备用）");
+            }
         }
         else
         {

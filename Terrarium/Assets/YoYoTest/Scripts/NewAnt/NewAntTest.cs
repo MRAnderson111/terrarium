@@ -25,6 +25,9 @@ public class NewAntTest : MonoBehaviour
     // 引用散步管理器
     private AntWalkManager walkManager;
     
+    // 引用导航移动组件
+    private AnimalNavMove navMove;
+    
     // 当前食物目标对象
     private GameObject currentFoodTarget;
 
@@ -55,6 +58,9 @@ public class NewAntTest : MonoBehaviour
         
         // 获取散步管理器组件
         walkManager = GetComponent<AntWalkManager>();
+        
+        // 获取导航移动组件
+        navMove = GetComponent<AnimalNavMove>();
 
         // 绑定事件监听器
         OnDayStart += CheckIfAntIsSleepingWhenDayStarts;

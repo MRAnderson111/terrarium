@@ -91,7 +91,7 @@ public class DTimeManager : MonoBehaviour
     void Start()
     {
         // 初始化时间为第1天的0点
-        ResetTime();
+        // ResetTime();
     }
 
     // Update is called once per frame

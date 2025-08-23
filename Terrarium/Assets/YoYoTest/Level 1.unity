@@ -3954,10 +3954,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3199726379695570567, guid: e57655328de42e84b887d38a18e06b03, type: 3}
-      propertyPath: hurtForce
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3253501275212402260, guid: e57655328de42e84b887d38a18e06b03, type: 3}
       propertyPath: m_Name
       value: NewAnt
@@ -4095,6 +4091,14 @@ PrefabInstance:
     - target: {fileID: 875677144443234185, guid: 94ce017558679d643bb9041d13074cd1, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3787450274284789691, guid: 94ce017558679d643bb9041d13074cd1, type: 3}
+      propertyPath: timeSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3787450274284789691, guid: 94ce017558679d643bb9041d13074cd1, type: 3}
+      propertyPath: currentTime
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 8789957237343499020, guid: 94ce017558679d643bb9041d13074cd1, type: 3}
       propertyPath: m_Name

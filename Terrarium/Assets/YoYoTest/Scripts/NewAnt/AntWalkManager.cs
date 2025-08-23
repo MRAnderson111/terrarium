@@ -13,6 +13,9 @@ public class AntWalkManager : MonoBehaviour
     // 引用蚂蚁实例
     private NewAntTest ant;
     
+    // 引用导航移动组件
+    private AnimalNavMove navMove;
+    
     /// <summary>
     /// 开始散步
     /// </summary>
@@ -20,6 +23,8 @@ public class AntWalkManager : MonoBehaviour
     public void StartWalking(NewAntTest antInstance)
     {
         ant = antInstance;
+        // 获取导航移动组件
+        navMove = ant.GetComponent<AnimalNavMove>();
         isWalking = true;
         
         // 生成随机目标位置
@@ -68,8 +73,16 @@ public class AntWalkManager : MonoBehaviour
         else
         {
             // 向目标位置移动
-            Vector3 direction = (walkTargetPosition - ant.transform.position).normalized;
-            ant.transform.Translate(direction * ant.moveSpeed * Time.deltaTime);
+            if (navMove != null)
+            {
+                navMove.SetTarget(walkTargetPosition);
+            }
+            else
+            {
+                // 如果没有导航组件，使用原来的translate方式作为备用
+                Vector3 direction = (walkTargetPosition - ant.transform.position).normalized;
+                ant.transform.Translate(direction * ant.moveSpeed * Time.deltaTime);
+            }
         }
     }
     

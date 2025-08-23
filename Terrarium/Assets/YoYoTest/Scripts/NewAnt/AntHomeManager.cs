@@ -184,6 +184,9 @@ public class AntHomeManager : MonoBehaviour
     /// <param name="moveSpeed">移动速度</param>
     public void GoHomeAndStay(NewAntTest ant, float moveSpeed)
     {
+        // 获取导航移动组件
+        AnimalNavMove navMove = ant.GetComponent<AnimalNavMove>();
+        
         // 使用居住地管理器获取方向和距离
         Vector3 direction = GetHomeDirection();
         float distance = GetHomeDistance();
@@ -208,13 +211,19 @@ public class AntHomeManager : MonoBehaviour
         }
         else if (direction != Vector3.zero)
         {
-            // 归一化方向向量，确保移动速度一致
-            direction.Normalize();
-            
-            // 向居住地方向移动
-            ant.transform.Translate(direction * moveSpeed * Time.deltaTime);
-            
-            Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，正在回家，距离: " + distance);
+            // 使用导航移动组件移动到居住地
+            if (navMove != null)
+            {
+                navMove.SetTarget(GetHomePosition());
+                Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，正在回家（使用导航），距离: " + distance);
+            }
+            else
+            {
+                // 如果没有导航组件，使用原来的translate方式作为备用
+                direction.Normalize();
+                ant.transform.Translate(direction * moveSpeed * Time.deltaTime);
+                Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，正在回家（使用translate备用），距离: " + distance);
+            }
         }
         else
         {
@@ -229,6 +238,9 @@ public class AntHomeManager : MonoBehaviour
     /// <param name="moveSpeed">移动速度</param>
     public void GoHomeAndSleep(NewAntTest ant, float moveSpeed)
     {
+        // 获取导航移动组件
+        AnimalNavMove navMove = ant.GetComponent<AnimalNavMove>();
+        
         // 使用居住地管理器获取方向和距离
         Vector3 direction = GetHomeDirection();
         float distance = GetHomeDistance();
@@ -257,13 +269,19 @@ public class AntHomeManager : MonoBehaviour
         }
         else if (direction != Vector3.zero)
         {
-            // 归一化方向向量，确保移动速度一致
-            direction.Normalize();
-            
-            // 向居住地方向移动
-            ant.transform.Translate(direction * moveSpeed * Time.deltaTime);
-            
-            Debug.Log("成虫夜晚，有居住地，正在回家睡觉，距离: " + distance);
+            // 使用导航移动组件移动到居住地
+            if (navMove != null)
+            {
+                navMove.SetTarget(GetHomePosition());
+                Debug.Log("成虫夜晚，有居住地，正在回家睡觉（使用导航），距离: " + distance);
+            }
+            else
+            {
+                // 如果没有导航组件，使用原来的translate方式作为备用
+                direction.Normalize();
+                ant.transform.Translate(direction * moveSpeed * Time.deltaTime);
+                Debug.Log("成虫夜晚，有居住地，正在回家睡觉（使用translate备用），距离: " + distance);
+            }
         }
         else
         {

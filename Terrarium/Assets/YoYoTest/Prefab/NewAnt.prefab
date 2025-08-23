@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5121309747974531881}
   - component: {fileID: -7230120652267141824}
   - component: {fileID: -4756007029834268580}
+  - component: {fileID: 7078931711805122421}
   m_Layer: 0
   m_Name: NewAnt
   m_TagString: Untagged
@@ -157,6 +158,19 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &7078931711805122421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3253501275212402260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c301b065141bb74397065ca53d44f1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agent: {fileID: -4756007029834268580}
 --- !u!1 &7603083561794476230
 GameObject:
   m_ObjectHideFlags: 0
