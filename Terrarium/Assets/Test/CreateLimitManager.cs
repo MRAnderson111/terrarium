@@ -75,6 +75,24 @@ public static class CreateLimitManager
         }
     }
 
+    /// <summary>
+    /// 给指定键的创建限制值增加指定数值
+    /// </summary>
+    /// <param name="key">要修改的键名</param>
+    /// <param name="valueToAdd">要增加的数值</param>
+    public static void AddToCreateLimit(string key, int valueToAdd)
+    {
+        if (createLimit.ContainsKey(key))
+        {
+            createLimit[key] += valueToAdd;
+            Debug.Log($"键 '{key}' 的创建限制值已增加 {valueToAdd}，当前值为: {createLimit[key]}");
+        }
+        else
+        {
+            Debug.LogWarning($"键 '{key}' 不存在，无法增加数值");
+        }
+    }
+
     // 在Unity子系统注册时自动清理数据
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics()

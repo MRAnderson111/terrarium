@@ -17,12 +17,14 @@ public class StaticTest : MonoBehaviour
         {
             CreateLimitManager.SetCreateLimit("ant", 100);
         }
-
-
-
         if (Input.GetKeyDown(KeyCode.L))
         {
             CreateLimitManager.LogAllCreateLimit();
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            CreateLimitManager.AddToCreateLimit("ant", 10);
         }
     }
 }
