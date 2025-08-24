@@ -15,14 +15,14 @@ public class StaticTest : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            GlobalCooldownManager.Score = 100;
-            Debug.Log("Score: " + GlobalCooldownManager.Score);
+            CreateLimitManager.SetCreateLimit("ant", 100);
         }
 
-        if (Input.GetKeyDown(KeyCode.B))
+
+
+        if (Input.GetKeyDown(KeyCode.L))
         {
-            
-            Debug.Log("Score: " + GlobalCooldownManager.Score);
+            CreateLimitManager.LogAllCreateLimit();
         }
     }
 }

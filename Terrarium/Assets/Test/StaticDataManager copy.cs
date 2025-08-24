@@ -11,8 +11,8 @@ public static class CreateLimitManager
     private static readonly Dictionary<string, int> createLimit = new Dictionary<string, int>();
     private static bool _isInitialized = false;
 
-    
-    
+
+
     /// <summary>
     /// 清理所有数据的方法
     /// </summary>
@@ -21,9 +21,15 @@ public static class CreateLimitManager
         createLimit.Clear();
         _isInitialized = false;
         
-        Debug.Log("创建限制管理器已清理");
+        // 重新填充默认的创建限制
+        createLimit.Add("ant", 10);
+        createLimit.Add("plant", 5);
+        createLimit.Add("building", 3);
+        createLimit.Add("resource", 20);
+        
+        Debug.Log("创建限制管理器已清理并重置默认值");
     }
-    
+
     /// <summary>
     /// 初始化创建限制管理器
     /// </summary>
@@ -35,13 +41,13 @@ public static class CreateLimitManager
             Debug.Log("创建限制管理器已初始化");
         }
     }
-    
+
     // createLimit字典的访问方法
     public static void SetCreateLimit(string key, int value)
     {
         createLimit[key] = value;
     }
-    
+
     public static int GetCreateLimit(string key, int defaultValue = 0)
     {
         if (createLimit.TryGetValue(key, out int value))
@@ -50,17 +56,25 @@ public static class CreateLimitManager
         }
         return defaultValue;
     }
-    
+
     public static bool HasCreateLimit(string key)
     {
         return createLimit.ContainsKey(key);
     }
-    
+
     public static void RemoveCreateLimit(string key)
     {
         createLimit.Remove(key);
     }
-    
+
+    public static void LogAllCreateLimit()
+    {
+        foreach (var item in createLimit)
+        {
+            Debug.Log("CreateLimit: " + item.Key + " " + item.Value);
+        }
+    }
+
     // 在Unity子系统注册时自动清理数据
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
     private static void ResetStatics()
