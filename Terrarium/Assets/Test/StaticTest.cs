@@ -24,7 +24,7 @@ public class StaticTest : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.B))
         {
-            StaticCreateLimitManager.AddToCreateLimit("ant", 10);
+            StaticCreateLimitManager.AddToCreateLimit("ant");
         }
     }
 }

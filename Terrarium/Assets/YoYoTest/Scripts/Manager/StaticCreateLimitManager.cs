@@ -9,6 +9,7 @@ using UnityEngine;
 public static class StaticCreateLimitManager
 {
     private static readonly Dictionary<string, int> createLimit = new Dictionary<string, int>();
+    private static readonly Dictionary<string, int> createAddCount = new Dictionary<string, int>();
     private static bool _isInitialized = false;
 
 
@@ -19,6 +20,7 @@ public static class StaticCreateLimitManager
     public static void Cleanup()
     {
         createLimit.Clear();
+        createAddCount.Clear();
         _isInitialized = false;
         
         // 重新填充默认的创建限制
@@ -27,6 +29,12 @@ public static class StaticCreateLimitManager
         createLimit.Add("Flower", 3);
         createLimit.Add("Tree", 3);
         createLimit.Add("Grass", 3);
+
+        createAddCount.Add("BigAnt", 2);
+        createAddCount.Add("AntKiller", 2);
+        createAddCount.Add("Flower", 2); 
+        createAddCount.Add("Tree", 2);
+        createAddCount.Add("Grass", 2);
         
         Debug.Log("创建限制管理器已清理并重置默认值");
     }
@@ -77,14 +85,15 @@ public static class StaticCreateLimitManager
     }
 
     /// <summary>
-    /// 给指定键的创建限制值增加指定数值
+    /// 给指定键的创建限制值增加对应配置的数值
     /// </summary>
     /// <param name="key">要修改的键名</param>
-    /// <param name="valueToAdd">要增加的数值</param>
-    public static void AddToCreateLimit(string key, int valueToAdd)
+    public static void AddToCreateLimit(string key)
     {
         if (createLimit.ContainsKey(key))
         {
+            // 从 createAddCount 字典中获取要增加的数值，如果不存在则使用默认值2
+            int valueToAdd = createAddCount.TryGetValue(key, out int count) ? count : 2;
             createLimit[key] += valueToAdd;
             Debug.Log($"键 '{key}' 的创建限制值已增加 {valueToAdd}，当前值为: {createLimit[key]}");
         }

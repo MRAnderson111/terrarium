@@ -187,6 +187,8 @@ public class CreateManager : MonoBehaviour
             {
                 if(selectButton.quantity > 0)
                 {
+                    //让对应的数量限制增加3
+                    StaticCreateLimitManager.AddToCreateLimit(selectPrefab.name);
                     CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * 0.5f);
                     selectButton.DecrementQuantity();
                 }
