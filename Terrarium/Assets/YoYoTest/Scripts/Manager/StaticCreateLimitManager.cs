@@ -6,7 +6,7 @@ using UnityEngine;
 /// 创建限制管理器类，用于管理各种对象类型的创建限制
 /// 在每次进入游戏时自动重置数据
 /// </summary>
-public static class CreateLimitManager
+public static class StaticCreateLimitManager
 {
     private static readonly Dictionary<string, int> createLimit = new Dictionary<string, int>();
     private static bool _isInitialized = false;
