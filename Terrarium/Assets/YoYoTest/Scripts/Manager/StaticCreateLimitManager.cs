@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -35,6 +36,8 @@ public static class StaticCreateLimitManager
         createAddCount.Add("Flower", 2); 
         createAddCount.Add("Tree", 2);
         createAddCount.Add("Grass", 2);
+
+        DiscountToCreateLimit();
         
         Debug.Log("创建限制管理器已清理并重置默认值");
     }
@@ -100,6 +103,23 @@ public static class StaticCreateLimitManager
         else
         {
             Debug.LogWarning($"键 '{key}' 不存在，无法增加数值");
+        }
+    }
+
+
+    public static void DiscountToCreateLimit()
+    {
+        // 先复制所有键，避免在遍历字典时修改字典
+        var keys = createLimit.Keys.ToList();
+        
+        foreach (var key in keys)
+        {
+            if (createLimit.ContainsKey(key) && createAddCount.ContainsKey(key))
+            {
+                int valueToSubtract = createAddCount[key];
+                createLimit[key] -= valueToSubtract;
+                Debug.Log($"键 '{key}' 的创建限制值已减少 {valueToSubtract}，当前值为: {createLimit[key]}");
+            }
         }
     }
 
