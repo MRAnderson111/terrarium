@@ -3958,6 +3958,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NewAnt
       objectReference: {fileID: 0}
+    - target: {fileID: 3253501275212402260, guid: e57655328de42e84b887d38a18e06b03, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5085534942999711567, guid: e57655328de42e84b887d38a18e06b03, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

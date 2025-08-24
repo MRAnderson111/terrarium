@@ -134,40 +134,35 @@ public class CreateManager : MonoBehaviour
 
 
 
-        // 检查对象是否实现了数量限制接口
-        IGetQuantityLimits prefabQuantityLimitInterface = prefab.GetComponent<IGetQuantityLimits>();
-        if (prefabQuantityLimitInterface != null)
+        // 获取当前对象数量统计管理器
+        ObjectStatisticsManager statsManager = FindObjectOfType<ObjectStatisticsManager>();
+        if (statsManager != null)
         {
-            // 获取当前对象数量统计管理器
-            ObjectStatisticsManager statsManager = FindObjectOfType<ObjectStatisticsManager>();
-            if (statsManager != null)
+            // 获取预制体的名称作为键值
+            string prefabName = prefab.name;
+            int currentCount = 0;
+
+            // 根据预制体名称获取当前数量
+            if (statsManager.smallClassCount.ContainsKey(prefabName))
             {
-                // 获取预制体的小类名称（假设预制体的名称就是小类名称）
-                string smallClass = prefab.name;
-                int currentCount = 0;
-
-                // 根据小类获取当前数量
-                if (statsManager.smallClassCount.ContainsKey(smallClass))
-                {
-                    currentCount = statsManager.smallClassCount[smallClass];
-                }
-
-                // 从场景中已存在的同类对象获取最新的数量限制值
-                int currentQuantityLimit = GetCurrentQuantityLimit(smallClass);
-                
-                // 检查是否超过数量限制
-                if (currentCount >= currentQuantityLimit)
-                {
-                    Debug.LogWarning($"无法生成 {prefab.name}，当前数量 {currentCount} 已达到限制 {currentQuantityLimit}");
-                    return null;
-                }
-
-                Debug.Log($"检查数量限制：{prefab.name}，当前数量 {currentCount}，限制数量 {currentQuantityLimit}");
+                currentCount = statsManager.smallClassCount[prefabName];
             }
-            else
+
+            // 从静态管理器获取数量限制值
+            int currentQuantityLimit = StaticCreateLimitManager.GetCreateLimit(prefabName, 10); // 默认值为10
+            
+            // 检查是否超过数量限制
+            if (currentCount >= currentQuantityLimit)
             {
-                Debug.LogWarning("未找到 ObjectStatisticsManager 实例，无法进行数量限制检查");
+                Debug.LogWarning($"无法生成 {prefab.name}，当前数量 {currentCount} 已达到限制 {currentQuantityLimit}");
+                return null;
             }
+
+            Debug.Log($"检查数量限制：{prefab.name}，当前数量 {currentCount}，限制数量 {currentQuantityLimit}");
+        }
+        else
+        {
+            Debug.LogWarning("未找到 ObjectStatisticsManager 实例，无法进行数量限制检查");
         }
 
         // 在指定位置生成预制体
