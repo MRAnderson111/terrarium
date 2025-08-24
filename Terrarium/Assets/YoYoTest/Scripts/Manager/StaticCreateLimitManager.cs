@@ -22,10 +22,11 @@ public static class StaticCreateLimitManager
         _isInitialized = false;
         
         // 重新填充默认的创建限制
-        createLimit.Add("BigAnt", 10);
-        createLimit.Add("AntKiller", 5);
+        createLimit.Add("BigAnt", 3);
+        createLimit.Add("AntKiller", 3);
         createLimit.Add("Flower", 3);
-        createLimit.Add("Tree", 20);
+        createLimit.Add("Tree", 3);
+        createLimit.Add("Grass", 3);
         
         Debug.Log("创建限制管理器已清理并重置默认值");
     }
