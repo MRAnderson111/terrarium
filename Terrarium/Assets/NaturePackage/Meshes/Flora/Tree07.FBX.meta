@@ -1,0 +1,175 @@
+fileFormatVersion: 2
+guid: 170e0f32eeca40f429aee57904b2a507
+timeCreated: 1532612576
+licenseType: Store
+ModelImporter:
+  serializedVersion: 21
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Tree07
+    100004: Tree07Collider1
+    100006: Tree07Collider2
+    100008: Tree07Collider3
+    100010: Tree07Collider4
+    100012: Tree07Collider5
+    100014: Tree07Collider6
+    100016: Tree07Collider7
+    100018: Tree07LOD1
+    100020: Tree07LOD2
+    100022: Tree07LOD3
+    100024: Tree07Collider
+    100026: Tree07_LOD0
+    100028: Tree07_LOD1
+    100030: Tree07_LOD2
+    100032: Tree07_LOD3
+    100034: UCX_Tree07
+    400000: //RootNode
+    400002: Tree07
+    400004: Tree07Collider1
+    400006: Tree07Collider2
+    400008: Tree07Collider3
+    400010: Tree07Collider4
+    400012: Tree07Collider5
+    400014: Tree07Collider6
+    400016: Tree07Collider7
+    400018: Tree07LOD1
+    400020: Tree07LOD2
+    400022: Tree07LOD3
+    400024: Tree07Collider
+    400026: Tree07_LOD0
+    400028: Tree07_LOD1
+    400030: Tree07_LOD2
+    400032: Tree07_LOD3
+    400034: UCX_Tree07
+    2300000: Tree07
+    2300002: Tree07Collider1
+    2300004: Tree07Collider2
+    2300006: Tree07Collider3
+    2300008: Tree07Collider4
+    2300010: Tree07Collider5
+    2300012: Tree07Collider6
+    2300014: Tree07Collider7
+    2300016: Tree07LOD1
+    2300018: Tree07LOD2
+    2300020: Tree07LOD3
+    2300022: Tree07Collider
+    2300024: Tree07_LOD0
+    2300026: Tree07_LOD1
+    2300028: Tree07_LOD2
+    2300030: Tree07_LOD3
+    2300032: UCX_Tree07
+    3300000: Tree07
+    3300002: Tree07Collider1
+    3300004: Tree07Collider2
+    3300006: Tree07Collider3
+    3300008: Tree07Collider4
+    3300010: Tree07Collider5
+    3300012: Tree07Collider6
+    3300014: Tree07Collider7
+    3300016: Tree07LOD1
+    3300018: Tree07LOD2
+    3300020: Tree07LOD3
+    3300022: Tree07Collider
+    3300024: Tree07_LOD0
+    3300026: Tree07_LOD1
+    3300028: Tree07_LOD2
+    3300030: Tree07_LOD3
+    3300032: UCX_Tree07
+    4300000: Tree07Collider1
+    4300002: Tree07Collider2
+    4300004: Tree07Collider3
+    4300006: Tree07Collider4
+    4300008: Tree07Collider5
+    4300010: Tree07Collider7
+    4300012: Tree07Collider6
+    4300014: Tree07
+    4300016: Tree07LOD1
+    4300018: Tree07LOD2
+    4300020: Tree07LOD3
+    4300022: Tree07Collider
+    4300024: UCX_Tree07
+    4300026: Tree07_LOD0
+    4300028: Tree07_LOD1
+    4300030: Tree07_LOD2
+    4300032: Tree07_LOD3
+    9500000: //RootNode
+    20500000: //RootNode
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages:
+    - 0.25
+    - 0.125
+    - 0.0625
+    - 0.01
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+    normalCalculationMode: 0
+  importAnimation: 0
+  copyAvatar: 1
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
