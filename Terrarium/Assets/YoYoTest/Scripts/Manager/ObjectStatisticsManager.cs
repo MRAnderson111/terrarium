@@ -370,18 +370,19 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// <summary>
     /// 更新并打印当前所有物种的数量统计信息。
     /// </summary>
+    [ContextMenu("更新统计信息")]
     private void UpdateStatistics()
     {
-        Debug.Log("=== 大类统计 ===");
+        Debug.LogError("=== 大类统计 ===");
         foreach (var item in bigClassCount)
         {
-            Debug.Log("大类：" + item.Key + " 总数量：" + item.Value);
+            Debug.LogError("大类：" + item.Key + " 总数量：" + item.Value);
         }
 
-        Debug.Log("=== 小类统计 ===");
+        Debug.LogError("=== 小类统计 ===");
         foreach (var item in smallClassCount)
         {
-            Debug.Log("小类：" + item.Key + " 数量：" + item.Value);
+            Debug.LogError("小类：" + item.Key + " 数量：" + item.Value);
         }
     }
 

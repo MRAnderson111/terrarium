@@ -5917,12 +5917,16 @@ PrefabInstance:
       value: water
       objectReference: {fileID: 0}
     - target: {fileID: 6333207595556307892, guid: 8824b0878bc884f4387312e5272f6f3a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2946717
+      objectReference: {fileID: 0}
+    - target: {fileID: 6333207595556307892, guid: 8824b0878bc884f4387312e5272f6f3a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.1811734
       objectReference: {fileID: 0}
     - target: {fileID: 6333207595556307892, guid: 8824b0878bc884f4387312e5272f6f3a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.4999998
+      value: 1.7622
       objectReference: {fileID: 0}
     - target: {fileID: 6333207595556307892, guid: 8824b0878bc884f4387312e5272f6f3a, type: 3}
       propertyPath: m_LocalPosition.z

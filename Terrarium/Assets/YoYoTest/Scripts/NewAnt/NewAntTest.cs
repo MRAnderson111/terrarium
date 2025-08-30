@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewAntTest : MonoBehaviour
+public class NewAntTest : MonoBehaviour,IGetObjectClass
 {
     //是否是"成虫"
     public bool isAdult;
@@ -42,6 +42,10 @@ public class NewAntTest : MonoBehaviour
     // 上一次的白天状态，用于检测状态变化
     private bool wasDayLastFrame = false;
 
+    public string BigClass => "Animal";
+
+    public string SmallClass => "NewAnt";
+
     // 白天开始事件
     public event System.Action OnDayStart;
 
@@ -64,6 +68,8 @@ public class NewAntTest : MonoBehaviour
 
         // 绑定事件监听器
         OnDayStart += CheckIfAntIsSleepingWhenDayStarts;
+
+        Events.OnCreateObject.Invoke(this);
     }
 
     // Update is called once per frame
@@ -356,5 +362,11 @@ public class NewAntTest : MonoBehaviour
         }
         
         Debug.Log("蚂蚁状态已重置，开始新的一天");
+    }
+
+    public void Death()
+    {
+        Events.OnDestroyObject.Invoke(this);
+        Destroy(gameObject);
     }
 }
