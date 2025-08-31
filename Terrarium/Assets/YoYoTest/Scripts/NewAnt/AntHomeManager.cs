@@ -27,26 +27,32 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     }
     
     /// <summary>
-    /// 初始化居住地
+    /// 根据物种分类寻找或创建居住地
     /// </summary>
-    private void InitializeHome()
+    /// <param name="bigClass">物种大类</param>
+    /// <param name="smallClass">物种小类</param>
+    public void FindOrCreateHome(string bigClass, string smallClass)
     {
-        // 首先在场景中搜索是否有AntHomeTest组件的对象
+        // 在场景中搜索所有AntHomeTest组件的对象
         AntHomeTest[] homeScripts = FindObjectsOfType<AntHomeTest>();
-        
-        if (homeScripts != null && homeScripts.Length > 0)
+
+        // 遍历查找匹配的居住地
+        foreach (AntHomeTest script in homeScripts)
         {
-            // 使用找到的第一个居住地
-            homeScript = homeScripts[0];
-            homeObject = homeScript.gameObject;
-            isHaveHome = true;
-            OnHomeFound?.Invoke(homeObject);
-            Debug.Log("场景中已存在AntHomeTest组件的居住地: " + homeObject.name + "，位置: " + homeObject.transform.position);
-            return;
+            if (script.bigClass == bigClass && script.smallClass == smallClass)
+            {
+                // 找到了匹配的居住地
+                homeScript = script;
+                homeObject = homeScript.gameObject;
+                isHaveHome = true;
+                OnHomeFound?.Invoke(homeObject);
+                Debug.Log($"找到匹配的居住地: {homeObject.name} for class {bigClass}/{smallClass}");
+                return;
+            }
         }
         
-        // 如果场景中没有找到AntHomeTest组件的对象，则创建新的居住地
-        Debug.Log("场景中没有找到AntHomeTest组件的居住地，创建新的居住地");
+        // 如果场景中没有找到匹配的，则创建新的居住地
+        Debug.Log($"场景中没有找到 {bigClass}/{smallClass} 的居住地，创建新的居住地");
         
         // 检查是否有预制体
         if (homePrefab == null)
@@ -70,13 +76,18 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         if (homeScript == null)
         {
             Debug.LogError("居住地预制体上没有AntHomeTest组件");
+            Destroy(homeObject); // 清理创建失败的对象
             return;
         }
+
+        // 为新家设置分类标签
+        homeScript.bigClass = bigClass;
+        homeScript.smallClass = smallClass;
         
         isHaveHome = true;
         OnHomeCreated?.Invoke(homeObject);
         
-        Debug.Log("居住地已创建在位置: " + randomPosition);
+        Debug.Log($"为 {bigClass}/{smallClass} 创建了新居住地，位置: {randomPosition}");
     }
     
     /// <summary>
@@ -174,7 +185,8 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     public void ForceCreateHome()
     {
         ResetHome();
-        InitializeHome();
+        // 强制创建一个没有特定分类的家，或根据需要传递默认分类
+        FindOrCreateHome("", "");
     }
     
     /// <summary>
@@ -184,6 +196,12 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     /// <param name="moveSpeed">移动速度</param>
     public void GoHomeAndStay(INewAnt ant, float moveSpeed)
     {
+        var antScript = ant.GetGameObject().GetComponent<NewAntTest>();
+        if (antScript == null) return;
+
+        // 确保我们有正确的家
+        FindOrCreateHome(antScript.bigClass, antScript.smallClass);
+
         // 获取导航移动组件
         AnimalNavMove navMove = ant.GetGameObject().GetComponent<AnimalNavMove>();
         
@@ -228,6 +246,12 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     /// <param name="moveSpeed">移动速度</param>
     public void GoHomeAndSleep(INewAnt ant, float moveSpeed)
     {
+        var antScript = ant.GetGameObject().GetComponent<NewAntTest>();
+        if (antScript == null) return;
+        
+        // 确保我们有正确的家
+        FindOrCreateHome(antScript.bigClass, antScript.smallClass);
+        
         // 获取导航移动组件
         AnimalNavMove navMove = ant.GetGameObject().GetComponent<AnimalNavMove>();
         
