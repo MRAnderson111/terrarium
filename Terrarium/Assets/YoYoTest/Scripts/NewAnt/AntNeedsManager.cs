@@ -2,26 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AntNeedsManager : MonoBehaviour
+public class AntNeedsManager : MonoBehaviour, INewAntNeeds
 {
     // 水相关属性
     public GameObject waterTarget;
     public float currentWaterSatisfaction = 0f;  // 饮水满足度，0-100
     public bool isTouchWaterTarget = false;
+    public bool IsTouchWaterTarget { get => isTouchWaterTarget; set => isTouchWaterTarget = value; }
     public bool isDrinkWater = false;
+    public bool IsDrinkWater => isDrinkWater;
 
     // 食物相关属性
     public GameObject foodTarget;
+    public GameObject FoodTarget => foodTarget;
     public bool isTouchFoodTarget = false;
+    public bool IsTouchFoodTarget { get => isTouchFoodTarget; set => isTouchFoodTarget = value; }
     public bool isHaveFoodTarget = false;
     public float currentFullness = 0f;  // 饱腹感，0-100
     public bool isFull = false;
+    public bool IsFull => isFull;
 
     // 移动速度（从蚂蚁类获取）
     private float moveSpeed;
 
     // 引用主蚂蚁对象
-    private NewAntTest ant;
+    private INewAnt ant;
 
     // 引用导航移动组件
     private AnimalNavMove navMove;
@@ -31,7 +36,7 @@ public class AntNeedsManager : MonoBehaviour
 
     private void Start()
     {
-        ant = GetComponent<NewAntTest>();
+        ant = GetComponent<INewAnt>();
         // 获取导航移动组件
         navMove = GetComponent<AnimalNavMove>();
 
@@ -40,7 +45,7 @@ public class AntNeedsManager : MonoBehaviour
         // 从蚂蚁类获取移动速度
         if (ant != null)
         {
-            moveSpeed = ant.moveSpeed;
+            moveSpeed = ant.MoveSpeed;
         }
         else
         {
@@ -100,7 +105,7 @@ public class AntNeedsManager : MonoBehaviour
                 isFull = true;
                 Debug.Log("蚂蚁吃饱了");
                 //变成成虫
-                ant.isAdult = true;
+                ant.SetAdult(true);
             }
         }
     }
@@ -233,7 +238,7 @@ public class AntNeedsManager : MonoBehaviour
                         isFull = true;
                         Debug.Log("蚂蚁吃饱了");
                         //变成成虫
-                        ant.isAdult = true;
+                        ant.SetAdult(true);
                     }
                 }
                 else

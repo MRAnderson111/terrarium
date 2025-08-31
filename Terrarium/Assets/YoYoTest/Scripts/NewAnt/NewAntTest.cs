@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewAntTest : MonoBehaviour,IGetObjectClass
+public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
 {
     //是否是"成虫"
     public bool isAdult;
@@ -17,7 +17,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass
     public bool isInHome;
     
     // 引用需求管理器
-    private AntNeedsManager needsManager;
+    private INewAntNeeds needsManager;
     
     // 引用居住地管理器
     private AntHomeManager homeManager;
@@ -38,6 +38,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass
     
     // 蚂蚁移动速度
     public float moveSpeed = 2f;
+    public float MoveSpeed => moveSpeed;
 
     // 上一次的白天状态，用于检测状态变化
     private bool wasDayLastFrame = false;
@@ -57,7 +58,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass
     void Start()
     {
         // 获取需求管理器组件
-        needsManager = GetComponent<AntNeedsManager>();
+        needsManager = GetComponent<INewAntNeeds>();
         
         // 获取居住地管理器组件
         homeManager = GetComponent<AntHomeManager>();
@@ -95,7 +96,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass
         {
             if (isDay)
             {
-                if (needsManager.isFull)
+                if (needsManager.IsFull)
                 {
                     Debug.Log("成虫白天吃饱了");
                     if (homeManager.IsHaveHome)
@@ -255,18 +256,18 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass
     /// </summary>
     private void ExecuteFindAndEatSequence()
     {
-        if (needsManager.isFull)
+        if (needsManager.IsFull)
         {
             Debug.Log("吃饱了");
             return;
         }
 
-        if (needsManager.isDrinkWater)
+        if (needsManager.IsDrinkWater)
         {
             Debug.Log("喝过水了，去吃东西");
             needsManager.EatFood();
             // 更新当前食物目标
-            currentFoodTarget = needsManager.foodTarget;
+            currentFoodTarget = needsManager.FoodTarget;
         }
         else
         {
@@ -304,14 +305,14 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass
     {
         if (other.gameObject.name == "water")
         {
-            needsManager.isTouchWaterTarget = true;
+            needsManager.IsTouchWaterTarget = true;
             Debug.Log("碰到水目标");
         }
         
         // 精确检查：碰撞对象是否就是当前食物目标对象
         if (currentFoodTarget != null && other.attachedRigidbody.gameObject == currentFoodTarget.gameObject)
         {
-            needsManager.isTouchFoodTarget = true;
+            needsManager.IsTouchFoodTarget = true;
             Debug.Log("蚂蚁碰撞到食物目标：" + currentFoodTarget.name);
             return;
         }
@@ -338,7 +339,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass
     private void ResetStates()
     {
         // 重置需求状态
-        needsManager.isFull = false;
+        // needsManager.isFull = false; // This is now managed within AntNeedsManager
         needsManager.ResetStates();
         
         // 重置当前食物目标
@@ -370,5 +371,10 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass
     {
         Events.OnDestroyObject.Invoke(this);
         Destroy(gameObject);
+    }
+
+    public void SetAdult(bool isAdult)
+    {
+        this.isAdult = isAdult;
     }
 }
