@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +11,15 @@ public interface INewAnt
     
     // 获取移动速度
     float MoveSpeed { get; }
+    
+    // 设置是否在居住地内
+    void SetInHome(bool inHome);
+    
+    // 设置是否在睡觉
+    void SetSleeping(bool sleeping);
+    
+    // 获取蚂蚁的GameObject
+    GameObject GetGameObject();
 }
 
 /// <summary>
@@ -40,4 +50,25 @@ public interface INewAntNeeds
     
     // 重置状态
     void ResetStates();
+}
+
+/// <summary>
+/// 蚂蚁居住地管理器对外提供的接口
+/// </summary>
+public interface INewAntHome
+{
+    // 是否有居住地
+    bool IsHaveHome { get; }
+    
+    // 强制创建居住地
+    void ForceCreateHome();
+    
+    // 回家并停留
+    void GoHomeAndStay(INewAnt ant, float moveSpeed);
+    
+    // 回家并睡觉
+    void GoHomeAndSleep(INewAnt ant, float moveSpeed);
+    
+    // 离开居住地
+    void LeaveHome(INewAnt ant, Action<bool> onAntLeft);
 }

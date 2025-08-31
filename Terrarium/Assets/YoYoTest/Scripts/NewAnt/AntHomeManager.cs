@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AntHomeManager : MonoBehaviour
+public class AntHomeManager : MonoBehaviour, INewAntHome
 {
     [Header("Home Settings")]
     [SerializeField] private GameObject homePrefab; // 居住地预制体
@@ -160,11 +160,11 @@ public class AntHomeManager : MonoBehaviour
     /// </summary>
     /// <param name="ant">离开的蚂蚁实例</param>
     /// <param name="onAntLeft">回调函数</param>
-    public void LeaveHome(NewAntTest ant, System.Action<bool> onAntLeft)
+    public void LeaveHome(INewAnt ant, System.Action<bool> onAntLeft)
     {
         if (isHaveHome && homeObject != null && homeScript != null)
         {
-            homeScript.OnAntLeft(ant, onAntLeft);
+            homeScript.OnAntLeft(ant.GetGameObject().GetComponent<NewAntTest>(), onAntLeft);
         }
     }
     
@@ -182,10 +182,10 @@ public class AntHomeManager : MonoBehaviour
     /// </summary>
     /// <param name="ant">蚂蚁实例</param>
     /// <param name="moveSpeed">移动速度</param>
-    public void GoHomeAndStay(NewAntTest ant, float moveSpeed)
+    public void GoHomeAndStay(INewAnt ant, float moveSpeed)
     {
         // 获取导航移动组件
-        AnimalNavMove navMove = ant.GetComponent<AnimalNavMove>();
+        AnimalNavMove navMove = ant.GetGameObject().GetComponent<AnimalNavMove>();
         
         // 使用居住地管理器获取方向和距离
         Vector3 direction = GetHomeDirection();
@@ -199,9 +199,9 @@ public class AntHomeManager : MonoBehaviour
             // 调用居住地的接口方法，通知蚂蚁已到达
             if (HomeScript != null)
             {
-                HomeScript.OnAntEntered(ant, (isInHome) => {
-                    ant.isInHome = isInHome;
-                    Debug.Log($"蚂蚁已进入居住地，isInHome状态: {ant.isInHome}");
+                HomeScript.OnAntEntered(ant.GetGameObject().GetComponent<NewAntTest>(), (isInHome) => {
+                    ant.SetInHome(isInHome);
+                    Debug.Log($"蚂蚁已进入居住地，isInHome状态: {isInHome}");
                 });
             }
             else
@@ -226,10 +226,10 @@ public class AntHomeManager : MonoBehaviour
     /// </summary>
     /// <param name="ant">蚂蚁实例</param>
     /// <param name="moveSpeed">移动速度</param>
-    public void GoHomeAndSleep(NewAntTest ant, float moveSpeed)
+    public void GoHomeAndSleep(INewAnt ant, float moveSpeed)
     {
         // 获取导航移动组件
-        AnimalNavMove navMove = ant.GetComponent<AnimalNavMove>();
+        AnimalNavMove navMove = ant.GetGameObject().GetComponent<AnimalNavMove>();
         
         // 使用居住地管理器获取方向和距离
         Vector3 direction = GetHomeDirection();
@@ -241,15 +241,15 @@ public class AntHomeManager : MonoBehaviour
             Debug.Log("成虫夜晚，有居住地，已到达居住地");
             
             // 设置蚂蚁为睡觉状态
-            ant.isSleeping = true;
+            ant.SetSleeping(true);
             Debug.Log("蚂蚁开始睡觉");
             
             // 调用居住地的接口方法，通知蚂蚁已到达
             if (HomeScript != null)
             {
-                HomeScript.OnAntEntered(ant, (isInHome) => {
-                    ant.isInHome = isInHome;
-                    Debug.Log($"蚂蚁已进入居住地，isInHome状态: {ant.isInHome}");
+                HomeScript.OnAntEntered(ant.GetGameObject().GetComponent<NewAntTest>(), (isInHome) => {
+                    ant.SetInHome(isInHome);
+                    Debug.Log($"蚂蚁已进入居住地，isInHome状态: {isInHome}");
                 });
             }
             else

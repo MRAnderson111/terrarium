@@ -20,7 +20,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     private INewAntNeeds needsManager;
     
     // 引用居住地管理器
-    private AntHomeManager homeManager;
+    private INewAntHome homeManager;
     
     // 引用散步管理器
     private AntWalkManager walkManager;
@@ -61,7 +61,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         needsManager = GetComponent<INewAntNeeds>();
         
         // 获取居住地管理器组件
-        homeManager = GetComponent<AntHomeManager>();
+        homeManager = GetComponent<INewAntHome>();
         
         // 获取散步管理器组件
         walkManager = GetComponent<AntWalkManager>();
@@ -376,5 +376,20 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     public void SetAdult(bool isAdult)
     {
         this.isAdult = isAdult;
+    }
+
+    public void SetInHome(bool inHome)
+    {
+        this.isInHome = inHome;
+    }
+
+    public void SetSleeping(bool sleeping)
+    {
+        this.isSleeping = sleeping;
+    }
+
+    public GameObject GetGameObject()
+    {
+        return gameObject;
     }
 }
