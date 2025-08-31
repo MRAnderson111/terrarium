@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1235466508303229831}
   - component: {fileID: 2695187227910442678}
   m_Layer: 0
-  m_Name: home
+  m_Name: HomSOne
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -147,3 +147,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   antPrefab: {fileID: 3253501275212402260, guid: e57655328de42e84b887d38a18e06b03, type: 3}
+  antCount: 2

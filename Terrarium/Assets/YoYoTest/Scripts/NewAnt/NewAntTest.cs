@@ -41,10 +41,12 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass
 
     // 上一次的白天状态，用于检测状态变化
     private bool wasDayLastFrame = false;
+    public string bigClass;
 
-    public string BigClass => "Animal";
+    public string BigClass => bigClass;
+    public string smallClass;
 
-    public string SmallClass => "NewAnt";
+    public string SmallClass => smallClass;
 
     // 白天开始事件
     public event System.Action OnDayStart;

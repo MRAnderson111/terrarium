@@ -17,6 +17,9 @@ public class AntHomeTest : MonoBehaviour
     //蚂蚁预制体
     public GameObject antPrefab;
 
+    //生成蚂蚁的数量
+    public int antCount = 1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -139,7 +142,7 @@ public class AntHomeTest : MonoBehaviour
             {
                 // 两只蚂蚁都不在睡觉状态，正常进行繁殖
                 // 生成新的蚂蚁
-                CreateNewAnt();
+                CreateNewAnt(antCount);
                 
                 // 将两只蚂蚁的状态设置为已繁殖
                 parent1.isFinishReproduction = true;
@@ -157,20 +160,26 @@ public class AntHomeTest : MonoBehaviour
     /// <summary>
     /// 创建新的蚂蚁
     /// </summary>
-    private void CreateNewAnt()
+    /// <param name="count">要生成的蚂蚁数量</param>
+    private void CreateNewAnt(int count = 1)
     {
-        // 在居住地位置生成新的蚂蚁
-        Vector3 spawnPosition = transform.position + new Vector3(
-            UnityEngine.Random.Range(-1f, 1f),  // 在居住地周围随机位置生成
-            0f,
-            UnityEngine.Random.Range(-1f, 1f)
-        );
+        for (int i = 0; i < count; i++)
+        {
+            // 在居住地位置生成新的蚂蚁
+            Vector3 spawnPosition = transform.position + new Vector3(
+                UnityEngine.Random.Range(-1f, 1f),  // 在居住地周围随机位置生成
+                0f,
+                UnityEngine.Random.Range(-1f, 1f)
+            );
+            
+            // 生成蚂蚁预制体
+            GameObject newAntObject = Instantiate(antPrefab, spawnPosition, Quaternion.identity);
+            newAntObject.name = "NewAnt_" + DateTime.Now.ToString("HHmmssfff");
+            
+            Debug.Log($"新蚂蚁已生成: {newAntObject.name}");
+        }
         
-        // 生成蚂蚁预制体
-        GameObject newAntObject = Instantiate(antPrefab, spawnPosition, Quaternion.identity);
-        newAntObject.name = "NewAnt_" + DateTime.Now.ToString("HHmmssfff");
-        
-        Debug.Log($"新蚂蚁已生成: {newAntObject.name}");
+        Debug.Log($"总共生成了 {count} 只新蚂蚁");
     }
     
     /// <summary>
