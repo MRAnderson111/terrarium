@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class AntWalkManager : MonoBehaviour
+public class AntWalkManager : MonoBehaviour, INewAntWalk
 {
     [Header("Walk Settings")]
     [SerializeField] private float walkRadius = 1f; // 散步半径
@@ -11,7 +11,7 @@ public class AntWalkManager : MonoBehaviour
     private bool isWalking = false; // 是否正在散步
     
     // 引用蚂蚁实例
-    private NewAntTest ant;
+    private INewAnt ant;
     
     // 引用导航移动组件
     private AnimalNavMove navMove;
@@ -20,11 +20,11 @@ public class AntWalkManager : MonoBehaviour
     /// 开始散步
     /// </summary>
     /// <param name="antInstance">蚂蚁实例</param>
-    public void StartWalking(NewAntTest antInstance)
+    public void StartWalking(INewAnt antInstance)
     {
         ant = antInstance;
         // 获取导航移动组件
-        navMove = ant.GetComponent<AnimalNavMove>();
+        navMove = ant.GetGameObject().GetComponent<AnimalNavMove>();
         isWalking = true;
         
         // 生成随机目标位置
@@ -52,7 +52,7 @@ public class AntWalkManager : MonoBehaviour
         Vector3 randomDirection = Random.insideUnitSphere * walkRadius;
         randomDirection.y = 0; // 保持Y轴为0，确保在平面上移动
         
-        return ant.transform.position + randomDirection;
+        return ant.GetGameObject().transform.position + randomDirection;
     }
     
     /// <summary>
@@ -64,7 +64,7 @@ public class AntWalkManager : MonoBehaviour
             return;
             
         // 检查是否到达目标位置
-        if (Vector3.Distance(ant.transform.position, walkTargetPosition) < arrivalDistance)
+        if (Vector3.Distance(ant.GetGameObject().transform.position, walkTargetPosition) < arrivalDistance)
         {
             // 到达目标位置，生成新的目标位置
             walkTargetPosition = GetRandomWalkPosition();

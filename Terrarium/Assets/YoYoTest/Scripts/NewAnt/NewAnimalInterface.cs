@@ -72,3 +72,21 @@ public interface INewAntHome
     // 离开居住地
     void LeaveHome(INewAnt ant, Action<bool> onAntLeft);
 }
+
+/// <summary>
+/// 蚂蚁散步管理器对外提供的接口
+/// </summary>
+public interface INewAntWalk
+{
+    // 是否正在散步
+    bool IsWalking { get; }
+    
+    // 开始散步
+    void StartWalking(INewAnt antInstance);
+    
+    // 停止散步
+    void StopWalking();
+    
+    // 更新散步状态
+    void UpdateWalking();
+}

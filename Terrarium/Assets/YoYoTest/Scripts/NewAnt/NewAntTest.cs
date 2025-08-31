@@ -23,7 +23,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     private INewAntHome homeManager;
     
     // 引用散步管理器
-    private AntWalkManager walkManager;
+    private INewAntWalk walkManager;
     
     // 引用导航移动组件
     private AnimalNavMove navMove;
@@ -64,7 +64,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         homeManager = GetComponent<INewAntHome>();
         
         // 获取散步管理器组件
-        walkManager = GetComponent<AntWalkManager>();
+        walkManager = GetComponent<INewAntWalk>();
         
         // 获取导航移动组件
         navMove = GetComponent<AnimalNavMove>();
