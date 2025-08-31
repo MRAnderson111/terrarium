@@ -33,26 +33,51 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     /// <param name="smallClass">物种小类</param>
     public void FindOrCreateHome(string bigClass, string smallClass)
     {
-        // 在场景中搜索所有AntHomeTest组件的对象
-        AntHomeTest[] homeScripts = FindObjectsOfType<AntHomeTest>();
-
-        // 遍历查找匹配的居住地
-        foreach (AntHomeTest script in homeScripts)
+        // 如果当前已经有关联的家，先检查这个家是否与请求的物种匹配
+        if (isHaveHome && homeScript != null)
         {
-            if (script.bigClass == bigClass && script.smallClass == smallClass)
+            // 如果类别不匹配，则重置状态，强制为新品种寻找或创建新家
+            if (homeScript.bigClass != bigClass || homeScript.smallClass != smallClass)
             {
-                // 找到了匹配的居住地
-                homeScript = script;
-                homeObject = homeScript.gameObject;
-                isHaveHome = true;
-                OnHomeFound?.Invoke(homeObject);
-                Debug.Log($"找到匹配的居住地: {homeObject.name} for class {bigClass}/{smallClass}");
+                isHaveHome = false;
+                homeObject = null;
+                homeScript = null;
+                Debug.Log($"物种不匹配，重置HomeManager以寻找 {bigClass}/{smallClass} 的新家。");
+            }
+            else
+            {
+                // 物种匹配，说明已经找到了正确的家，无需任何操作
                 return;
             }
         }
         
+        // 只有在没有家或者家不匹配的情况下，才执行寻找逻辑
+        if (!isHaveHome)
+        {
+            // 在场景中搜索所有AntHomeTest组件的对象
+            AntHomeTest[] homeScripts = FindObjectsOfType<AntHomeTest>();
+
+            // 遍历查找匹配的居住地
+            foreach (AntHomeTest script in homeScripts)
+            {
+                if (script.bigClass == bigClass && script.smallClass == smallClass)
+                {
+                    // 找到了匹配的居住地
+                    homeScript = script;
+                    homeObject = homeScript.gameObject;
+                    isHaveHome = true; // 确保状态被设置
+                    OnHomeFound?.Invoke(homeObject);
+                    Debug.Log($"找到匹配的居住地: {homeObject.name} for class {bigClass}/{smallClass}");
+                    return; // 找到后立即返回
+                }
+            }
+        }
+        
         // 如果场景中没有找到匹配的，则创建新的居住地
-        Debug.Log($"场景中没有找到 {bigClass}/{smallClass} 的居住地，创建新的居住地");
+        // 这个判断是必需的，防止在上面已经找到家的情况下还去创建
+        if (!isHaveHome)
+        {
+            Debug.Log($"场景中没有找到 {bigClass}/{smallClass} 的居住地，创建新的居住地");
         
         // 检查是否有预制体
         if (homePrefab == null)
@@ -88,6 +113,7 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         OnHomeCreated?.Invoke(homeObject);
         
         Debug.Log($"为 {bigClass}/{smallClass} 创建了新居住地，位置: {randomPosition}");
+        }
     }
     
     /// <summary>
@@ -184,9 +210,9 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     /// </summary>
     public void ForceCreateHome()
     {
+        // 这个方法现在只重置状态，而不创建家
+        // 真正的创建逻辑由蚂蚁的行为触发
         ResetHome();
-        // 强制创建一个没有特定分类的家，或根据需要传递默认分类
-        FindOrCreateHome("", "");
     }
     
     /// <summary>

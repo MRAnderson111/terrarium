@@ -107,7 +107,7 @@ MonoBehaviour:
   foodTarget: {fileID: 0}
   isTouchFoodTarget: 0
   isHaveFoodTarget: 0
-  currentFullness: 0
+  currentFullness: 98
   isFull: 0
   hurtForce: 10
 --- !u!114 &5121309747974531881
