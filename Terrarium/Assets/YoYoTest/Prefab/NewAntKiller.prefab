@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -4756007029834268580}
   - component: {fileID: 7078931711805122421}
   m_Layer: 0
-  m_Name: NewLadybug
+  m_Name: NewAntKiller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,8 +59,8 @@ MonoBehaviour:
   toSleepTime: 20
   toAwakeTime: 6
   moveSpeed: 5
-  bigClass: Animal
-  smallClass: NewLadyBug
+  bigClass: Killer
+  smallClass: NewAntKiller
 --- !u!54 &6017526608214838873
 Rigidbody:
   m_ObjectHideFlags: 0

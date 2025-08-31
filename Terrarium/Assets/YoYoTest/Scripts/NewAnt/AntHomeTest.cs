@@ -5,6 +5,10 @@ using System;
 
 public class AntHomeTest : MonoBehaviour
 {
+    public string bigClass;
+    public string smallClass;
+
+
     // 居住地内的蚂蚁列表
     private List<NewAntTest> antsInHome = new List<NewAntTest>();
     
