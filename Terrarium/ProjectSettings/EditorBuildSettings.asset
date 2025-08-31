@@ -27,5 +27,6 @@ EditorBuildSettings:
     path: Assets/YoYoTest/Start.unity
     guid: 9bd8591bd918111408c093986a6c7185
   m_configObjects:
+    Unity.XR.PXR.Settings: {fileID: 11400000, guid: 63cf2c96ef6f443488c30d3befdb9a1c, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 1a22bfbcf8200c546b208d12f67c92ab, type: 2}
     com.unity.xr.openxr.settings4: {fileID: 11400000, guid: b39419dda0f1b124981d55a0e53ed983, type: 2}
