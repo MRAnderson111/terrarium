@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1235466508303229831}
   - component: {fileID: 2695187227910442678}
   m_Layer: 0
-  m_Name: HomSOne
+  m_Name: HomSLadyBug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -146,5 +146,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d3cd14c12f493448b1864ab33bd4e5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  antPrefab: {fileID: 3253501275212402260, guid: e57655328de42e84b887d38a18e06b03, type: 3}
-  antCount: 2
+  bigClass: 
+  smallClass: 
+  antPrefab: {fileID: 3253501275212402260, guid: 25f9a8e101ff49041b60440f3df6114e, type: 3}
+  antCount: 1
