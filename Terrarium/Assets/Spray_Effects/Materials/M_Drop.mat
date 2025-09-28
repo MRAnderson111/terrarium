@@ -162,7 +162,7 @@ Material:
     - _ReceiveShadows: 1
     - _Reflection: 0.64
     - _ScreenColorTrue_CubeMapFalse: 1
-    - _Smoothness: 0.8
+    - _Smoothness: 0.6
     - _SmoothnessTextureChannel: 0
     - _SoftParticlesEnabled: 0
     - _SoftParticlesFarFadeDistance: 1

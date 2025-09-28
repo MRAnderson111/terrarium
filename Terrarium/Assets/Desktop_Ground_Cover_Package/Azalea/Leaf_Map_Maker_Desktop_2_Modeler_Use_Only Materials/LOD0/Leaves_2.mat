@@ -41,7 +41,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Cull: 0
-    - _Cutoff: 0.33
+    - _Cutoff: 0.5
     - _WindQuality: 4
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}

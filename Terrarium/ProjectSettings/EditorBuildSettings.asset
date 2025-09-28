@@ -6,26 +6,14 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Level/L1_First.unity
-    guid: 980dd4d3d946189489a6558eff8a0a67
+    path: Assets/Level/Terrarium.unity
+    guid: a04d36c22e017a5478065437305675e7
   - enabled: 1
-    path: Assets/Level/L2_Second.unity
-    guid: 882c37ae405d52d47810c34200fbe778
-  - enabled: 1
-    path: Assets/Level/L3_Third.unity
-    guid: 54c761164786aa845af1454cff59c18d
-  - enabled: 1
-    path: Assets/YoYoTest/Level 1.unity
-    guid: 5bd83af09127a1e4689732df10b51d0f
-  - enabled: 1
-    path: Assets/YoYoTest/Level 2.unity
-    guid: 47e4c5fc807c65241819d3decc6bcd5e
-  - enabled: 1
-    path: Assets/YoYoTest/Level 3.unity
-    guid: f04414b4721f0084ab5bab0e4c1195e6
-  - enabled: 1
-    path: Assets/YoYoTest/Start.unity
+    path: Assets/YoYoTest/StartMenu.unity
     guid: 9bd8591bd918111408c093986a6c7185
+  - enabled: 1
+    path: Assets/YoYoTest/TerrariumLevel.unity
+    guid: 5bd83af09127a1e4689732df10b51d0f
   m_configObjects:
     Unity.XR.PXR.Settings: {fileID: 11400000, guid: 63cf2c96ef6f443488c30d3befdb9a1c, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 1a22bfbcf8200c546b208d12f67c92ab, type: 2}

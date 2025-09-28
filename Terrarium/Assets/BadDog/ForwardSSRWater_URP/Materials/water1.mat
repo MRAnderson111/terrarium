@@ -109,6 +109,6 @@ Material:
     - _MainWaveTilingOffset: {r: 7, g: 7, b: 3, a: 3}
     - _SecondWaveTilingOffset: {r: 7, g: 7, b: -5, a: 5}
     - _ThirdWaveTilingOffset: {r: 5, g: 5, b: 5, a: -5}
-    - _WaterBaseColor: {r: 0.36489853, g: 0.49607632, b: 0.5660378, a: 1}
-    - _WaterMuddyColor: {r: 0.27044016, g: 0.39186227, b: 0.54088044, a: 1}
+    - _WaterBaseColor: {r: 0.4378782, g: 0.59405696, b: 0.6792453, a: 1}
+    - _WaterMuddyColor: {r: 0.33527148, g: 0.47850788, b: 0.654088, a: 1}
   m_BuildTextureStacks: []
