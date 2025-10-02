@@ -50,7 +50,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainWave:
         m_Texture: {fileID: 2800000, guid: 3886b9ead27a5cf43a9df9c03c98f1b6, type: 3}
-        m_Scale: {x: 5, y: 5}
+        m_Scale: {x: 3, y: 3}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -94,7 +94,7 @@ Material:
     - _SecondWaveBumpScale: 0.15
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpecularIntensity: 2
+    - _SpecularIntensity: 1
     - _SpecularOffset: -0.213
     - _SrcBlend: 1
     - _UVSec: 0
@@ -106,9 +106,9 @@ Material:
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _MainWaveTilingOffset: {r: 7, g: 7, b: 3, a: 3}
+    - _MainWaveTilingOffset: {r: 5, g: 5, b: 3, a: 3}
     - _SecondWaveTilingOffset: {r: 7, g: 7, b: -5, a: 5}
     - _ThirdWaveTilingOffset: {r: 5, g: 5, b: 5, a: -5}
-    - _WaterBaseColor: {r: 0.4378782, g: 0.59405696, b: 0.6792453, a: 1}
+    - _WaterBaseColor: {r: 0.22427902, g: 0.49076813, b: 0.5283019, a: 1}
     - _WaterMuddyColor: {r: 0.33527148, g: 0.47850788, b: 0.654088, a: 1}
   m_BuildTextureStacks: []
