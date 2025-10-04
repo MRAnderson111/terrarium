@@ -5,10 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Level/Terrarium.unity
     guid: a04d36c22e017a5478065437305675e7
-  - enabled: 1
+  - enabled: 0
     path: Assets/YoYoTest/StartMenu.unity
     guid: 9bd8591bd918111408c093986a6c7185
   - enabled: 1
