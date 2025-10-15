@@ -7,15 +7,24 @@ using UnityEngine.AI;
 public class AnimalNavMove : MonoBehaviour
 {
     public NavMeshAgent agent;
+    private Animator animator;
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        // 检查agent是否在移动：有路径且没有停止且速度大于阈值
+        bool isMoving = agent.hasPath && !agent.isStopped && agent.velocity.magnitude > 0.1f;
+
+        if (animator != null )
+        {
+            animator.SetBool("bIsWalking", isMoving);
+        }
         // if (Input.GetMouseButtonDown(0))
         // {
         //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -43,6 +52,11 @@ public class AnimalNavMove : MonoBehaviour
             agent.isStopped = true;  // 立即停止
             agent.ResetPath();       // 清除当前路径
             agent.velocity = Vector3.zero;  // 速度归零
+        }
+
+        if (animator != null)
+        {
+            animator.SetBool("bIsWalking", false);
         }
     }
 }

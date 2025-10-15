@@ -9,7 +9,7 @@ public class AntWalkManager : MonoBehaviour, INewAntWalk
     // 散步相关变量
     private Vector3 walkTargetPosition; // 散步目标位置
     private bool isWalking = false; // 是否正在散步
-    private Animator animator;
+ 
     
     // 引用蚂蚁实例
     private INewAnt ant;
@@ -19,7 +19,8 @@ public class AntWalkManager : MonoBehaviour, INewAntWalk
 
     public void Start()
     {
-        animator = GetComponent<Animator>();
+        // 在子对象中查找Animator组件
+
     }
     /// <summary>
     /// 开始散步
@@ -35,9 +36,8 @@ public class AntWalkManager : MonoBehaviour, INewAntWalk
         // 生成随机目标位置
         walkTargetPosition = GetRandomWalkPosition();
 
-        animator.SetBool("bIsWalking", true);
         //同步状态到animator
-        // Debug.Log($"蚂蚁开始散步，目标位置: {walkTargetPosition}");
+        Debug.Log($"蚂蚁开始散步，目标位置: {walkTargetPosition}");
     }
     
     /// <summary>
@@ -47,9 +47,7 @@ public class AntWalkManager : MonoBehaviour, INewAntWalk
     {
         isWalking = false;
         Debug.Log("蚂蚁停止散步");
-
-        animator.SetBool("bIsWalking", false);
-        //同步状态到animator
+        
     }
 
     /// <summary>
