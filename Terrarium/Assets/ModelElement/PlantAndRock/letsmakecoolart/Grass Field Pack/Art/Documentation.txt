@@ -1,0 +1,50 @@
+- Universal Rendering Pipeline
+
+- 78 game-ready Grass Field assets [*fbx / 5 texture atlases (*tga)]
+
+- UVs: channel 1: overlapping; channel 2: non-overlapping (for baking lightmaps)
+
+----------------
+
+Grass Assets - 15 species of plants:
+
+- Grass Dandelion [4 variations]
+- Grass Ezepnik [5 variations]
+- Grass Knotweed [5 variations]
+- Grass Plantain [6 variations]
+- Grass Reedmace [5 variations]
+- Grass Reed [7 variations]
+- Grass Sagebush [2 variations]
+- Grass Short [7 variations]
+- Grass Assembled [5 variations]
+- Flower Daisy [3 variations]
+- Flower Orange [4 variations]
+- Flower Lavender [12 variations]
+- Flower Yarrow [5 variations]
+- Fern [3 variations]
+- Waterlily leaves [5 variations]
+
+Combine and mix it to get different meshes and fields.
+
+----------------
+
+Number of Unique Meshes: 78
+Minimum polygon count: 12 tris
+Maximum polygon count: 7786 tris
+
+Collision: No
+
+Texture Resolutions:
+
+- Fern - 2048x2048 (*tga)
+- Yarrow - 2048x2048 (*tga)
+- Grass_Field Atlas - 4096x4096 (*tga)
+- Lavender Reed Atlas - 4096x4096 (*tga)
+- WaterLily - 2048x2048 (*tga)
+
+(AO/BaseColorOpacity/MetallicSmoothness/Normal) 
+
+----------------
+
+Thank you for purchasing this pack!
+If you have any questions please write me on e-mail - letsmakecoolart@gmail.com
