@@ -1,0 +1,190 @@
+fileFormatVersion: 2
+guid: 1dbb126eed8a99240982d56de4a3fbfd
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: rat_LOD1
+    100004: ratHead
+    100006: ratLegLBack1
+    100008: ratLegLBack2
+    100010: ratLegLBack3
+    100012: ratLegLBackPalm
+    100014: ratLegLFront1
+    100016: ratLegLFront2
+    100018: ratLegLFrontPalm
+    100020: ratLegRBack1
+    100022: ratLegRBack2
+    100024: ratLegRBack3
+    100026: ratLegRBackPalm
+    100028: ratLegRFront1
+    100030: ratLegRFront2
+    100032: ratLegRFrontPalm
+    100034: ratLLegCollarbone
+    100036: ratNeck
+    100038: ratPelvis
+    100040: ratRibcage
+    100042: ratRLegCollarbone
+    100044: ratSpine1
+    100046: ratSpine2
+    100048: ratTail1
+    100050: ratTail2
+    100052: ratTail3
+    100054: ratTail4
+    100056: ratTail5
+    100058: root
+    400000: //RootNode
+    400002: rat_LOD1
+    400004: ratHead
+    400006: ratLegLBack1
+    400008: ratLegLBack2
+    400010: ratLegLBack3
+    400012: ratLegLBackPalm
+    400014: ratLegLFront1
+    400016: ratLegLFront2
+    400018: ratLegLFrontPalm
+    400020: ratLegRBack1
+    400022: ratLegRBack2
+    400024: ratLegRBack3
+    400026: ratLegRBackPalm
+    400028: ratLegRFront1
+    400030: ratLegRFront2
+    400032: ratLegRFrontPalm
+    400034: ratLLegCollarbone
+    400036: ratNeck
+    400038: ratPelvis
+    400040: ratRibcage
+    400042: ratRLegCollarbone
+    400044: ratSpine1
+    400046: ratSpine2
+    400048: ratTail1
+    400050: ratTail2
+    400052: ratTail3
+    400054: ratTail4
+    400056: ratTail5
+    400058: root
+    2100000: rat_01
+    4300000: rat_LOD1
+    7400000: idlebreak
+    9500000: //RootNode
+    13700000: rat_LOD1
+    2186277476908879412: ImportLogs
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: rat_01
+    second: {fileID: 2100000, guid: 3e4498d22c206c44ebc2a5296f6d9c55, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: idlebreak
+      takeName: idle
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.0254
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

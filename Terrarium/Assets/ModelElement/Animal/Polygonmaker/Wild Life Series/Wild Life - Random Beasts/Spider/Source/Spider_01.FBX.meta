@@ -1,0 +1,201 @@
+fileFormatVersion: 2
+guid: e2f07c5daaa14c44d843e8ba6682df4b
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Black_Widow_1_LOD0
+    100002: Black_Widow_1_LOD1
+    100004: Black_Widow_1_LOD2
+    100006: Black_Widow_1_LOD3
+    100008: //RootNode
+    100010: Spider_back
+    100012: SpiderArmL1
+    100014: SpiderArmL2
+    100016: SpiderArmR1
+    100018: SpiderArmR2
+    100020: SpiderHub
+    100022: SpiderJawL
+    100024: SpiderJawR
+    100026: SpiderLLeg11
+    100028: SpiderLLeg12
+    100030: SpiderLLeg13
+    100032: SpiderLLeg1Ankle
+    100034: SpiderLLeg21
+    100036: SpiderLLeg22
+    100038: SpiderLLeg23
+    100040: SpiderLLeg2Ankle
+    100042: SpiderLLeg31
+    100044: SpiderLLeg32
+    100046: SpiderLLeg33
+    100048: SpiderLLeg3Ankle
+    100050: SpiderLLeg41
+    100052: SpiderLLeg42
+    100054: SpiderLLeg43
+    100056: SpiderLLeg4Ankle
+    100058: SpiderRLeg11
+    100060: SpiderRLeg12
+    100062: SpiderRLeg13
+    100064: SpiderRLeg1Ankle
+    100066: SpiderRLeg21
+    100068: SpiderRLeg22
+    100070: SpiderRLeg23
+    100072: SpiderRLeg2Ankle
+    100074: SpiderRLeg31
+    100076: SpiderRLeg32
+    100078: SpiderRLeg33
+    100080: SpiderRLeg3Ankle
+    100082: SpiderRLeg41
+    100084: SpiderRLeg42
+    100086: SpiderRLeg43
+    100088: SpiderRLeg4Ankle
+    400000: Black_Widow_1_LOD0
+    400002: Black_Widow_1_LOD1
+    400004: Black_Widow_1_LOD2
+    400006: Black_Widow_1_LOD3
+    400008: //RootNode
+    400010: Spider_back
+    400012: SpiderArmL1
+    400014: SpiderArmL2
+    400016: SpiderArmR1
+    400018: SpiderArmR2
+    400020: SpiderHub
+    400022: SpiderJawL
+    400024: SpiderJawR
+    400026: SpiderLLeg11
+    400028: SpiderLLeg12
+    400030: SpiderLLeg13
+    400032: SpiderLLeg1Ankle
+    400034: SpiderLLeg21
+    400036: SpiderLLeg22
+    400038: SpiderLLeg23
+    400040: SpiderLLeg2Ankle
+    400042: SpiderLLeg31
+    400044: SpiderLLeg32
+    400046: SpiderLLeg33
+    400048: SpiderLLeg3Ankle
+    400050: SpiderLLeg41
+    400052: SpiderLLeg42
+    400054: SpiderLLeg43
+    400056: SpiderLLeg4Ankle
+    400058: SpiderRLeg11
+    400060: SpiderRLeg12
+    400062: SpiderRLeg13
+    400064: SpiderRLeg1Ankle
+    400066: SpiderRLeg21
+    400068: SpiderRLeg22
+    400070: SpiderRLeg23
+    400072: SpiderRLeg2Ankle
+    400074: SpiderRLeg31
+    400076: SpiderRLeg32
+    400078: SpiderRLeg33
+    400080: SpiderRLeg3Ankle
+    400082: SpiderRLeg41
+    400084: SpiderRLeg42
+    400086: SpiderRLeg43
+    400088: SpiderRLeg4Ankle
+    2100000: Black_Widow_1_01
+    2100002: Unwrap Texture Checker Material
+    4300000: Black_Widow_1_LOD0
+    4300002: Black_Widow_1_LOD1
+    4300004: Black_Widow_1_LOD2
+    4300006: Black_Widow_1_LOD3
+    9500000: //RootNode
+    13700000: Black_Widow_1_LOD0
+    13700002: Black_Widow_1_LOD1
+    13700004: Black_Widow_1_LOD2
+    13700006: Black_Widow_1_LOD3
+    20500000: //RootNode
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Black_Widow_1_01
+    second: {fileID: 2100000, guid: dacbfae2b8e0d0e46baa91864823e4f7, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages:
+    - 0.25
+    - 0.125
+    - 0.01
+    globalScale: 0.2
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.001
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: SpiderHub
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

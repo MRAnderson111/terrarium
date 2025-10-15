@@ -1,0 +1,158 @@
+fileFormatVersion: 2
+guid: 1e02e7b1f26b9ae40936d2050973e95a
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: root
+    100004: Spider_back
+    100006: spider_skn_LOD2
+    100008: SpiderHub
+    100010: SpiderLLeg11
+    100012: SpiderLLeg12
+    100014: SpiderLLeg13
+    100016: SpiderLLeg21
+    100018: SpiderLLeg22
+    100020: SpiderLLeg23
+    100022: SpiderLLeg31
+    100024: SpiderLLeg32
+    100026: SpiderLLeg33
+    100028: SpiderLLeg41
+    100030: SpiderLLeg42
+    100032: SpiderLLeg43
+    100034: SpiderMouthL
+    100036: SpiderMouthR
+    100038: SpiderRLeg11
+    100040: SpiderRLeg12
+    100042: SpiderRLeg13
+    100044: SpiderRLeg21
+    100046: SpiderRLeg22
+    100048: SpiderRLeg23
+    100050: SpiderRLeg31
+    100052: SpiderRLeg32
+    100054: SpiderRLeg33
+    100056: SpiderRLeg41
+    100058: SpiderRLeg42
+    100060: SpiderRLeg43
+    400000: //RootNode
+    400002: root
+    400004: Spider_back
+    400006: spider_skn_LOD2
+    400008: SpiderHub
+    400010: SpiderLLeg11
+    400012: SpiderLLeg12
+    400014: SpiderLLeg13
+    400016: SpiderLLeg21
+    400018: SpiderLLeg22
+    400020: SpiderLLeg23
+    400022: SpiderLLeg31
+    400024: SpiderLLeg32
+    400026: SpiderLLeg33
+    400028: SpiderLLeg41
+    400030: SpiderLLeg42
+    400032: SpiderLLeg43
+    400034: SpiderMouthL
+    400036: SpiderMouthR
+    400038: SpiderRLeg11
+    400040: SpiderRLeg12
+    400042: SpiderRLeg13
+    400044: SpiderRLeg21
+    400046: SpiderRLeg22
+    400048: SpiderRLeg23
+    400050: SpiderRLeg31
+    400052: SpiderRLeg32
+    400054: SpiderRLeg33
+    400056: SpiderRLeg41
+    400058: SpiderRLeg42
+    400060: SpiderRLeg43
+    4300000: spider_skn_LOD2
+    7400000: attack2
+    9500000: //RootNode
+    13700000: spider_skn_LOD2
+    2186277476908879412: ImportLogs
+  externalObjects: {}
+  materials:
+    importMaterials: 0
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 0
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 0.01
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 0.00025399998
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
