@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   growthProgress: 0
-  meshObject: {fileID: 0}
+  meshObject: {fileID: 5848279296162657842}
   defaultGrowthSpeed: 1
   isSpeedSet: 0
 --- !u!114 &7177617027138277366
@@ -211,8 +211,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reproductionPrefabPath: Prefabs/Flower
   checkDistance: 1
-  sphereRadius: 0.5
-  drawDebugSphere: 0
+  sphereRadius: 0.03
+  drawDebugSphere: 1
   smallClass: 
   coolDownTime: 1
   enableReproductionLogging: 0
@@ -394,6 +394,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8c892352faabc2044a59a2bca0e1dc67, type: 3}
+--- !u!1 &5848279296162657842 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3907356942876409294, guid: 8c892352faabc2044a59a2bca0e1dc67, type: 3}
+  m_PrefabInstance: {fileID: 7426712206236322812}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6512930345086332040 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4427716572072486772, guid: 8c892352faabc2044a59a2bca0e1dc67, type: 3}

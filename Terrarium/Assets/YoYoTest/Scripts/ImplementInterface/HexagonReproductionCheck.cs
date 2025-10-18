@@ -8,8 +8,12 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
 
     [Header("检测参数")]
     public float checkDistance = 1f; // 检测距离
-    public float sphereRadius = 0.5f; // 检测球体半径
+    private float sphereRadius = 0.03f; // 检测球体半径
     public bool drawDebugSphere = false; // 是否绘制调试球体
+    
+    [Header("精确地面检测参数")]
+    public float preciseGroundCheckDistance = 2f; // 精确地面检测距离
+    public float preciseGroundCheckOffset = 0.5f; // 精确地面检测的向上偏移量
 
     [Header("繁殖控制")]
     public string smallClass = null;
@@ -117,6 +121,10 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
             }
             return false;
         }
+
+        // 设置精确地面检测参数
+        SphereDetectionUtility.preciseGroundCheckDistance = preciseGroundCheckDistance;
+        SphereDetectionUtility.preciseGroundCheckOffset = preciseGroundCheckOffset;
 
         // 调用静态工具类进行六边形球形检测
         if (SphereDetectionUtility.PerformHexagonSphereDetection(
