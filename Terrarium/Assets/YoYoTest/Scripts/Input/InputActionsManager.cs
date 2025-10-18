@@ -29,6 +29,9 @@ public class InputActionsManager : MonoBehaviour
                     GameObject managerObject = new GameObject("InputActionsManager");
                     _instance = managerObject.AddComponent<InputActionsManager>();
                 }
+                
+                // 懒加载时自动启用所有 InputActions
+                EnableAll();
             }
 
             return _instance;
@@ -45,6 +48,8 @@ public class InputActionsManager : MonoBehaviour
             if (_inputActions == null)
             {
                 _inputActions = new XRIDefaultInputActions();
+                // 创建后立即启用
+                _inputActions.Enable();
             }
             return _inputActions;
         }
@@ -89,6 +94,8 @@ public class InputActionsManager : MonoBehaviour
         // 如果是单例实例被销毁，清理资源
         if (_instance == this)
         {
+            // 销毁时禁用所有 InputActions
+            DisableAll();
             _inputActions?.Dispose();
             _inputActions = null;
             _instance = null;
@@ -104,6 +111,15 @@ public class InputActionsManager : MonoBehaviour
     public static InputAction FindAction(string actionName, bool throwIfNotFound = false)
     {
         return Asset.FindAction(actionName, throwIfNotFound);
+    }
+
+    /// <summary>
+    /// 应用程序退出时清理资源
+    /// </summary>
+    private void OnApplicationQuit()
+    {
+        // 应用程序退出时禁用所有 InputActions
+        DisableAll();
     }
 
     /// <summary>
