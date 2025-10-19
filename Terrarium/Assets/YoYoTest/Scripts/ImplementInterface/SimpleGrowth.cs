@@ -23,6 +23,9 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
     public bool isSpeedSet = false;
     public bool IsSpeedSet { get => isSpeedSet; set => isSpeedSet = value; }
 
+    //生成研究点数概率
+    public float researchPointProbability = 0.5f;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -95,7 +98,16 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
         // 释放研究点
         if (TryGetComponent<IReleaseResearchPoint>(out var releaseComponent))
         {
-            releaseComponent.ReleaseResearchPoint();
+            // 根据概率决定是否生成研究点数
+            if (Random.value <= researchPointProbability)
+            {
+                releaseComponent.ReleaseResearchPoint();
+                Debug.Log($"研究点数生成成功，概率: {researchPointProbability}");
+            }
+            else
+            {
+                Debug.Log($"研究点数生成失败，概率: {researchPointProbability}");
+            }
         }
 
         // 检查是否可以繁殖
