@@ -165,9 +165,13 @@ public class CreateManager : MonoBehaviour
             Debug.LogWarning("未找到 ObjectStatisticsManager 实例，无法进行数量限制检查");
         }
 
-        // 在指定位置生成预制体
-        GameObject newObject = Instantiate(prefab, position, Quaternion.identity);
-        Debug.Log("在位置 " + position + " 生成了预制体：" + prefab.name);
+        // 生成随机的Y轴旋转角度（0-360度）
+        float randomYRotation = UnityEngine.Random.Range(0f, 360f);
+        Quaternion randomRotation = Quaternion.Euler(0, randomYRotation, 0);
+        
+        // 在指定位置生成预制体，并应用随机Y轴旋转
+        GameObject newObject = Instantiate(prefab, position, randomRotation);
+        Debug.Log("在位置 " + position + " 生成了预制体：" + prefab.name + "，Y轴旋转：" + randomYRotation + "度");
 
         // 不在这里触发生成事件，让对象自己的 Start() 方法来触发
 
