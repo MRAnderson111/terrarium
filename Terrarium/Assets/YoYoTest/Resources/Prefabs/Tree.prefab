@@ -157,6 +157,7 @@ MonoBehaviour:
   meshObject: {fileID: 0}
   defaultGrowthSpeed: 5
   isSpeedSet: 0
+  researchPointProbability: 0.5
 --- !u!114 &7177617027138277366
 MonoBehaviour:
   m_ObjectHideFlags: 0

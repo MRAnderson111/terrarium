@@ -156,6 +156,7 @@ MonoBehaviour:
   meshObject: {fileID: 5848279296162657842}
   defaultGrowthSpeed: 1
   isSpeedSet: 0
+  researchPointProbability: 0.5
 --- !u!114 &7177617027138277366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -211,8 +212,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reproductionPrefabPath: Prefabs/Flower
   checkDistance: 1
-  sphereRadius: 0.03
   drawDebugSphere: 1
+  preciseGroundCheckDistance: 2
+  preciseGroundCheckOffset: 0.5
   smallClass: 
   coolDownTime: 1
   enableReproductionLogging: 0
@@ -315,7 +317,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
