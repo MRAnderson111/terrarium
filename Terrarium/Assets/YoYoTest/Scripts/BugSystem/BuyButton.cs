@@ -57,7 +57,7 @@ public class BuyButton : MonoBehaviour
             int currentItemCount = PlayerPrefs.GetInt(itemKey, 0);
             
             // 格式化显示文本：物品名称 价格 数量
-            priceText.text = $"{itemName}\n价格: {itemPrice} 金币\n数量: {currentItemCount}";
+            priceText.text = $"{itemName}\nPrice: {itemPrice} Coin\nNumber: {currentItemCount}";
         }
     }
 
