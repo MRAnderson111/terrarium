@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1235466508303229831}
   - component: {fileID: 2695187227910442678}
   m_Layer: 0
-  m_Name: HomeScorpion
+  m_Name: HomeMantis
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,5 +148,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bigClass: 
   smallClass: 
-  antPrefab: {fileID: 3253501275212402260, guid: a26e9adc33d787b4da6687c64a90c85e, type: 3}
+  antPrefab: {fileID: 3253501275212402260, guid: c987cda7a0a834c428bb3c09ea249098, type: 3}
   antCount: 0

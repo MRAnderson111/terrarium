@@ -148,5 +148,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bigClass: 
   smallClass: 
-  antPrefab: {fileID: 3253501275212402260, guid: 7cc3da0c907a3624ca18f952a1e67257, type: 3}
+  antPrefab: {fileID: 3253501275212402260, guid: 6d8413761f1aea244bc0a0f8e9614b0b, type: 3}
   antCount: 0
