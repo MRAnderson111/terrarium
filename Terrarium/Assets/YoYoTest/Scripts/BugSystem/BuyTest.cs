@@ -9,7 +9,7 @@ public class BuyTest : MonoBehaviour
     private const string ITEMS_PREFIX = "Item_";
     
     // 默认金币数量
-    private const int DEFAULT_COINS = 100;
+    private const int DEFAULT_COINS = 500;
     
     // 物品列表（可以在这里添加更多物品）
     public List<string> itemNames = new List<string>
