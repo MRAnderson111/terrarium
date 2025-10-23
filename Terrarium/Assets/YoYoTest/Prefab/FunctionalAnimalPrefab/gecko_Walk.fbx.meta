@@ -3,7 +3,12 @@ guid: cb9df99c6c9f02641bf52f91981833e8
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: luper_body2
+    second: {fileID: 2100000, guid: 3b0bf872e98047b4a81cada342b6bd93, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

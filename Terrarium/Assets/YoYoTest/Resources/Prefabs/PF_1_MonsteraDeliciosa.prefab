@@ -326,16 +326,28 @@ PrefabInstance:
       value: Tropical_Plant_0024_b
       objectReference: {fileID: 0}
     - target: {fileID: 7299940125520388688, guid: ef8924006972efc4dbacab63e4934b3e, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.8553289
+      objectReference: {fileID: 0}
+    - target: {fileID: 7299940125520388688, guid: ef8924006972efc4dbacab63e4934b3e, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.8553289
+      objectReference: {fileID: 0}
+    - target: {fileID: 7299940125520388688, guid: ef8924006972efc4dbacab63e4934b3e, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.8553289
+      objectReference: {fileID: 0}
+    - target: {fileID: 7299940125520388688, guid: ef8924006972efc4dbacab63e4934b3e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.0031852722
+      value: -0.009
       objectReference: {fileID: 0}
     - target: {fileID: 7299940125520388688, guid: ef8924006972efc4dbacab63e4934b3e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.5489998
+      value: -0.715
       objectReference: {fileID: 0}
     - target: {fileID: 7299940125520388688, guid: ef8924006972efc4dbacab63e4934b3e, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.0952549
+      value: 0.092
       objectReference: {fileID: 0}
     - target: {fileID: 7299940125520388688, guid: ef8924006972efc4dbacab63e4934b3e, type: 3}
       propertyPath: m_LocalRotation.w
