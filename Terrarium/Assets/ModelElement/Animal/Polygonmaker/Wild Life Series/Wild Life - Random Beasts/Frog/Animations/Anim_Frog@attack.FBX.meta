@@ -1,64 +1,176 @@
 fileFormatVersion: 2
 guid: fb849095faa1739429e152e632820cb6
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: frog_LOD1
-    100004: FrogFrontLLeg1
-    100006: FrogFrontLLeg2
-    100008: FrogFrontRLeg1
-    100010: FrogFrontRLeg2
-    100012: FrogHead1
-    100014: FrogHub001
-    100016: FrogHub002
-    100018: FrogLLeg1
-    100020: FrogLLeg2
-    100022: FrogLLegAnkle
-    100024: FrogRLeg1
-    100026: FrogRLeg2
-    100028: FrogRLegAnkle
-    100030: FrogSpine
-    100032: Frogtong
-    100034: root
-    100036: Frog_1_LOD2
-    100038: FrogHead
-    100040: FrogJaw
-    100042: FrogPelvis
-    100044: FrogRibcage
-    400000: //RootNode
-    400002: frog_LOD1
-    400004: FrogFrontLLeg1
-    400006: FrogFrontLLeg2
-    400008: FrogFrontRLeg1
-    400010: FrogFrontRLeg2
-    400012: FrogHead1
-    400014: FrogHub001
-    400016: FrogHub002
-    400018: FrogLLeg1
-    400020: FrogLLeg2
-    400022: FrogLLegAnkle
-    400024: FrogRLeg1
-    400026: FrogRLeg2
-    400028: FrogRLegAnkle
-    400030: FrogSpine
-    400032: Frogtong
-    400034: root
-    400036: Frog_1_LOD2
-    400038: FrogHead
-    400040: FrogJaw
-    400042: FrogPelvis
-    400044: FrogRibcage
-    2100000: frog_green
-    2100002: Frog
-    4300000: frog_LOD1
-    4300002: Frog_1_LOD2
-    7400000: attack
-    7400002: Take 001
-    9500000: //RootNode
-    13700000: frog_LOD1
-    13700002: Frog_1_LOD2
-    2186277476908879412: ImportLogs
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: frog_LOD1
+  - first:
+      1: 100004
+    second: FrogFrontLLeg1
+  - first:
+      1: 100006
+    second: FrogFrontLLeg2
+  - first:
+      1: 100008
+    second: FrogFrontRLeg1
+  - first:
+      1: 100010
+    second: FrogFrontRLeg2
+  - first:
+      1: 100012
+    second: FrogHead1
+  - first:
+      1: 100014
+    second: FrogHub001
+  - first:
+      1: 100016
+    second: FrogHub002
+  - first:
+      1: 100018
+    second: FrogLLeg1
+  - first:
+      1: 100020
+    second: FrogLLeg2
+  - first:
+      1: 100022
+    second: FrogLLegAnkle
+  - first:
+      1: 100024
+    second: FrogRLeg1
+  - first:
+      1: 100026
+    second: FrogRLeg2
+  - first:
+      1: 100028
+    second: FrogRLegAnkle
+  - first:
+      1: 100030
+    second: FrogSpine
+  - first:
+      1: 100032
+    second: Frogtong
+  - first:
+      1: 100034
+    second: root
+  - first:
+      1: 100036
+    second: Frog_1_LOD2
+  - first:
+      1: 100038
+    second: FrogHead
+  - first:
+      1: 100040
+    second: FrogJaw
+  - first:
+      1: 100042
+    second: FrogPelvis
+  - first:
+      1: 100044
+    second: FrogRibcage
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: frog_LOD1
+  - first:
+      4: 400004
+    second: FrogFrontLLeg1
+  - first:
+      4: 400006
+    second: FrogFrontLLeg2
+  - first:
+      4: 400008
+    second: FrogFrontRLeg1
+  - first:
+      4: 400010
+    second: FrogFrontRLeg2
+  - first:
+      4: 400012
+    second: FrogHead1
+  - first:
+      4: 400014
+    second: FrogHub001
+  - first:
+      4: 400016
+    second: FrogHub002
+  - first:
+      4: 400018
+    second: FrogLLeg1
+  - first:
+      4: 400020
+    second: FrogLLeg2
+  - first:
+      4: 400022
+    second: FrogLLegAnkle
+  - first:
+      4: 400024
+    second: FrogRLeg1
+  - first:
+      4: 400026
+    second: FrogRLeg2
+  - first:
+      4: 400028
+    second: FrogRLegAnkle
+  - first:
+      4: 400030
+    second: FrogSpine
+  - first:
+      4: 400032
+    second: Frogtong
+  - first:
+      4: 400034
+    second: root
+  - first:
+      4: 400036
+    second: Frog_1_LOD2
+  - first:
+      4: 400038
+    second: FrogHead
+  - first:
+      4: 400040
+    second: FrogJaw
+  - first:
+      4: 400042
+    second: FrogPelvis
+  - first:
+      4: 400044
+    second: FrogRibcage
+  - first:
+      21: 2100000
+    second: frog_green
+  - first:
+      21: 2100002
+    second: Frog
+  - first:
+      43: 4300000
+    second: frog_LOD1
+  - first:
+      43: 4300002
+    second: Frog_1_LOD2
+  - first:
+      74: 7400000
+    second: attack
+  - first:
+      74: 7400002
+    second: attack
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: frog_LOD1
+  - first:
+      137: 13700002
+    second: Frog_1_LOD2
+  - first:
+      41386430: 2186277476908879412
+    second: ImportLogs
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -71,7 +183,7 @@ ModelImporter:
       name: frog_green
     second: {fileID: 2100000, guid: 55ae5c2649f900f4f8a8f6e38a4f295c, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -80,6 +192,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -96,7 +209,36 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: attack
+      takeName: Take 001
+      internalID: 7400002
+      firstFrame: 100
+      lastFrame: 130
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 100
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -104,25 +246,36 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 0
     importBlendShapes: 1
     importCameras: 0
     importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 0.01
-    hasPreviousCalculatedGlobalScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -131,10 +284,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 1
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -144,14 +297,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: f69f2beb73931aa4d997ee4c3710ca10,
-    type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: f69f2beb73931aa4d997ee4c3710ca10, type: 3}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 2
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

@@ -1,98 +1,278 @@
 fileFormatVersion: 2
 guid: 7d7570eb688bfaf45b7002b13fb51b21
 ModelImporter:
-  serializedVersion: 23
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: Black_Widow_1_LOD3
-    100004: Spider_back
-    100006: SpiderArmL1
-    100008: SpiderArmL2
-    100010: SpiderArmR1
-    100012: SpiderArmR2
-    100014: SpiderHub
-    100016: SpiderJawL
-    100018: SpiderJawR
-    100020: SpiderLLeg11
-    100022: SpiderLLeg12
-    100024: SpiderLLeg13
-    100026: SpiderLLeg1Ankle
-    100028: SpiderLLeg21
-    100030: SpiderLLeg22
-    100032: SpiderLLeg23
-    100034: SpiderLLeg2Ankle
-    100036: SpiderLLeg31
-    100038: SpiderLLeg32
-    100040: SpiderLLeg33
-    100042: SpiderLLeg3Ankle
-    100044: SpiderLLeg41
-    100046: SpiderLLeg42
-    100048: SpiderLLeg43
-    100050: SpiderLLeg4Ankle
-    100052: SpiderRLeg11
-    100054: SpiderRLeg12
-    100056: SpiderRLeg13
-    100058: SpiderRLeg1Ankle
-    100060: SpiderRLeg21
-    100062: SpiderRLeg22
-    100064: SpiderRLeg23
-    100066: SpiderRLeg2Ankle
-    100068: SpiderRLeg31
-    100070: SpiderRLeg32
-    100072: SpiderRLeg33
-    100074: SpiderRLeg3Ankle
-    100076: SpiderRLeg41
-    100078: SpiderRLeg42
-    100080: SpiderRLeg43
-    100082: SpiderRLeg4Ankle
-    400000: //RootNode
-    400002: Black_Widow_1_LOD3
-    400004: Spider_back
-    400006: SpiderArmL1
-    400008: SpiderArmL2
-    400010: SpiderArmR1
-    400012: SpiderArmR2
-    400014: SpiderHub
-    400016: SpiderJawL
-    400018: SpiderJawR
-    400020: SpiderLLeg11
-    400022: SpiderLLeg12
-    400024: SpiderLLeg13
-    400026: SpiderLLeg1Ankle
-    400028: SpiderLLeg21
-    400030: SpiderLLeg22
-    400032: SpiderLLeg23
-    400034: SpiderLLeg2Ankle
-    400036: SpiderLLeg31
-    400038: SpiderLLeg32
-    400040: SpiderLLeg33
-    400042: SpiderLLeg3Ankle
-    400044: SpiderLLeg41
-    400046: SpiderLLeg42
-    400048: SpiderLLeg43
-    400050: SpiderLLeg4Ankle
-    400052: SpiderRLeg11
-    400054: SpiderRLeg12
-    400056: SpiderRLeg13
-    400058: SpiderRLeg1Ankle
-    400060: SpiderRLeg21
-    400062: SpiderRLeg22
-    400064: SpiderRLeg23
-    400066: SpiderRLeg2Ankle
-    400068: SpiderRLeg31
-    400070: SpiderRLeg32
-    400072: SpiderRLeg33
-    400074: SpiderRLeg3Ankle
-    400076: SpiderRLeg41
-    400078: SpiderRLeg42
-    400080: SpiderRLeg43
-    400082: SpiderRLeg4Ankle
-    2100000: Unwrap Texture Checker Material
-    4300000: Black_Widow_1_LOD3
-    7400000: run
-    9500000: //RootNode
-    13700000: Black_Widow_1_LOD3
-    2186277476908879412: ImportLogs
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: Black_Widow_1_LOD3
+  - first:
+      1: 100004
+    second: Spider_back
+  - first:
+      1: 100006
+    second: SpiderArmL1
+  - first:
+      1: 100008
+    second: SpiderArmL2
+  - first:
+      1: 100010
+    second: SpiderArmR1
+  - first:
+      1: 100012
+    second: SpiderArmR2
+  - first:
+      1: 100014
+    second: SpiderHub
+  - first:
+      1: 100016
+    second: SpiderJawL
+  - first:
+      1: 100018
+    second: SpiderJawR
+  - first:
+      1: 100020
+    second: SpiderLLeg11
+  - first:
+      1: 100022
+    second: SpiderLLeg12
+  - first:
+      1: 100024
+    second: SpiderLLeg13
+  - first:
+      1: 100026
+    second: SpiderLLeg1Ankle
+  - first:
+      1: 100028
+    second: SpiderLLeg21
+  - first:
+      1: 100030
+    second: SpiderLLeg22
+  - first:
+      1: 100032
+    second: SpiderLLeg23
+  - first:
+      1: 100034
+    second: SpiderLLeg2Ankle
+  - first:
+      1: 100036
+    second: SpiderLLeg31
+  - first:
+      1: 100038
+    second: SpiderLLeg32
+  - first:
+      1: 100040
+    second: SpiderLLeg33
+  - first:
+      1: 100042
+    second: SpiderLLeg3Ankle
+  - first:
+      1: 100044
+    second: SpiderLLeg41
+  - first:
+      1: 100046
+    second: SpiderLLeg42
+  - first:
+      1: 100048
+    second: SpiderLLeg43
+  - first:
+      1: 100050
+    second: SpiderLLeg4Ankle
+  - first:
+      1: 100052
+    second: SpiderRLeg11
+  - first:
+      1: 100054
+    second: SpiderRLeg12
+  - first:
+      1: 100056
+    second: SpiderRLeg13
+  - first:
+      1: 100058
+    second: SpiderRLeg1Ankle
+  - first:
+      1: 100060
+    second: SpiderRLeg21
+  - first:
+      1: 100062
+    second: SpiderRLeg22
+  - first:
+      1: 100064
+    second: SpiderRLeg23
+  - first:
+      1: 100066
+    second: SpiderRLeg2Ankle
+  - first:
+      1: 100068
+    second: SpiderRLeg31
+  - first:
+      1: 100070
+    second: SpiderRLeg32
+  - first:
+      1: 100072
+    second: SpiderRLeg33
+  - first:
+      1: 100074
+    second: SpiderRLeg3Ankle
+  - first:
+      1: 100076
+    second: SpiderRLeg41
+  - first:
+      1: 100078
+    second: SpiderRLeg42
+  - first:
+      1: 100080
+    second: SpiderRLeg43
+  - first:
+      1: 100082
+    second: SpiderRLeg4Ankle
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: Black_Widow_1_LOD3
+  - first:
+      4: 400004
+    second: Spider_back
+  - first:
+      4: 400006
+    second: SpiderArmL1
+  - first:
+      4: 400008
+    second: SpiderArmL2
+  - first:
+      4: 400010
+    second: SpiderArmR1
+  - first:
+      4: 400012
+    second: SpiderArmR2
+  - first:
+      4: 400014
+    second: SpiderHub
+  - first:
+      4: 400016
+    second: SpiderJawL
+  - first:
+      4: 400018
+    second: SpiderJawR
+  - first:
+      4: 400020
+    second: SpiderLLeg11
+  - first:
+      4: 400022
+    second: SpiderLLeg12
+  - first:
+      4: 400024
+    second: SpiderLLeg13
+  - first:
+      4: 400026
+    second: SpiderLLeg1Ankle
+  - first:
+      4: 400028
+    second: SpiderLLeg21
+  - first:
+      4: 400030
+    second: SpiderLLeg22
+  - first:
+      4: 400032
+    second: SpiderLLeg23
+  - first:
+      4: 400034
+    second: SpiderLLeg2Ankle
+  - first:
+      4: 400036
+    second: SpiderLLeg31
+  - first:
+      4: 400038
+    second: SpiderLLeg32
+  - first:
+      4: 400040
+    second: SpiderLLeg33
+  - first:
+      4: 400042
+    second: SpiderLLeg3Ankle
+  - first:
+      4: 400044
+    second: SpiderLLeg41
+  - first:
+      4: 400046
+    second: SpiderLLeg42
+  - first:
+      4: 400048
+    second: SpiderLLeg43
+  - first:
+      4: 400050
+    second: SpiderLLeg4Ankle
+  - first:
+      4: 400052
+    second: SpiderRLeg11
+  - first:
+      4: 400054
+    second: SpiderRLeg12
+  - first:
+      4: 400056
+    second: SpiderRLeg13
+  - first:
+      4: 400058
+    second: SpiderRLeg1Ankle
+  - first:
+      4: 400060
+    second: SpiderRLeg21
+  - first:
+      4: 400062
+    second: SpiderRLeg22
+  - first:
+      4: 400064
+    second: SpiderRLeg23
+  - first:
+      4: 400066
+    second: SpiderRLeg2Ankle
+  - first:
+      4: 400068
+    second: SpiderRLeg31
+  - first:
+      4: 400070
+    second: SpiderRLeg32
+  - first:
+      4: 400072
+    second: SpiderRLeg33
+  - first:
+      4: 400074
+    second: SpiderRLeg3Ankle
+  - first:
+      4: 400076
+    second: SpiderRLeg41
+  - first:
+      4: 400078
+    second: SpiderRLeg42
+  - first:
+      4: 400080
+    second: SpiderRLeg43
+  - first:
+      4: 400082
+    second: SpiderRLeg4Ankle
+  - first:
+      21: 2100000
+    second: Unwrap Texture Checker Material
+  - first:
+      43: 4300000
+    second: Black_Widow_1_LOD3
+  - first:
+      74: 7400000
+    second: run
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Black_Widow_1_LOD3
+  - first:
+      41386430: 2186277476908879412
+    second: ImportLogs
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -100,7 +280,7 @@ ModelImporter:
       name: Unwrap Texture Checker Material
     second: {fileID: 2100000, guid: 55143c81f40468d4ea9d597d7bc1be77, type: 2}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -109,6 +289,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
@@ -129,6 +310,7 @@ ModelImporter:
     - serializedVersion: 16
       name: run
       takeName: Take 001
+      internalID: 0
       firstFrame: 0
       lastFrame: 16
       wrapMode: 0
@@ -139,7 +321,7 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 1
       loopBlend: 0
-      loopBlendOrientation: 0
+      loopBlendOrientation: 1
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 1
@@ -161,25 +343,36 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
     importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
     preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
-    previousCalculatedGlobalScale: 0.002
-    hasPreviousCalculatedGlobalScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -188,10 +381,10 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 1
   humanDescription:
-    serializedVersion: 2
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -201,14 +394,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 0.2
     rootMotionBoneName: SpiderHub
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: e2f07c5daaa14c44d843e8ba6682df4b,
-    type: 3}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: e2f07c5daaa14c44d843e8ba6682df4b, type: 3}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 2
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 
