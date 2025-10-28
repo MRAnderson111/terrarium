@@ -35,8 +35,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 15.221879, y: 12.553677, z: -11.688499}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3386884260891769506}
   - {fileID: 8873786458180331757}
@@ -311,7 +311,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.3
+  m_Radius: 0.4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &3453438733610738641
 PrefabInstance:
@@ -323,15 +323,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 66909067953690995, guid: db4211faf55bf3249884a609b8bb31f9, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.5
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 66909067953690995, guid: db4211faf55bf3249884a609b8bb31f9, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.75
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 66909067953690995, guid: db4211faf55bf3249884a609b8bb31f9, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.5
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 66909067953690995, guid: db4211faf55bf3249884a609b8bb31f9, type: 3}
       propertyPath: m_LocalPosition.x
