@@ -1,13 +1,32 @@
 {
   "Plant": {
-    "Grass": 10,
-    "Flower": 4,
-    "Tree": 1
+    "Plantain": 3,
+    "Asplenium": 2,
+    "MedinillaMagnifica": 2,
+    "Schefflera": 1,
+    "VenusFlytrap": 1,
+    "Yarrow": 1,
+    "SweetWoodruff": 1,
+    "BigFern": 1,
+    "CalatheaCrocata": 1,
+    "MonsteraDeliciosa": 1
   },
   "Animal": {
-    "BigAnt": 1
+    "LeafCuttingAnt": 3,
+    "LadyBug": 2,
+    "Hercules": 1,
+    "Cricket": 1,
+    "PotatoBeetle": 1,
+    "Roach": 1,
+    "OryctesNasicornis": 1
   },
   "Killer": {
-    "AntKiller": 1
+    "Gecko": 1,
+    "Spider": 1,
+    "Frog": 1,
+    "Mantis": 1,
+    "Scorpion": 1,
+    "Centipede": 1,
+    "LucanusServus": 1
   }
 }

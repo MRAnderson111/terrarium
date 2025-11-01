@@ -8341,7 +8341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2233256999066621426, guid: 5a6c5df185adf0149934ee22239a7f48, type: 3}
       propertyPath: m_Name
-      value: PF_1_Yarrow
+      value: Yarrow
       objectReference: {fileID: 0}
     - target: {fileID: 2893199635409959062, guid: 5a6c5df185adf0149934ee22239a7f48, type: 3}
       propertyPath: m_LocalScale.x
@@ -8441,7 +8441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4457316898894976515, guid: 5a6c5df185adf0149934ee22239a7f48, type: 3}
       propertyPath: reproductionPrefabPath
-      value: Prefabs/PF_1_Yarrow
+      value: Prefabs/Yarrow
       objectReference: {fileID: 0}
     - target: {fileID: 4818177460609149783, guid: 5a6c5df185adf0149934ee22239a7f48, type: 3}
       propertyPath: m_LocalScale.x
