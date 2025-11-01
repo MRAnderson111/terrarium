@@ -199,6 +199,13 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
             {
                 Debug.Log("碰到水目标，喝水");
                 OnTouchWaterTarget(); // 触发停止移动
+                
+                // 播放进食动画（喝水也可以用进食动画，或者可以添加专门的喝水动画）
+                if (navMove != null)
+                {
+                    navMove.PlayEatingAnimation();
+                }
+                
                 UpdateWaterSatisfaction();
             }
             else
@@ -224,6 +231,13 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
             {
                 Debug.Log("碰到植物目标，吃植物");
                 OnTouchFoodTarget(); // 触发停止移动
+                
+                // 播放进食动画
+                if (navMove != null)
+                {
+                    navMove.PlayEatingAnimation();
+                }
+                
                 // 检查植物是否有IBeHurt组件
                 IBeHurt beHurtComponent = foodTarget.GetComponent<IBeHurt>();
                 if (beHurtComponent != null)
