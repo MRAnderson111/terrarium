@@ -29,7 +29,7 @@ public static class SphereDetectionUtility
     /// <param name="drawDebugSphere">是否绘制调试球体</param>
     /// <param name="emptyPosition">输出参数：找到的空位置</param>
     /// <returns>是否找到空位置</returns>
-    public static bool PerformDirectionalSphereDetection(Vector3 centerPosition, out Vector3 emptyPosition, float checkDistance = 1f, float sphereRadius = 0.5f, bool drawDebugSphere = false)
+    public static bool PerformDirectionalSphereDetection(Vector3 centerPosition, out Vector3 emptyPosition, float checkDistance = 1f, float sphereRadius = 0.5f, bool drawDebugSphere = false, bool returnGroundHitPoint = false)
     {
         // 初始化输出参数
         emptyPosition = Vector3.zero;
@@ -89,13 +89,15 @@ public static class SphereDetectionUtility
                     }
                     
                     // 第二步：进行精确的射线检测
-                    if (CheckGroundWithPreciseRaycast(checkPosition))
+                    if (CheckGroundWithPreciseRaycast(checkPosition, out Vector3 groundHitPoint))
                     {
                         if (enableDetailedLogging)
                         {
                             Debug.Log($"=== 在 {direction} 方向通过精确射线检测，找到合适的繁殖位置 ===");
                         }
-                        emptyPosition = checkPosition;
+                        
+                        // 根据参数决定返回哪个位置
+                        emptyPosition = returnGroundHitPoint ? groundHitPoint : checkPosition;
                         return true;
                     }
                     else
@@ -132,7 +134,7 @@ public static class SphereDetectionUtility
     /// <param name="drawDebugSphere">是否绘制调试球体</param>
     /// <param name="emptyPosition">输出参数：找到的空位置</param>
     /// <returns>是否找到空位置</returns>
-    public static bool PerformHexagonSphereDetection(Vector3 centerPosition, out Vector3 emptyPosition, float checkDistance = 1f, float sphereRadius = 0.5f, bool drawDebugSphere = false)
+    public static bool PerformHexagonSphereDetection(Vector3 centerPosition, out Vector3 emptyPosition, float checkDistance = 1f, float sphereRadius = 0.5f, bool drawDebugSphere = false, bool returnGroundHitPoint = false)
     {
         // 初始化输出参数
         emptyPosition = Vector3.zero;
@@ -194,13 +196,15 @@ public static class SphereDetectionUtility
                     }
                     
                     // 第二步：进行精确的射线检测
-                    if (CheckGroundWithPreciseRaycast(checkPosition))
+                    if (CheckGroundWithPreciseRaycast(checkPosition, out Vector3 groundHitPoint))
                     {
                         if (enableDetailedLogging)
                         {
                             Debug.Log($"=== 在六边形方向 {direction} 通过精确射线检测，找到合适的繁殖位置 ===");
                         }
-                        emptyPosition = checkPosition;
+                        
+                        // 根据参数决定返回哪个位置
+                        emptyPosition = returnGroundHitPoint ? groundHitPoint : checkPosition;
                         return true;
                     }
                     else
@@ -381,9 +385,13 @@ public static class SphereDetectionUtility
     /// 从位置上方偏移一定距离后向下发射射线，提供更精确的地面检测
     /// </summary>
     /// <param name="position">要检查的位置</param>
+    /// <param name="groundHitPoint">输出参数：射线击中地面的位置</param>
     /// <returns>是否检测到地面</returns>
-    private static bool CheckGroundWithPreciseRaycast(Vector3 position)
+    private static bool CheckGroundWithPreciseRaycast(Vector3 position, out Vector3 groundHitPoint)
     {
+        // 初始化输出参数
+        groundHitPoint = Vector3.zero;
+        
         // 从位置上方偏移一定距离开始发射射线，避免从地面内部开始检测
         Vector3 rayOrigin = position + Vector3.up * preciseGroundCheckOffset;
         Vector3 rayDirection = Vector3.down;
@@ -409,6 +417,7 @@ public static class SphereDetectionUtility
                 {
                     Debug.Log($"精确检测找到地面：{hit.collider.name}，位置合适进行繁殖");
                 }
+                groundHitPoint = hit.point;
                 return true;
             }
             else
