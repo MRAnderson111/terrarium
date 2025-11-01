@@ -10,6 +10,8 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
     public float checkDistance = 1f; // 检测距离
     public float sphereRadius = 0.5f; // 检测球体半径
     public bool drawDebugSphere = false; // 是否绘制调试球体
+    public bool markGroundHitPoint = true; // 是否标记射线击中地面的位置（false则标记球形检测位置）
+    public float spawnHeightOffset = 0.5f; // 生成预制体时的高度偏移量，用于贴合地面
 
     [Header("繁殖控制")]
     public string smallClass = null;
@@ -132,16 +134,19 @@ public class SimpleReproductionCheck : MonoBehaviour, IReproductionCheck
             out Vector3 emptyPosition,
             checkDistance,
             sphereRadius,
-            drawDebugSphere
+            drawDebugSphere,
+            markGroundHitPoint
         ))
         {
             // 找到空位置，使用CreateManager生成预制体
             if (CreateManager.Instance != null)
             {
-                CreateManager.Instance.CreatePrefab(reproductionPrefab, emptyPosition);
+                // 应用高度偏移量，确保植物正确贴合地面
+                Vector3 spawnPosition = emptyPosition + Vector3.up * spawnHeightOffset;
+                CreateManager.Instance.CreatePrefab(reproductionPrefab, spawnPosition);
                 if (enableReproductionLogging)
                 {
-                    Debug.Log($"使用CreateManager在位置 {emptyPosition} 生成了预制体：{reproductionPrefab.name}");
+                    Debug.Log($"使用CreateManager在位置 {spawnPosition} 生成了预制体：{reproductionPrefab.name}（原始检测位置：{emptyPosition}，偏移量：{spawnHeightOffset}）");
                 }
                 return true; // 成功繁殖
             }
