@@ -12,6 +12,7 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
 
     //mesh object
     public GameObject meshObject;
+    public GameObject meshObject2;
 
     //保存原始scale
     private Vector3 originalScale;
@@ -35,6 +36,12 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
 
         // 初始设置为原始scale的0.1倍
         meshObject.transform.localScale = originalScale * 0.1f;
+        
+        // 如果有meshObject2，初始设置为不可见
+        if (meshObject2 != null)
+        {
+            meshObject2.SetActive(false);
+        }
 
         // 检测地面并设置生长速度
         SetGrowthSpeedFromGround();
@@ -94,6 +101,15 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
 
         Debug.Log("生长完成");
 
+        // 检查是否有meshObject2，如果有则切换mesh
+        if (meshObject2 != null)
+        {
+            // 关闭当前mesh
+            meshObject.SetActive(false);
+            // 显示meshObject2
+            meshObject2.SetActive(true);
+            Debug.Log("植物已完全生长，切换到meshObject2");
+        }
 
         // 释放研究点
         if (TryGetComponent<IReleaseResearchPoint>(out var releaseComponent))
