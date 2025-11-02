@@ -14,7 +14,7 @@ PrefabInstance:
       objectReference: {fileID: 4704128563919567559, guid: dbe816976637c2a4f91549b31d974e86, type: 3}
     - target: {fileID: 4704128563919567559, guid: dbe816976637c2a4f91549b31d974e86, type: 3}
       propertyPath: m_Name
-      value: PF_1_VenusFlytrap
+      value: VenusFlytrap
       objectReference: {fileID: 0}
     - target: {fileID: 5085912845644842472, guid: dbe816976637c2a4f91549b31d974e86, type: 3}
       propertyPath: m_LocalScale.x
@@ -78,7 +78,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7092572873798187318, guid: dbe816976637c2a4f91549b31d974e86, type: 3}
       propertyPath: reproductionPrefabPath
-      value: Prefabs/PF_1_VenusFlytrap
+      value: Prefabs/VenusFlytrap
       objectReference: {fileID: 0}
     - target: {fileID: 9202064806903555668, guid: dbe816976637c2a4f91549b31d974e86, type: 3}
       propertyPath: m_LocalScale.x

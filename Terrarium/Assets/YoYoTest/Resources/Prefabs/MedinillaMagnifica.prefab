@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 3419133823235634074}
   - component: {fileID: -8077734801347911386}
   m_Layer: 0
-  m_Name: PF_1_MedinillaMagnifica
+  m_Name: MedinillaMagnifica
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a084edb07abd0004781c574ec3cd7f0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reproductionPrefabPath: Prefabs/PF_1_MedinillaMagnifica
+  reproductionPrefabPath: Prefabs/MedinillaMagnifica
   checkDistance: 1
   sphereRadius: 0.5
   drawDebugSphere: 1
