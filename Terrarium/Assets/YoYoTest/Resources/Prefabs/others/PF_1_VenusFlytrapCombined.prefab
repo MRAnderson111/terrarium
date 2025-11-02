@@ -35,7 +35,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 15.221879, y: 12.553677, z: -11.688499}
-  m_LocalScale: {x: 1e-44, y: 1e-44, z: 1e-44}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6548432384268596564}
@@ -134,6 +134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   growthProgress: 0
   meshObject: {fileID: 0}
+  meshObject2: {fileID: 0}
   defaultGrowthSpeed: 10
   isSpeedSet: 0
   researchPointProbability: 0.7
@@ -166,6 +167,8 @@ MonoBehaviour:
   checkDistance: 1
   sphereRadius: 0.5
   drawDebugSphere: 1
+  markGroundHitPoint: 1
+  spawnHeightOffset: 0.5
   smallClass: MedinillaMagnifica
   coolDownTime: 1
   enableReproductionLogging: 0

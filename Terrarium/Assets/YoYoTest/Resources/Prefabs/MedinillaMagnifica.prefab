@@ -34,8 +34,8 @@ Transform:
   m_GameObject: {fileID: 7340170426973155689}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.221879, y: 12.553677, z: -11.688499}
-  m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
+  m_LocalPosition: {x: 15.221879, y: 15, z: -11.688499}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3386884260891769506}
@@ -133,6 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   growthProgress: 0
   meshObject: {fileID: 2615309245224116248}
+  meshObject2: {fileID: 0}
   defaultGrowthSpeed: 10
   isSpeedSet: 0
   researchPointProbability: 0.7
@@ -165,6 +166,8 @@ MonoBehaviour:
   checkDistance: 1
   sphereRadius: 0.5
   drawDebugSphere: 1
+  markGroundHitPoint: 1
+  spawnHeightOffset: 0.5
   smallClass: MedinillaMagnifica
   coolDownTime: 1
   enableReproductionLogging: 0
@@ -236,7 +239,7 @@ Transform:
   m_GameObject: {fileID: 7472400939293495386}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.256, z: 0}
+  m_LocalPosition: {x: 0, y: 0.398, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -339,7 +342,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 66909067953690995, guid: db4211faf55bf3249884a609b8bb31f9, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.529
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 66909067953690995, guid: db4211faf55bf3249884a609b8bb31f9, type: 3}
       propertyPath: m_LocalPosition.z
