@@ -353,6 +353,34 @@ public class ObjectStatisticsManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 随机获取一个树类的游戏对象
+    /// </summary>
+    /// <returns>随机树类游戏对象，如果没有树则返回null</returns>
+    public GameObject GetRandomTreeObject()
+    {
+        List<GameObject> treeObjects = new List<GameObject>();
+        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
+        
+        foreach (GameObject obj in allGameObjects)
+        {
+            IGetObjectClass objectClass = obj.GetComponent<IGetObjectClass>();
+            if (objectClass != null && objectClass.BigClass == "Plant" && objectClass.SmallClass == "Tree")
+            {
+                treeObjects.Add(obj);
+            }
+        }
+        
+        if (treeObjects.Count == 0)
+        {
+            Debug.LogWarning("没有找到任何树类对象");
+            return null;
+        }
+        
+        int randomIndex = UnityEngine.Random.Range(0, treeObjects.Count);
+        return treeObjects[randomIndex];
+    }
+
+    /// <summary>
     /// 获取所有动物类的游戏对象
     /// </summary>
     /// <returns>动物类游戏对象的列表</returns>

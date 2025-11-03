@@ -42,6 +42,10 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
 
     // 上一次的白天状态，用于检测状态变化
     private bool wasDayLastFrame = false;
+    
+    // 上一次的成年状态，用于检测成年状态变化
+    private bool wasAdultLastFrame = false;
+    
     public string bigClass;
 
     public string BigClass => bigClass;
@@ -152,7 +156,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     private void StateCheck()
     {
         IsDayCheck();
-
+        CheckAdultTransition();
     }
 
     private void IsDayCheck()
@@ -376,6 +380,52 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     public void SetAdult(bool isAdult)
     {
         this.isAdult = isAdult;
+    }
+    
+    /// <summary>
+    /// 检查蚂蚁是否从未成年变成成年，如果是则触发成长动画
+    /// </summary>
+    private void CheckAdultTransition()
+    {
+        // 检测从未成年到成年的状态变化
+        if (!wasAdultLastFrame && isAdult)
+        {
+            Debug.Log("蚂蚁从未成年变成成年，触发成长动画");
+            StartCoroutine(GrowthAnimation());
+        }
+        
+        // 更新上一帧的成年状态
+        wasAdultLastFrame = isAdult;
+    }
+    
+    /// <summary>
+    /// 成长动画协程，在0.2秒内将scale从1变为1.2
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator GrowthAnimation()
+    {
+        float duration = 0.2f; // 动画持续时间
+        float startScale = 1.0f; // 初始scale
+        float targetScale = 1.2f; // 目标scale
+        float elapsedTime = 0f;
+        
+        Vector3 initialScale = transform.localScale;
+        
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / duration;
+            
+            // 使用线性插值计算当前scale
+            float currentScale = Mathf.Lerp(startScale, targetScale, progress);
+            transform.localScale = initialScale * currentScale;
+            
+            yield return null; // 等待下一帧
+        }
+        
+        // 确保最终scale准确设置为目标值
+        transform.localScale = initialScale * targetScale;
+        Debug.Log("成长动画完成，当前scale: " + transform.localScale);
     }
 
     public void SetInHome(bool inHome)
