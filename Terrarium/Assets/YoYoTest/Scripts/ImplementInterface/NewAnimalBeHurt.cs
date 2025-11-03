@@ -7,6 +7,12 @@ public class NewAnimalBeHurt : MonoBehaviour, IBeHurt
     public float healthLimit;
     public float currentHealth;
     public float CurrentHealth { get => currentHealth; set => currentHealth = value; }
+    public float GetHealthScore { get; set; }
+
+    public float scoreMultiplier =1f;
+
+
+
     public float recoverySpeed;
 
     public void BeHurt(float hurtValue)
@@ -22,7 +28,7 @@ public class NewAnimalBeHurt : MonoBehaviour, IBeHurt
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -33,6 +39,8 @@ public class NewAnimalBeHurt : MonoBehaviour, IBeHurt
         {
             currentHealth = healthLimit;
         }
+
+        GetHealthScore = currentHealth / healthLimit * scoreMultiplier;
 
 
         // //test

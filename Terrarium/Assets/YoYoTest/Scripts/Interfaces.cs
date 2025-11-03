@@ -9,6 +9,7 @@ public interface IGetObjectClass
 {
     string BigClass { get; }
     string SmallClass { get; }
+
     void Death();
 }
 
@@ -49,6 +50,7 @@ public interface IBeHurt
 {
     void BeHurt(float hurtValue);
     float CurrentHealth { get; set; }
+    float GetHealthScore { get; set; }
 }
 public interface IGetGroundClass
 {

@@ -8,6 +8,7 @@ public class Tree : MonoBehaviour, IGetObjectClass, IGetQuantityLimits
 
     public string SmallClass => "Tree";
 
+
     public int quantityLimits = 10;
     public int QuantityLimits
     {

@@ -43,6 +43,8 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// </summary>
     public float totalPlantHealth = 0f;
 
+    public float totalScore = 0f;
+
     /// <summary>
     /// 植物对象的缓存列表，避免每帧都重新查找
     /// </summary>
@@ -86,9 +88,12 @@ public class ObjectStatisticsManager : MonoBehaviour
             }
         }
 
-        
+
         // 计算所有植物的总血量
         CalculateTotalPlantHealth();
+
+        // 打印健康积分统计信息
+        PrintHealthScoreStatistics();
         
 
         // if (Input.GetKeyDown(KeyCode.A))
@@ -402,6 +407,52 @@ public class ObjectStatisticsManager : MonoBehaviour
             // 累加当前血量
             totalPlantHealth += beHurt.CurrentHealth;
         }
+    }
+
+
+
+    /// <summary>
+    /// 计算指定大类对象的健康积分总和
+    /// </summary>
+    /// <param name="bigClass">大类名称（如"Plant"、"Animal"、"Killer"等）</param>
+    /// <returns>指定大类对象的总健康积分</returns>
+    public float CalculateBigClassHealthScore(string bigClass)
+    {
+        totalScore = 0f;
+        
+        // 获取指定大类的所有对象
+        List<GameObject> objects = GetObjectsByBigClass(bigClass);
+        
+        foreach (GameObject obj in objects)
+        {
+            // 获取IBeHurt接口
+            IBeHurt beHurt = obj.GetComponent<IBeHurt>();
+            if (beHurt != null)
+            {
+                // 累加健康积分
+                totalScore += beHurt.GetHealthScore;
+            }
+        }
+        
+        return totalScore;
+    }
+
+    /// <summary>
+    /// 打印所有对象的健康积分统计信息
+    /// </summary>
+    [ContextMenu("打印健康积分统计")]
+    public void PrintHealthScoreStatistics()
+    {
+        float plantScore = CalculateBigClassHealthScore("Plant");
+        float animalScore = CalculateBigClassHealthScore("Animal");
+        float killerScore = CalculateBigClassHealthScore("Killer");
+        totalScore = plantScore + animalScore + killerScore;
+        
+        Debug.LogError("=== 健康积分统计 ===");
+        Debug.LogError($"总积分: {totalScore}");
+        Debug.LogError($"植物积分: {plantScore}");
+        Debug.LogError($"动物积分: {animalScore}");
+        Debug.LogError($"杀手积分: {killerScore}");
     }
 #endregion
 }

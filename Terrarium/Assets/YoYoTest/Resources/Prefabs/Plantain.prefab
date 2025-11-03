@@ -198,6 +198,7 @@ MonoBehaviour:
   healthLimit: 12.5
   currentHealth: 0
   recoverySpeed: 2
+  scoreMultiplier: 1
 --- !u!1 &7472400939293495386
 GameObject:
   m_ObjectHideFlags: 0

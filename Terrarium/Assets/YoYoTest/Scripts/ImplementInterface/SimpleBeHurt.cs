@@ -9,6 +9,10 @@ public class SimpleBeHurt : MonoBehaviour, IBeHurt
     public float CurrentHealth { get => currentHealth; set => currentHealth = value; }
     public float recoverySpeed;
 
+
+    public float scoreMultiplier= 1f;
+
+
     public void BeHurt(float hurtValue)
     {
         currentHealth -= hurtValue;
@@ -19,11 +23,15 @@ public class SimpleBeHurt : MonoBehaviour, IBeHurt
         }
     }
 
+    public float GetHealthScore { get; set; }
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -34,10 +42,8 @@ public class SimpleBeHurt : MonoBehaviour, IBeHurt
             currentHealth = healthLimit;
         }
 
+        GetHealthScore = currentHealth / healthLimit * scoreMultiplier;
 
-        // //test
-        // if (Input.GetKeyDown(KeyCode.A))
-        // {
         //     BeHurt(10);
         // }
     }
