@@ -121,7 +121,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
                     else
                     {
                         Debug.Log("成虫白天吃饱了，没有居住地");
-                        homeManager.ForceCreateHome();
+                        ((AntHomeManager)homeManager).ForceCreateHome(transform.position, bigClass, smallClass);
                     }
 
                 }
@@ -141,7 +141,7 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
                 else
                 {
                     Debug.Log("成虫夜晚，没有居住地，创建居住地");
-                    homeManager.ForceCreateHome();
+                    ((AntHomeManager)homeManager).ForceCreateHome(transform.position, bigClass, smallClass);
                     Debug.Log("成虫夜晚，新建居住地后，回家");
                     GoHomeAndSleep();
                 }

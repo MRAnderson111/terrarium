@@ -231,7 +231,7 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
                     // 扣植物的血
                     beHurtComponent.BeHurt(hurtForce * Time.deltaTime);
                     // 增加饱腹感（相当于营养度）
-                    currentFullness += 10 * Time.deltaTime;
+                    currentFullness += 30 * Time.deltaTime;
                     if (currentFullness >= 100)
                     {
                         currentFullness = 100;

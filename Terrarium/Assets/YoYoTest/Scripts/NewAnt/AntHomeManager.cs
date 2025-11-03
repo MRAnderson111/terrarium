@@ -31,7 +31,8 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     /// </summary>
     /// <param name="bigClass">物种大类</param>
     /// <param name="smallClass">物种小类</param>
-    public void FindOrCreateHome(string bigClass, string smallClass)
+    /// <param name="antPosition">蚂蚁当前位置（用于在蚂蚁位置创建居住地）</param>
+    public void FindOrCreateHome(string bigClass, string smallClass, Vector3 antPosition)
     {
         // 如果当前已经有关联的家，先检查这个家是否与请求的物种匹配
         if (isHaveHome && homeScript != null)
@@ -86,15 +87,11 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
             return;
         }
         
-        // 在随机位置生成居住地
-        Vector3 randomPosition = transform.position + new Vector3(
-            Random.Range(-10f, 10f),
-            0f,
-            Random.Range(-10f, 10f)
-        );
+        // 在蚂蚁当前位置生成居住地
+        Vector3 homePosition = new Vector3(antPosition.x, antPosition.y, antPosition.z);
         
         // 生成居住地预制体
-        homeObject = Instantiate(homePrefab, randomPosition, Quaternion.identity);
+        homeObject = Instantiate(homePrefab, homePosition, Quaternion.identity);
         
         // 获取居住地脚本组件
         homeScript = homeObject.GetComponent<AntHomeTest>();
@@ -112,7 +109,7 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         isHaveHome = true;
         OnHomeCreated?.Invoke(homeObject);
         
-        Debug.Log($"为 {bigClass}/{smallClass} 创建了新居住地，位置: {randomPosition}");
+        Debug.Log($"为 {bigClass}/{smallClass} 创建了新居住地，位置: {homePosition}");
         }
     }
     
@@ -206,13 +203,57 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     }
     
     /// <summary>
-    /// 强制创建新的居住地
+    /// 强制创建新的居住地（接口实现）
     /// </summary>
     public void ForceCreateHome()
     {
         // 这个方法现在只重置状态，而不创建家
         // 真正的创建逻辑由蚂蚁的行为触发
         ResetHome();
+    }
+    
+    /// <summary>
+    /// 强制创建新的居住地（在指定位置）
+    /// </summary>
+    /// <param name="antPosition">蚂蚁当前位置（用于在蚂蚁位置创建居住地）</param>
+    /// <param name="bigClass">物种大类</param>
+    /// <param name="smallClass">物种小类</param>
+    public void ForceCreateHome(Vector3 antPosition, string bigClass = "Default", string smallClass = "Default")
+    {
+        // 重置当前居住地状态
+        ResetHome();
+        
+        // 直接在蚂蚁位置创建新的居住地
+        // 检查是否有预制体
+        if (homePrefab == null)
+        {
+            Debug.LogError("Home预制体未设置，请在Inspector中设置Home预制体");
+            return;
+        }
+        
+        // 在蚂蚁当前位置生成居住地
+        Vector3 homePosition = new Vector3(antPosition.x, antPosition.y, antPosition.z);
+        
+        // 生成居住地预制体
+        homeObject = Instantiate(homePrefab, homePosition, Quaternion.identity);
+        
+        // 获取居住地脚本组件
+        homeScript = homeObject.GetComponent<AntHomeTest>();
+        if (homeScript == null)
+        {
+            Debug.LogError("居住地预制体上没有AntHomeTest组件");
+            Destroy(homeObject); // 清理创建失败的对象
+            return;
+        }
+
+        // 为新家设置分类标签
+        homeScript.bigClass = bigClass;
+        homeScript.smallClass = smallClass;
+        
+        isHaveHome = true;
+        OnHomeCreated?.Invoke(homeObject);
+        
+        Debug.Log($"强制创建新居住地，位置: {homePosition}，分类: {bigClass}/{smallClass}");
     }
     
     /// <summary>
@@ -226,7 +267,7 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         if (antScript == null) return;
 
         // 确保我们有正确的家
-        FindOrCreateHome(antScript.bigClass, antScript.smallClass);
+        FindOrCreateHome(antScript.bigClass, antScript.smallClass, antScript.transform.position);
 
         // 获取导航移动组件
         AnimalNavMove navMove = ant.GetGameObject().GetComponent<AnimalNavMove>();
@@ -276,7 +317,7 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         if (antScript == null) return;
         
         // 确保我们有正确的家
-        FindOrCreateHome(antScript.bigClass, antScript.smallClass);
+        FindOrCreateHome(antScript.bigClass, antScript.smallClass, antScript.transform.position);
         
         // 获取导航移动组件
         AnimalNavMove navMove = ant.GetGameObject().GetComponent<AnimalNavMove>();
