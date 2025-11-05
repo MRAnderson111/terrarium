@@ -10,7 +10,7 @@ public class SimpleBeHurt : MonoBehaviour, IBeHurt
     public float recoverySpeed;
 
 
-    public float scoreMultiplier= 1f;
+    private float scoreMultiplier= 1f;
 
 
     public void BeHurt(float hurtValue)

@@ -9,7 +9,7 @@ public class NewAnimalBeHurt : MonoBehaviour, IBeHurt
     public float CurrentHealth { get => currentHealth; set => currentHealth = value; }
     public float GetHealthScore { get; set; }
 
-    public float scoreMultiplier =1f;
+    private float scoreMultiplier =1f;
 
 
 
