@@ -38,8 +38,9 @@ Transform:
   m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 3828941533586531642}
+  - {fileID: 3158369106375295353}
   - {fileID: 8873786458180331757}
+  - {fileID: 7421474568609677258}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3898721766250033625
@@ -132,8 +133,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   growthProgress: 0
-  meshObject: {fileID: 919132149155446097, guid: 7a14382e73a6e4f4a96ec784ac2fe1d5, type: 3}
-  meshObject2: {fileID: 0}
+  meshObject: {fileID: 2350623212093643715}
+  meshObject2: {fileID: 7905382364222809456}
   defaultGrowthSpeed: 10
   isSpeedSet: 0
   researchPointProbability: 0.7
@@ -324,73 +325,161 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 7061961790967483974}
     m_Modifications:
-    - target: {fileID: 1312390478342543634, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
-      propertyPath: m_Name
-      value: SM_Plant_Tropical_Calathea_Crocata_03
-      objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.85
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalScale.y
       value: 0.85
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.85
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 0.014212927
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.5
+      value: -0.49999982
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0.0007131365
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.97997004
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
-      propertyPath: m_LocalRotation.y
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.19914521
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -22.974
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+    - target: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 034d6c903a220984ab20c644511036a7, type: 3}
+      propertyPath: m_Name
+      value: SM_Plant_Tropical_Calathea_Crocata_01
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
---- !u!4 &3828941533586531642 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1836725942199124904, guid: 571bc21ea3b2f5648bf04b2abf4668f0, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 034d6c903a220984ab20c644511036a7, type: 3}
+--- !u!1 &2350623212093643715 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 034d6c903a220984ab20c644511036a7, type: 3}
   m_PrefabInstance: {fileID: 3197131919094195858}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3158369106375295353 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 034d6c903a220984ab20c644511036a7, type: 3}
+  m_PrefabInstance: {fileID: 3197131919094195858}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &7022491370437629985
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7061961790967483974}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.99999994
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.99999994
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.99999994
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.0018045638
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.49500045
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.0055535636
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.97235006
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.2335283
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -27.01
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+      propertyPath: m_Name
+      value: SM_Plant_Tropical_Calathea_Crocata_04
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+--- !u!4 &7421474568609677258 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+  m_PrefabInstance: {fileID: 7022491370437629985}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7905382364222809456 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 24f72af6beb99d044b6ad1ae49e23537, type: 3}
+  m_PrefabInstance: {fileID: 7022491370437629985}
   m_PrefabAsset: {fileID: 0}

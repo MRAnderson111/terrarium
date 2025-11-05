@@ -133,7 +133,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   growthProgress: 0
   meshObject: {fileID: 5848279296162657842}
-  meshObject2: {fileID: 4885477616547888530, guid: 0091e12c6a4353342aa10cffd2b2169f, type: 3}
+  meshObject2: {fileID: 5244428741407141189}
   defaultGrowthSpeed: 10
   isSpeedSet: 0
   researchPointProbability: 0.5
@@ -379,6 +379,11 @@ PrefabInstance:
 --- !u!4 &4867305480723871743 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5226256593737557800, guid: 0091e12c6a4353342aa10cffd2b2169f, type: 3}
+  m_PrefabInstance: {fileID: 795800288716820695}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5244428741407141189 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4885477616547888530, guid: 0091e12c6a4353342aa10cffd2b2169f, type: 3}
   m_PrefabInstance: {fileID: 795800288716820695}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7426712206236322812
