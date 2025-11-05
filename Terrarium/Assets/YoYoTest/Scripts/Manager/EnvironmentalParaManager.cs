@@ -37,10 +37,48 @@ public class EnvironmentalParaManager : MonoBehaviour
             return instance;
         }
     }
-    
+
     // 环境数据变化事件
     public static event System.Action<EnvironmentalData> OnEnvironmentalDataChanged;
+
+    public List<Light> environmentalDataChangedListeners = new List<Light>();
     
+    [Header("灯光控制参数")]
+    [SerializeField]
+    private float minColorTemperature = 1000f; // 色温最小值 (K)
+    [SerializeField]
+    private float maxColorTemperature = 10000f; // 色温最大值 (K)
+    [SerializeField]
+    private float minLightIntensity = 0f; // 光照强度最小值
+    [SerializeField]
+    private float maxLightIntensity = 5f; // 光照强度最大值
+    
+    // 公开属性，用于访问色温范围
+    public float MinColorTemperature
+    {
+        get { return minColorTemperature; }
+        set { minColorTemperature = value; UpdateLightingFromEnvironmentalData(); }
+    }
+    
+    public float MaxColorTemperature
+    {
+        get { return maxColorTemperature; }
+        set { maxColorTemperature = value; UpdateLightingFromEnvironmentalData(); }
+    }
+    
+    // 公开属性，用于访问光照强度范围
+    public float MinLightIntensity
+    {
+        get { return minLightIntensity; }
+        set { minLightIntensity = value; UpdateLightingFromEnvironmentalData(); }
+    }
+    
+    public float MaxLightIntensity
+    {
+        get { return maxLightIntensity; }
+        set { maxLightIntensity = value; UpdateLightingFromEnvironmentalData(); }
+    }
+
     // 公开的环境数据属性，可以通过单例访问
     public EnvironmentalData EnvironmentalData
     {
@@ -53,6 +91,7 @@ public class EnvironmentalParaManager : MonoBehaviour
             {
                 environmentalData = value;
                 OnEnvironmentalDataChanged?.Invoke(environmentalData);
+                UpdateLightingFromEnvironmentalData();
             }
         }
     }
@@ -118,8 +157,72 @@ public class EnvironmentalParaManager : MonoBehaviour
         
         // 确保对象在场景切换时不会被销毁
         DontDestroyOnLoad(gameObject);
+        
+        // 初始化时更新所有灯光
+        UpdateLightingFromEnvironmentalData();
     }
 
+    // 根据环境数据更新灯光属性
+    private void UpdateLightingFromEnvironmentalData()
+    {
+        foreach (Light light in environmentalDataChangedListeners)
+        {
+            if (light != null)
+            {
+                // 根据温度参数计算色温 (假设温度范围0-1映射到色温范围)
+                float normalizedTemperature = Mathf.Clamp01(environmentalData.temperature);
+                float colorTemperature = Mathf.Lerp(minColorTemperature, maxColorTemperature, normalizedTemperature);
+                
+                // 根据光照参数计算光照强度 (假设光照范围0-1映射到强度范围)
+                float normalizedSunshine = Mathf.Clamp01(environmentalData.sunshine);
+                float lightIntensity = Mathf.Lerp(minLightIntensity, maxLightIntensity, normalizedSunshine);
+                
+                // 应用灯光属性
+                light.colorTemperature = colorTemperature;
+                light.intensity = lightIntensity;
+            }
+        }
+    }
+    
+    // 添加灯光到监听列表
+    public void AddLightListener(Light light)
+    {
+        if (light != null && !environmentalDataChangedListeners.Contains(light))
+        {
+            environmentalDataChangedListeners.Add(light);
+            // 立即应用当前环境数据到新添加的灯光
+            UpdateSingleLight(light);
+        }
+    }
+    
+    // 从监听列表移除灯光
+    public void RemoveLightListener(Light light)
+    {
+        if (light != null && environmentalDataChangedListeners.Contains(light))
+        {
+            environmentalDataChangedListeners.Remove(light);
+        }
+    }
+    
+    // 更新单个灯光的属性
+    private void UpdateSingleLight(Light light)
+    {
+        if (light != null)
+        {
+            // 根据温度参数计算色温
+            float normalizedTemperature = Mathf.Clamp01(environmentalData.temperature);
+            float colorTemperature = Mathf.Lerp(minColorTemperature, maxColorTemperature, normalizedTemperature);
+            
+            // 根据光照参数计算光照强度
+            float normalizedSunshine = Mathf.Clamp01(environmentalData.sunshine);
+            float lightIntensity = Mathf.Lerp(minLightIntensity, maxLightIntensity, normalizedSunshine);
+            
+            // 应用灯光属性
+            light.colorTemperature = colorTemperature;
+            light.intensity = lightIntensity;
+        }
+    }
+    
     // Update is called once per frame
     void Update()
     {
