@@ -6,7 +6,7 @@ public class DTimeManager : MonoBehaviour
 {
     #region 单例模式
     private static DTimeManager instance;
-    
+
     /// <summary>
     /// 获取DTimeManager的单例实例
     /// </summary>
@@ -18,7 +18,7 @@ public class DTimeManager : MonoBehaviour
             {
                 // 查找场景中已有的实例
                 instance = FindObjectOfType<DTimeManager>();
-                
+
                 if (instance == null)
                 {
                     // 如果场景中没有，创建新的GameObject并添加组件
@@ -30,7 +30,7 @@ public class DTimeManager : MonoBehaviour
             return instance;
         }
     }
-    
+
     /// <summary>
     /// 唤醒时检查单例
     /// </summary>
@@ -42,7 +42,7 @@ public class DTimeManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        
+
         instance = this;
         DontDestroyOnLoad(gameObject); // 确保切换场景时不被销毁
     }
@@ -51,36 +51,43 @@ public class DTimeManager : MonoBehaviour
     [Header("时间设置")]
     [Tooltip("游戏内一天相当于现实中的多少秒")]
     public float realSecondsPerGameDay = 120f; // 默认2分钟一天
-    
+
     [Header("当前时间状态")]
     [SerializeField] private float currentTime; // 当前时间（0-24小时）
     [SerializeField] private int currentDay;    // 当前天数
-    
+
     [Header("时间控制")]
     [SerializeField] private bool isTimeRunning = false;
     [SerializeField] private float timeSpeed = 1f; // 时间流逝速度倍率
-    
+
+    [Header("时间控制")]
+    public Light directionalLight; // 场景中的方向光
+    public float maxLuminance = 1f; // 最大亮度
+    public float minLuminance = 0.1f; // 最小亮度
+    public float dayStartHour = 6f; // 白天开始时间（6点）
+    public float nightStartHour = 18f; // 夜晚开始时间（18点
+
     #region 公共属性
     /// <summary>
     /// 获取当前时间（小时）
     /// </summary>
     public float CurrentTime => currentTime;
-    
+
     /// <summary>
     /// 获取当前天数
     /// </summary>
     public int CurrentDay => currentDay;
-    
+
     /// <summary>
     /// 获取当前时间格式化字符串（HH:mm）
     /// </summary>
     public string FormattedTime => $"{(int)currentTime:D2}:{((int)((currentTime % 1) * 60)):D2}";
-    
+
     /// <summary>
     /// 获取当前日期时间字符串（第X天 HH:mm）
     /// </summary>
     public string FormattedDateTime => $"第{currentDay}天 {FormattedTime}";
-    
+
     /// <summary>
     /// 获取时间是否正在运行
     /// </summary>
@@ -92,6 +99,9 @@ public class DTimeManager : MonoBehaviour
     {
         // 初始化时间为第1天的0点
         // ResetTime();
+        
+        // 初始化灯光亮度
+        UpdateDirectionalLight();
     }
 
     // Update is called once per frame
@@ -213,6 +223,10 @@ public class DTimeManager : MonoBehaviour
         currentTime = 10f;
         currentDay = 1;
         isTimeRunning = false;
+        
+        // 初始化灯光亮度
+        UpdateDirectionalLight();
+        
         Debug.Log($"时间已重置 - {FormattedDateTime}");
     }
 
@@ -233,29 +247,64 @@ public class DTimeManager : MonoBehaviour
     {
         // 计算每帧增加的时间（基于现实时间流逝速度）
         float deltaTime = Time.deltaTime * timeSpeed;
-        
+
         // 计算每帧增加的游戏内小时数
         float hoursPerSecond = 24f / realSecondsPerGameDay;
         float hoursToAdd = deltaTime * hoursPerSecond;
-        
+
         // 更新当前时间
         currentTime += hoursToAdd;
-        
+
         // 检查是否达到24小时（新的一天）
         if (currentTime >= 24f)
         {
             // 计算超出的小时数
             float excessHours = currentTime - 24f;
-            
+
             // 增加天数
             currentDay++;
-            
+
             // 重置时间为新的一天的时间
             currentTime = excessHours;
-            
+
             // 触发新的一天事件
             OnNewDay();
         }
+
+        // 更新方向光亮度
+        UpdateDirectionalLight();
+    }
+
+    /// <summary>
+    /// 更新方向光亮度
+    /// </summary>
+    private void UpdateDirectionalLight()
+    {
+        if (directionalLight == null) return;
+
+        float targetLuminance = minLuminance;
+
+        // 计算当前时间段的亮度
+        if (currentTime >= nightStartHour || currentTime < dayStartHour)
+        {
+            // 夜晚时间 (18:00 - 6:00)，保持最小亮度
+            targetLuminance = minLuminance;
+        }
+        else if (currentTime >= dayStartHour && currentTime < 12f)
+        {
+            // 上午时间 (6:00 - 12:00)，从最小亮度逐渐增加到最大亮度
+            float morningProgress = (currentTime - dayStartHour) / (12f - dayStartHour);
+            targetLuminance = Mathf.Lerp(minLuminance, maxLuminance, morningProgress);
+        }
+        else if (currentTime >= 12f && currentTime < nightStartHour)
+        {
+            // 下午时间 (12:00 - 18:00)，从最大亮度逐渐减少到最小亮度
+            float afternoonProgress = (currentTime - 12f) / (nightStartHour - 12f);
+            targetLuminance = Mathf.Lerp(maxLuminance, minLuminance, afternoonProgress);
+        }
+
+        // 应用亮度到方向光
+        directionalLight.intensity = targetLuminance;
     }
 
     /// <summary>
@@ -279,8 +328,12 @@ public class DTimeManager : MonoBehaviour
             Debug.LogWarning("无效的时间设置！小时必须在0-23之间，分钟必须在0-59之间。");
             return;
         }
-        
+
         currentTime = hour + (minute / 60f);
+        
+        // 更新灯光亮度
+        UpdateDirectionalLight();
+        
         Debug.Log($"时间已设置为: {FormattedTime}");
     }
 
@@ -295,7 +348,7 @@ public class DTimeManager : MonoBehaviour
             Debug.LogWarning("天数必须大于0！");
             return;
         }
-        
+
         currentDay = day;
         Debug.Log($"天数已设置为: 第{currentDay}天");
     }
@@ -328,7 +381,7 @@ public class DTimeManager : MonoBehaviour
     {
         float startTime = startHour + (startMinute / 60f);
         float endTime = endHour + (endMinute / 60f);
-        
+
         if (startTime <= endTime)
         {
             // 正常的时间范围（比如8:00-18:00）
