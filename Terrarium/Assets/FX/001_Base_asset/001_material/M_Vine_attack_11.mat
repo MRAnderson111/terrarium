@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_Vine_attack_11
+  m_Shader: {fileID: 4800000, guid: ece02a507cd9c66478cd284e91d30075, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: 3100
+  stringTagMap:
+    DebugOverDraw: Off
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MaskTex:
+        m_Texture: {fileID: 2800000, guid: 0ba7a0bb0308cc0468a0a082959cde19, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseTex:
+        m_Texture: {fileID: 2800000, guid: 3de8ce27538c40a4fb5c10ddafc3599d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal_Tex:
+        m_Texture: {fileID: 2800000, guid: 3de8ce27538c40a4fb5c10ddafc3599d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SelfDistortionTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Cull: 0
+    - _Distort_power: 1
+    - _DistortionRate: 0.3
+    - _DistortionX: 0.5
+    - _DistortionY: 0.5
+    - _HeatForce: 1.5
+    - _SelfDistortionIntensity: 0.1
+    - _ZTest: 8
+    - _Ztest: 8
+    - _Zwrite: 0
+    m_Colors:
+    - _SelfDistortionScale: {r: 1, g: 1, b: 1, a: 1}
+    - _SelfDistortionSpeed: {r: 1, g: 1, b: 0, a: 1}
+    - _normal_speed: {r: 1, g: 0, b: 0, a: 0}
+    - _normal_uv: {r: 1, g: 1, b: 0, a: 0}
+  m_BuildTextureStacks: []

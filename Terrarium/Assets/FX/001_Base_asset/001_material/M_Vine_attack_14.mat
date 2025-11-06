@@ -1,0 +1,197 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_Vine_attack_14
+  m_Shader: {fileID: 4800000, guid: 423bf4f06cd846f42a4901c29862d84a, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords:
+  - _USE_CUSTOM1_X_DISSOLVE_ON
+  m_InvalidKeywords:
+  - _USE_DISSOLVE_OR_MUL_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Base_Tex:
+        m_Texture: {fileID: 2800000, guid: 41665060f3dbaff409ad659ff9c5efd8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Base_mask_Tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Dissolve_Tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Distort_Tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Distort_mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Distort_tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _base_texture:
+        m_Texture: {fileID: 2800000, guid: 0e05131bba53a634491f6fe94eaadad3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _color_Tex:
+        m_Texture: {fileID: 2800000, guid: 973c77d1bdea4a64589a9fc186f7855b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _displace_mask_tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _displace_tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _dissolve_texture:
+        m_Texture: {fileID: 2800000, guid: 973c77d1bdea4a64589a9fc186f7855b, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _emissive_tex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _Alpha: 1
+    - _AlphaCutoff: 0.5
+    - _Alpha_Constart: 1.49
+    - _Base_distort_power: 0
+    - _Color_power: 1
+    - _Constart: 1
+    - _Cull: 0
+    - _Cull1: 0
+    - _Custom2_zw_move_mask: 0
+    - _Desaturate: 0
+    - _Dissolve: 1
+    - _Dissolve_distort_power1: 0
+    - _Distance: 0
+    - _Distort: 0
+    - _Emissive_power: 1
+    - _Fade_distance: 0
+    - _HUE: 0
+    - _Hardness: 11
+    - _HeatForce: 1
+    - _Mask_distort_power: 0
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _Saturation: 0
+    - _Use_custom1_zw_move: 0
+    - _Value: 0
+    - _Ztest: 4
+    - _Ztest1: 8
+    - _Zwrite: 0
+    - _Zwrite1: 0
+    - _add_or_blend: 1
+    - _alpha_power: 1
+    - _base_back_power: 1
+    - _base_front_power: 1
+    - _color_Constart: 1
+    - _color_distort_power: 0
+    - _connect_base_alone: 0
+    - _displace_power: 1
+    - _dissolve: 0.221
+    - _distort_power: 0.2029095
+    - _edge_hardness: 122
+    - _frensel: -0.01
+    - _frensel_edge: 0
+    - _frensel_flip: 0
+    - _mask_Constart: 1
+    - _mask_power: 1
+    - _reduce_color: 0
+    - _use_change_color: 0
+    - _use_color_tex: 0
+    - _use_custom1_w_displace: 0
+    - _use_custom1_x_dissolve: 1
+    - _use_custom1_y_distort: 0
+    - _use_custom1_z_distort: 0
+    - _use_custom2_xyzw_control_base_uv: 0
+    - _use_displace: 0
+    - _use_dissolve_or_mul: 1
+    - _use_distort: 0
+    - _use_doubel_pass: 0
+    - _use_emissive: 0
+    - _use_frensel: 0
+    - _use_second_tex: 0
+    m_Colors:
+    - _Base_mask_speed: {r: 1, g: 0, b: 0, a: 0}
+    - _Base_mask_uv: {r: 1, g: 1, b: 0, a: 0}
+    - _Base_speed: {r: 1, g: 0, b: 0, a: 0}
+    - _Base_uv: {r: 1, g: 1, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Dissolve_speed: {r: 1, g: 0, b: 0, a: 0}
+    - _Dissolve_uv: {r: 1, g: 1, b: 0, a: 0}
+    - _Distort_speed1: {r: 1, g: 0, b: 0, a: 0}
+    - _Distort_uv1: {r: 1, g: 1, b: 0, a: 0}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Emissive_color: {r: 1, g: 1, b: 1, a: 0}
+    - _R_dark_clolor: {r: 1, g: 1, b: 1, a: 0}
+    - _R_light_color: {r: 2, g: 2, b: 2, a: 0}
+    - _base_back_color: {r: 1, g: 0, b: 0, a: 0}
+    - _base_front_color: {r: 1, g: 1, b: 1, a: 0}
+    - _base_speed: {r: 1, g: 0, b: 0, a: 0}
+    - _base_uv: {r: 1, g: 1, b: 0, a: 0}
+    - _color_speed: {r: 1, g: 0, b: 1, a: 0}
+    - _color_uv: {r: 1, g: 1, b: 0, a: 0}
+    - _direction: {r: 0, g: 0, b: 1, a: 1}
+    - _displace_mask_speed: {r: 0, g: 0, b: 1, a: 0}
+    - _displace_mask_uv: {r: 1, g: 1, b: 0, a: 0}
+    - _displace_speed: {r: 0, g: 0, b: 1, a: 0}
+    - _displace_uv: {r: 1, g: 1, b: 0, a: 0}
+    - _dissolve_speed: {r: 0, g: 0, b: 0, a: 0}
+    - _dissolve_uv: {r: 1, g: 1, b: 0, a: 0}
+    - _distort_speed: {r: 1, g: 0, b: 1, a: 0}
+    - _distort_uv: {r: 1, g: 1, b: 0, a: 0}
+    - _emissive_speed: {r: 1, g: 0, b: 1, a: 0}
+    - _emissive_uv: {r: 1, g: 1, b: 0, a: 0}
+  m_BuildTextureStacks: []

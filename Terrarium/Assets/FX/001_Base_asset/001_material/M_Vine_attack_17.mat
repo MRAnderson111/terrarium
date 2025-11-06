@@ -1,0 +1,172 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_Vine_attack_17
+  m_Shader: {fileID: 4800000, guid: 08f53efb533ecc842bdf14387bac6b8e, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _Base_mask_Tex:
+        m_Texture: {fileID: 2800000, guid: c6a8e5ba83aecc2408a50c2be842f43d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Base_mask_Tex1:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Base_tex:
+        m_Texture: {fileID: 2800000, guid: 96d4932eead536a4cbb0e6f5f9a01c04, type: 3}
+        m_Scale: {x: 0.5, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Color_Tex:
+        m_Texture: {fileID: 2800000, guid: cd81cb513bb68004183690b5a27741e9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Dissolve_Tex1:
+        m_Texture: {fileID: 2800000, guid: 12c39a6ab6f1e1647a833c7c2904922e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _tex4coord3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _texcoord:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _ASEOutlineWidth: 0.003
+    - _AlphaCutoff: 0.5
+    - _BumpScale: 1
+    - _Color_power1: 2
+    - _Cull: 0
+    - _Custom2_zw_move_mask: 0
+    - _Custom2_zw_move_mask1: 0
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _Dissolve1: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 1
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _Hardness1: 22
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _UVSec: 0
+    - _Use_color: 0
+    - _ZWrite: 1
+    - _Ztest: 4
+    - _Zwrite: 0
+    - __dirty: 0
+    - _alpha: 1
+    - _alpha_clip: 0
+    - _change: 0
+    - _comparsion2: 5
+    - _frensel_hard: 0.994
+    - _frensel_hard1: 0
+    - _frensel_power: 1
+    - _frensel_power1: 0
+    - _frensel_range: 0.27
+    - _frensel_range1: 0
+    - _mask_Constart: 1
+    - _mask_Constart1: 1
+    - _mask_power: 1
+    - _mask_power1: 1
+    - _offset: 0
+    - _reference2: 4
+    - _shadow_clip: 0.5
+    - _shadow_edge: 0
+    - _use_custom1_x_wpo: 0
+    - _wpo_power: 0.5
+    m_Colors:
+    - _ASEOutlineColor: {r: 0.028301895, g: 0.026566401, b: 0.026566401, a: 1}
+    - _Base_Diffuse: {r: 1, g: 1, b: 1, a: 1}
+    - _Base_color: {r: 1, g: 1, b: 1, a: 0}
+    - _Base_mask_speed: {r: 1, g: 0, b: 0, a: 0}
+    - _Base_mask_speed1: {r: 1, g: 0, b: 0, a: 0}
+    - _Base_mask_uv: {r: 1, g: 1, b: 0, a: 0}
+    - _Base_mask_uv1: {r: 1, g: 1, b: 0, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color_speed: {r: 0, g: 3, b: 1, a: 0}
+    - _Color_uv: {r: 1, g: 2, b: 0, a: 0}
+    - _Dissolve_speed1: {r: 0, g: 3, b: -1, a: 0}
+    - _Dissolve_uv1: {r: 0.2, g: 4, b: 0.74, a: 0.59}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _drak: {r: 0.33361515, g: 0.47426903, b: 0.5943396, a: 0}
+    - _frensel_color: {r: 1.5286216, g: 2, b: 0.8962264, a: 0}
+    - _frensel_color1: {r: 0, g: 0, b: 0, a: 0}
+    - _light: {r: 1, g: 1, b: 1, a: 0}
+  m_BuildTextureStacks: []

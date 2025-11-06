@@ -100,6 +100,7 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
         }
 
         Debug.Log("生长完成");
+        
 
         // 检查是否有meshObject2，如果有则切换mesh
         if (meshObject2 != null)
