@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3985744485593516265}
   - component: {fileID: 3851865309653805265}
   - component: {fileID: 7376223805312192794}
+  - component: {fileID: 867527320527498240}
   m_Layer: 0
   m_Name: ResearchPoint
   m_TagString: Untagged
@@ -105,3 +106,16 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &867527320527498240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8890730158753521650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b52a65ea3168de4498a7363167fe3da, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fxPrefab: {fileID: 2009096696667965022, guid: d4199bc3a39cece45aac6db7fd259df3, type: 3}
