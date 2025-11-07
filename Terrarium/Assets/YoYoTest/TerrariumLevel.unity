@@ -920,7 +920,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: f497190ac9083ca4a89a8d366e28301f, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1018,9 +1018,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterFallFX: {fileID: 8300000, guid: 500642425e816e8489ca39ab1610d570, type: 3}
   volume: 2
+  minDistance: 1
   maxDistance: 75
   playOnStart: 1
   loop: 1
+  rolloffMode: 0
+  dopplerLevel: 1
+  spread: 0
   waterfall_SFX: {fileID: 1134761322}
 --- !u!1 &56148177
 GameObject:
