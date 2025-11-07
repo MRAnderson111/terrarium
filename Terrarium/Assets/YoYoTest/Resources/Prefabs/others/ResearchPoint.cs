@@ -65,6 +65,12 @@ public class ResearchPoint : MonoBehaviour
                     Instantiate(fxPrefab, transform.position, transform.rotation);
                 }
                 
+                // 增加金币
+                if (createManager != null)
+                {
+                    createManager.AddGold(100);
+                }
+                
                 // 销毁自身
                 Destroy(gameObject);
             }

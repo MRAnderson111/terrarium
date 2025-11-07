@@ -40,7 +40,14 @@ public class CreateManager : MonoBehaviour
 
     [Header("预制体")]
     public bool isHit; // 射线是否击中Ground物体的标志位
+    public int goldCount = 1000; // 金币数量
 
+    public void AddGold(int amount)
+    {
+        goldCount += amount;
+        Debug.Log($"金币数量增加: {amount}, 当前总数: {goldCount}");
+    }
+ 
     // 初始化方法，在游戏开始时调用
     void Awake()
     {

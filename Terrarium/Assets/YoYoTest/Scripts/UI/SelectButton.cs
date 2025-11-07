@@ -12,6 +12,8 @@ public class SelectButton : MonoBehaviour
     public Text nameText;
     public TextMeshProUGUI quantityText;
     public int quantity;
+    public int price;
+    public Button addButton;
 
     
     // Start is called before the first frame update
@@ -21,7 +23,25 @@ public class SelectButton : MonoBehaviour
         button.onClick.AddListener(OnClick);
         
 
+        addButton.onClick.AddListener(OnAddButtonClick);
         quantityText.text = quantity.ToString();
+    }
+
+    void OnAddButtonClick()
+    {
+        if (CreateManager.Instance != null)
+        {
+            if (CreateManager.Instance.goldCount >= price)
+            {
+                CreateManager.Instance.AddGold(-price);
+                quantity++;
+                quantityText.text = quantity.ToString();
+            }
+            else
+            {
+                Debug.Log("金币不足，无法购买！");
+            }
+        }
     }
 
     // Update is called once per frame
