@@ -32,6 +32,9 @@ public class CreateManager : MonoBehaviour
     public GameObject hitPrefab; // 用于显示鼠标射线指向位置的GameObject
     public GameObject selectPosition; // 用于显示鼠标射线指向位置的GameObject
 
+    public Transform rayOrigin; // 射线的起点（通常是摄像机位置）
+
+
 
     [Header("预制体")]
     public bool isHit; // 射线是否击中Ground物体的标志位
@@ -67,27 +70,27 @@ public class CreateManager : MonoBehaviour
         // 实时检测鼠标射线并更新selectPosition位置
         UpdateSelectPosition();
 
-        // 检测鼠标点击
-        HandleMouseClick();
+        // 检测手柄输入
+        HandleControllerInput();
     }
 
     /// <summary>
-    /// 更新选择位置，根据鼠标射线检测结果
+    /// 更新选择位置，根据自定义射线检测结果
     /// </summary>
     private void UpdateSelectPosition()
     {
-        if (selectPosition == null) return;
+        if (selectPosition == null || rayOrigin == null) return;
 
-        // 从摄像机发射射线到鼠标位置
-        Camera mainCamera = Camera.main;
-        if (mainCamera == null) return;
-
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        // 使用rayOrigin的位置作为射线起点，forward方向作为射线方向
+        Ray ray = new Ray(rayOrigin.position, rayOrigin.forward);
         RaycastHit hit;
 
         // 检测射线是否击中物体
         if (Physics.Raycast(ray, out hit))
         {
+            // 绘制射线到击中点（绿色表示击中）
+            Debug.DrawLine(ray.origin, hit.point, Color.green);
+            
             // 检查击中的物体是否有"Ground"标签
             if (hit.collider.CompareTag("Ground"))
             {
@@ -100,7 +103,7 @@ public class CreateManager : MonoBehaviour
             else
             {
                 // 击中了物体但不是Ground标签，视为未击中
-                Vector3 targetPosition = ray.origin + ray.direction * 10f; // 距离摄像机10单位
+                Vector3 targetPosition = ray.origin + ray.direction * 10f; // 距离射线起点10单位
                 selectPosition.transform.position = targetPosition;
                 isHit = false;
                 // 当射线没有击中Ground物体时，隐藏selectPosition
@@ -109,8 +112,10 @@ public class CreateManager : MonoBehaviour
         }
         else
         {
-            // 如果没有击中任何物体，可以将位置设置到射线上的某个固定距离
-            Vector3 targetPosition = ray.origin + ray.direction * 10f; // 距离摄像机10单位
+            // 如果没有击中任何物体，绘制固定长度的射线（红色表示未击中）
+            Vector3 targetPosition = ray.origin + ray.direction * 10f; // 距离射线起点10单位
+            Debug.DrawLine(ray.origin, targetPosition, Color.red);
+            
             selectPosition.transform.position = targetPosition;
             isHit = false;
             // 当射线没有击中物体时，也激活selectPosition
@@ -179,12 +184,13 @@ public class CreateManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 处理鼠标点击，在射线击中位置生成预制体
+    /// 处理手柄输入，在射线击中位置生成预制体
     /// </summary>
-    private void HandleMouseClick()
+    private void HandleControllerInput()
     {
-        // 检测鼠标左键点击
-        if (Input.GetMouseButtonDown(0))
+        // 检测右手柄扳机键按下
+        float rightTrigger = InputActionsManager.Actions.XRIRightInteraction.ActivateValue.ReadValue<float>();
+        if (rightTrigger > 0.1f)
         {
             // 只有当射线击中物体且有选择的预制体时才生成
             if (isHit && selectPrefab != null)

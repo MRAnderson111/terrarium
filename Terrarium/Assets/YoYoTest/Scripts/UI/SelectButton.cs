@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ public class SelectButton : MonoBehaviour
     public GameObject selectPrefab;
     private Button button;
     public Text nameText;
-    public Text quantityText;
+    public TextMeshProUGUI quantityText;
     public int quantity;
 
     
