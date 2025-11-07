@@ -53,9 +53,8 @@ public class ResearchPoint : MonoBehaviour
         // 平滑缩放到目标大小
         transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime * scaleSpeed);
         
-        // 检测右手柄扳机键按下
-        float rightTrigger = InputActionsManager.Actions.XRIRightInteraction.ActivateValue.ReadValue<float>();
-        if (rightTrigger > 0.1f)
+        // 使用Unity输入系统的按钮按下检测方法
+        if (InputActionsManager.Actions.XRIRightInteraction.Activate.WasPressedThisFrame())
         {
             // 检查是否被射线击中
             if (isHitByRay)

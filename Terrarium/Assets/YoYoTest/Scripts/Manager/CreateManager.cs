@@ -34,8 +34,6 @@ public class CreateManager : MonoBehaviour
 
     public Transform rayOrigin; // 射线的起点（通常是摄像机位置）
 
-
-
     [Header("预制体")]
     public bool isHit; // 射线是否击中Ground物体的标志位
 
@@ -188,9 +186,8 @@ public class CreateManager : MonoBehaviour
     /// </summary>
     private void HandleControllerInput()
     {
-        // 检测右手柄扳机键按下
-        float rightTrigger = InputActionsManager.Actions.XRIRightInteraction.ActivateValue.ReadValue<float>();
-        if (rightTrigger > 0.1f)
+        // 使用Unity输入系统的按钮按下检测方法
+        if (InputActionsManager.Actions.XRIRightInteraction.Activate.WasPressedThisFrame())
         {
             // 只有当射线击中物体且有选择的预制体时才生成
             if (isHit && selectPrefab != null)
