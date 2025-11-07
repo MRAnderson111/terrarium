@@ -33,6 +33,10 @@ public class CreateManager : MonoBehaviour
     public GameObject selectPosition; // 用于显示鼠标射线指向位置的GameObject
 
     public Transform rayOrigin; // 射线的起点（通常是摄像机位置）
+    
+    [Header("射线可视化")]
+    public AdvancedRayVisualizer rayVisualizer; // 高级射线可视化器
+    public bool useAdvancedRayVisualizer = true; // 是否使用高级射线可视化器
 
     [Header("预制体")]
     public bool isHit; // 射线是否击中Ground物体的标志位
@@ -45,6 +49,11 @@ public class CreateManager : MonoBehaviour
         {
             instance = this;
             
+            // 如果需要使用高级射线可视化器且未指定，则自动添加
+            if (useAdvancedRayVisualizer && rayVisualizer == null)
+            {
+                rayVisualizer = gameObject.AddComponent<AdvancedRayVisualizer>();
+            }
 
             // 监听预制体选择事件
             Events.OnSelectPrefab.AddListener(OnSelectPrefab);
@@ -86,8 +95,16 @@ public class CreateManager : MonoBehaviour
         // 检测射线是否击中物体
         if (Physics.Raycast(ray, out hit))
         {
-            // 绘制射线到击中点（绿色表示击中）
-            Debug.DrawLine(ray.origin, hit.point, Color.green);
+            // 使用高级射线可视化器绘制射线到击中点（绿色表示击中）
+            if (useAdvancedRayVisualizer && rayVisualizer != null)
+            {
+                rayVisualizer.DrawRay(ray.origin, hit.point, true);
+            }
+            else
+            {
+                // 保留原有的Debug.DrawLine作为备用
+                Debug.DrawLine(ray.origin, hit.point, Color.green);
+            }
             
             // 检查击中的物体是否有"Ground"标签
             if (hit.collider.CompareTag("Ground"))
@@ -112,7 +129,17 @@ public class CreateManager : MonoBehaviour
         {
             // 如果没有击中任何物体，绘制固定长度的射线（红色表示未击中）
             Vector3 targetPosition = ray.origin + ray.direction * 10f; // 距离射线起点10单位
-            Debug.DrawLine(ray.origin, targetPosition, Color.red);
+            
+            // 使用高级射线可视化器绘制射线
+            if (useAdvancedRayVisualizer && rayVisualizer != null)
+            {
+                rayVisualizer.DrawRay(ray.origin, targetPosition, false);
+            }
+            else
+            {
+                // 保留原有的Debug.DrawLine作为备用
+                Debug.DrawLine(ray.origin, targetPosition, Color.red);
+            }
             
             selectPosition.transform.position = targetPosition;
             isHit = false;
