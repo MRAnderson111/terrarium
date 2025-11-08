@@ -63,6 +63,9 @@ public interface INewAntHome
     // 强制创建居住地
     void ForceCreateHome();
     
+    // 查找或创建居住地
+    void FindOrCreateHome(string bigClass, string smallClass, Vector3 antPosition);
+    
     // 回家并停留
     void GoHomeAndStay(INewAnt ant, float moveSpeed);
     
