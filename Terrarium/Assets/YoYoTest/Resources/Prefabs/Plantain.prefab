@@ -237,6 +237,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02d8504d3e72fd24a87393173c49bcec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bigClass: Plant
+  smallClass: Plantain
   quantityLimits: 10
 --- !u!114 &917345852478823218
 MonoBehaviour:

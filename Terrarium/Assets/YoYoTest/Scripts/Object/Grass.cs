@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Grass : MonoBehaviour, IGetObjectClass, IGetQuantityLimits
 {
-    public string BigClass => "Plant";
-
-    public string SmallClass => "Grass";
+    public string bigClass = "Plant";
+    public string BigClass => bigClass;
+    public string smallClass = "Grass";
+    public string SmallClass => smallClass;
 
     public int quantityLimits = 10;
     public int QuantityLimits
