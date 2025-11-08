@@ -110688,7 +110688,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_System: {fileID: 4742018622238699438}
-  m_MoveSpeed: 1
+  m_MoveSpeed: 5
   m_EnableStrafe: 1
   m_EnableFly: 0
   m_UseGravity: 1
@@ -111514,7 +111514,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookTarget: {fileID: 8507164856847619276}
   moveTarget: {fileID: 6098134047700435182}
-  offset: {x: 0, y: 0.2, z: 0}
+  offset: {x: 0, y: 0.67, z: 0}
   moveSpeed: 5
   rotationSpeed: 10
 --- !u!4 &8240259705344923999
