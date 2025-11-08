@@ -138,9 +138,13 @@ public class EnvironmentalParaManager : MonoBehaviour
             }
         }
     }
-    
+
     [SerializeField]
     private EnvironmentalData environmentalData = new EnvironmentalData();
+    
+    public Slider sunshineSlider;
+    public Slider temperatureSlider;
+    public Slider humiditySlider;
     
     // Awake方法在Start之前调用，用于初始化单例
     void Awake()
@@ -162,8 +166,44 @@ public class EnvironmentalParaManager : MonoBehaviour
         UpdateLightingFromEnvironmentalData();
     }
 
-    // 根据环境数据更新灯光属性
-    private void UpdateLightingFromEnvironmentalData()
+    void Start()
+    {
+        if (sunshineSlider != null)
+        {
+            sunshineSlider.onValueChanged.AddListener(OnSunshineChanged);
+            sunshineSlider.value = Sunshine;
+        }
+
+        if (temperatureSlider != null)
+        {
+            temperatureSlider.onValueChanged.AddListener(OnTemperatureChanged);
+            temperatureSlider.value = Temperature;
+        }
+
+        if (humiditySlider != null)
+        {
+            humiditySlider.onValueChanged.AddListener(OnHumidityChanged);
+            humiditySlider.value = Humidity;
+        }
+    }
+
+    public void OnSunshineChanged(float value)
+    {
+        Sunshine = value;
+    }
+
+    public void OnTemperatureChanged(float value)
+    {
+        Temperature = value;
+    }
+
+    public void OnHumidityChanged(float value)
+    {
+        Humidity = value;
+    }
+ 
+     // 根据环境数据更新灯光属性
+     private void UpdateLightingFromEnvironmentalData()
     {
         foreach (Light light in environmentalDataChangedListeners)
         {
