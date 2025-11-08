@@ -7,7 +7,7 @@ public class WaterFall : MonoBehaviour
     [Header("音频设置")]
     public AudioClip waterFallFX; // 瀑布音效
 
-    [Range(0f, 3f)]
+    [Range(0f, 5f)]
     public float volume = 1f; // 音量
 
     [Range(1f, 100f)]
