@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -44,6 +45,13 @@ public class ObjectStatisticsManager : MonoBehaviour
     public float totalPlantHealth = 0f;
 
     public float totalScore = 0f;
+    public float plantScore = 0f;
+    public TextMeshProUGUI plantScoreText;
+    public float animalScore = 0f;
+    public TextMeshProUGUI animalScoreText;
+
+
+    
 
     /// <summary>
     /// 植物对象的缓存列表，避免每帧都重新查找
@@ -471,16 +479,32 @@ public class ObjectStatisticsManager : MonoBehaviour
     [ContextMenu("打印健康积分统计")]
     public void PrintHealthScoreStatistics()
     {
-        float plantScore = CalculateBigClassHealthScore("Plant");
-        float animalScore = CalculateBigClassHealthScore("Animal");
-        float killerScore = CalculateBigClassHealthScore("Killer");
-        totalScore = plantScore + animalScore + killerScore;
+        // 植物积分只计算植物类
+        plantScore = CalculateBigClassHealthScore("Plant");
+        
+        // 动物积分包括动物类和杀手类
+        float animalClassScore = CalculateBigClassHealthScore("Animal");
+        float killerClassScore = CalculateBigClassHealthScore("Killer");
+        animalScore = animalClassScore + killerClassScore;
+        
+        // 总积分是植物积分和动物积分的总和
+        totalScore = plantScore + animalScore;
+        
+        // 更新UI文本显示
+        if (plantScoreText != null)
+        {
+            plantScoreText.text = plantScore.ToString("F1");
+        }
+        
+        if (animalScoreText != null)
+        {
+            animalScoreText.text = animalScore.ToString("F1");
+        }
         
         Debug.LogError("=== 健康积分统计 ===");
         Debug.LogError($"总积分: {totalScore}");
         Debug.LogError($"植物积分: {plantScore}");
-        Debug.LogError($"动物积分: {animalScore}");
-        Debug.LogError($"杀手积分: {killerScore}");
+        Debug.LogError($"动物积分: {animalScore} (动物类: {animalClassScore}, 杀手类: {killerClassScore})");
     }
 #endregion
 }
