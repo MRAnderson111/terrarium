@@ -99,7 +99,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -120,6 +120,7 @@ GameObject:
   - component: {fileID: 917345852478823218}
   - component: {fileID: 7177617027138277366}
   - component: {fileID: 5113849948432085656}
+  - component: {fileID: -4875770643316155952}
   - component: {fileID: 3408914636625868702}
   - component: {fileID: 3419133823235634074}
   - component: {fileID: -8077734801347911386}
@@ -283,7 +284,7 @@ MonoBehaviour:
   smallClass: CalatheaCrocata
   coolDownTime: 1
   enableReproductionLogging: 0
---- !u!114 &3408914636625868702
+--- !u!114 &-4875770643316155952
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -291,6 +292,21 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7340170426973155689}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02d8504d3e72fd24a87393173c49bcec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bigClass: Plant
+  smallClass: CalatheaCrocata
+  quantityLimits: 5
+--- !u!114 &3408914636625868702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7340170426973155689}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 51427ecd61580e74386532cbf7c78ea5, type: 3}
   m_Name: 
@@ -351,7 +367,7 @@ Transform:
   m_GameObject: {fileID: 7472400939293495386}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.032, y: -0.42, z: 0}
+  m_LocalPosition: {x: -0.032, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -422,7 +438,7 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

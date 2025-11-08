@@ -112,6 +112,7 @@ MonoBehaviour:
   currentFullness: 0
   isFull: 0
   hurtForce: 10
+  foodConsumptionRate: 30
 --- !u!114 &3199726379695570567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -204,7 +205,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3253501275212402260}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b82b6d51d127d7a4a83e591fc8778e1e, type: 3}
   m_Name: 

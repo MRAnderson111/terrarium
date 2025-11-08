@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 3620713198963589038}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.623, z: 0}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
   m_LocalScale: {x: 0.18683, y: 0.18683, z: 0.18683}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -119,6 +119,7 @@ GameObject:
   - component: {fileID: 6389254637753849302}
   - component: {fileID: 917345852478823218}
   - component: {fileID: 7177617027138277366}
+  - component: {fileID: 7407870390517640969}
   - component: {fileID: -1959249429765978297}
   - component: {fileID: -525399044809987110}
   - component: {fileID: 2625782630142022927}
@@ -261,7 +262,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointPrefab: {fileID: 8890730158753521650, guid: ff562ef537548344a9a398e79e2a7757, type: 3}
---- !u!114 &-1959249429765978297
+--- !u!114 &7407870390517640969
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -269,6 +270,21 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7340170426973155689}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02d8504d3e72fd24a87393173c49bcec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bigClass: Plant
+  smallClass: Asplenium
+  quantityLimits: 5
+--- !u!114 &-1959249429765978297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7340170426973155689}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 056dbd65df19ec04f8188c6d47f8754b, type: 3}
   m_Name: 
@@ -448,7 +464,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5226256593737557800, guid: 0091e12c6a4353342aa10cffd2b2169f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.571
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5226256593737557800, guid: 0091e12c6a4353342aa10cffd2b2169f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -527,7 +543,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4427716572072486772, guid: 8c892352faabc2044a59a2bca0e1dc67, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.592
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4427716572072486772, guid: 8c892352faabc2044a59a2bca0e1dc67, type: 3}
       propertyPath: m_LocalPosition.z

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5085534942999711567}
   - component: {fileID: 106144153407346078}
   - component: {fileID: 6017526608214838873}
+  - component: {fileID: 7815927486842009790}
   - component: {fileID: 3199726379695570567}
   - component: {fileID: 5121309747974531881}
   - component: {fileID: -7230120652267141824}
@@ -89,7 +90,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3199726379695570567
+--- !u!114 &7815927486842009790
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -97,6 +98,29 @@ MonoBehaviour:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3253501275212402260}
   m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68b7b0018cd6ce643be20f20331a0649, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterTarget: {fileID: 0}
+  currentWaterSatisfaction: 0
+  isTouchWaterTarget: 0
+  isDrinkWater: 0
+  foodTarget: {fileID: 0}
+  isTouchFoodTarget: 0
+  isHaveFoodTarget: 0
+  currentFullness: 0
+  isFull: 0
+  hurtForce: 10
+  foodConsumptionRate: 30
+--- !u!114 &3199726379695570567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3253501275212402260}
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 53762c6776f908d4c83e019db3ba6c87, type: 3}
   m_Name: 
@@ -181,7 +205,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3253501275212402260}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b82b6d51d127d7a4a83e591fc8778e1e, type: 3}
   m_Name: 
