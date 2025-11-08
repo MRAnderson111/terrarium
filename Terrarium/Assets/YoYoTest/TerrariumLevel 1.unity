@@ -66886,7 +66886,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b32236cb2f1be6540b8e242b3d4dbbfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectPrefab: {fileID: 3253501275212402260, guid: e57655328de42e84b887d38a18e06b03, type: 3}
+  selectPrefab: {fileID: 3253501275212402260, guid: 57b0d544e5f9dd3418d7972e1e4d51cb, type: 3}
   nameText: {fileID: 373709418}
   quantityText: {fileID: 23321853}
   quantity: 3

@@ -33,6 +33,9 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
 
     // 伤害力（用于扣植物的血）
     public float hurtForce = 10;
+    
+    // 食物消耗速度（饱腹感增加速度）
+    public float foodConsumptionRate = 30f;
 
     private void Start()
     {
@@ -245,7 +248,7 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
                     // 扣植物的血
                     beHurtComponent.BeHurt(hurtForce * Time.deltaTime);
                     // 增加饱腹感（相当于营养度）
-                    currentFullness += 1000 * Time.deltaTime;
+                    currentFullness += foodConsumptionRate * Time.deltaTime;
                     if (currentFullness >= 100)
                     {
                         currentFullness = 100;
