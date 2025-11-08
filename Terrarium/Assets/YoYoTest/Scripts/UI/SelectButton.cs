@@ -9,7 +9,7 @@ public class SelectButton : MonoBehaviour
 {
     public GameObject selectPrefab;
     private Button button;
-    public Text nameText;
+    public TextMeshProUGUI nameText;
     public TextMeshProUGUI quantityText;
     public int quantity;
     public int price;
@@ -25,6 +25,8 @@ public class SelectButton : MonoBehaviour
 
         addButton.onClick.AddListener(OnAddButtonClick);
         quantityText.text = quantity.ToString();
+
+        nameText.text = selectPrefab.name;
     }
 
     void OnAddButtonClick()
