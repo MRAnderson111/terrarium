@@ -5,6 +5,7 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     [Header("Home Settings")]
     [SerializeField] private GameObject homePrefab; // 居住地预制体
     [SerializeField] private float homeSearchRange = 50f; // 搜索居住地的范围
+    [SerializeField] public float homeYOffset = 0.1f; // Home在Y轴上的偏移高度，避免穿模
     
     private GameObject homeObject; // 居住地对象
     private AntHomeTest homeScript; // 居住地脚本组件
@@ -34,6 +35,7 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     /// <param name="antPosition">蚂蚁当前位置（用于在蚂蚁位置创建居住地）</param>
     public void FindOrCreateHome(string bigClass, string smallClass, Vector3 antPosition)
     {
+        Debug.Log($"FindOrCreateHome被调用: bigClass={bigClass}, smallClass={smallClass}, antPosition={antPosition}");
         // 如果当前已经有关联的家，先检查这个家是否与请求的物种匹配
         if (isHaveHome && homeScript != null)
         {
@@ -87,8 +89,9 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
             return;
         }
         
-        // 在蚂蚁当前位置生成居住地
-        Vector3 homePosition = new Vector3(antPosition.x, antPosition.y, antPosition.z);
+        // 在蚂蚁当前位置生成居住地，直接提高Y轴位置避免穿模
+        Vector3 homePosition = new Vector3(antPosition.x, antPosition.y + homeYOffset, antPosition.z);
+        Debug.Log($"创建home位置: {homePosition} (Y轴偏移: {homeYOffset})");
         
         // 生成居住地预制体
         homeObject = Instantiate(homePrefab, homePosition, Quaternion.identity);
@@ -231,8 +234,9 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
             return;
         }
         
-        // 在蚂蚁当前位置生成居住地
-        Vector3 homePosition = new Vector3(antPosition.x, antPosition.y, antPosition.z);
+        // 在蚂蚁当前位置生成居住地，直接提高Y轴位置避免穿模
+        Vector3 homePosition = new Vector3(antPosition.x, antPosition.y + homeYOffset, antPosition.z);
+        Debug.Log($"ForceCreateHome - 创建home位置: {homePosition} (Y轴偏移: {homeYOffset})");
         
         // 生成居住地预制体
         homeObject = Instantiate(homePrefab, homePosition, Quaternion.identity);
