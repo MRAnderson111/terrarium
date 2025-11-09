@@ -125,6 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   homePrefab: {fileID: 2109754380365222939, guid: eeedaf00f06cf1240afcb8ef8c54c4d4, type: 3}
   homeSearchRange: 50
+  homeYOffset: 0.1
 --- !u!114 &-7230120652267141824
 MonoBehaviour:
   m_ObjectHideFlags: 0
