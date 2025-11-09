@@ -244,7 +244,7 @@ MonoBehaviour:
   meshObject: {fileID: 8342051871123812391}
   meshObject2: {fileID: 7080605773574279886}
   fxSpot: {fileID: 3749581356382107184}
-  defaultGrowthSpeed: 10
+  defaultGrowthSpeed: 0.5
   isSpeedSet: 0
   researchPointProbability: 0.7
   fxGrownPrefab: {fileID: 5717244101683742049, guid: 1393f7bad63c0a243800f6bf622ddcc3, type: 3}
