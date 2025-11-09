@@ -501,10 +501,10 @@ public class ObjectStatisticsManager : MonoBehaviour
             animalScoreText.text = animalScore.ToString("F1");
         }
         
-        Debug.LogError("=== 健康积分统计 ===");
-        Debug.LogError($"总积分: {totalScore}");
-        Debug.LogError($"植物积分: {plantScore}");
-        Debug.LogError($"动物积分: {animalScore} (动物类: {animalClassScore}, 杀手类: {killerClassScore})");
+        ///Debug.LogError("=== 健康积分统计 ===");
+        ///Debug.LogError($"总积分: {totalScore}");
+        ///Debug.LogError($"植物积分: {plantScore}");
+        ///Debug.LogError($"动物积分: {animalScore} (动物类: {animalClassScore}, 杀手类: {killerClassScore})");
     }
 #endregion
 }
