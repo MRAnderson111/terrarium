@@ -46,9 +46,20 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
     // 最大缩放值
     public float maxScale = 0.75f;
 
+    [Header("音效设置")]
+    public AudioClip plantedSoundClip; // 种植时播放的声效
+    private AudioSource audioSource; // 音频源组件
+
     // Start is called before the first frame update
     void Awake()
     {
+        // 获取或添加AudioSource组件
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
         // 保存原始scale
         originalScale = meshObject.transform.localScale;
         Debug.Log("在 Awake 中捕获到的原始 scale: " + originalScale.ToString("F4"));
@@ -181,6 +192,8 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
         Vector3 pos = fxSpot != null ? fxSpot.position : transform.position;
         PlayEffect(fxPlantedPrefab, pos);
         hasPlayedPlantedEffect = true;
+        // 播放种植声效
+        PlayPlantedSound();
     }
 
     /// <summary>
@@ -298,5 +311,21 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
         }
     }
 
+    /// <summary>
+    /// 播放种植声效
+    /// </summary>
+    private void PlayPlantedSound()
+    {
+        if (plantedSoundClip != null && audioSource != null)
+        {
+            // 播放声效
+            audioSource.PlayOneShot(plantedSoundClip);
+            Debug.Log($"播放种植声效: {plantedSoundClip.name}");
+        }
+        else
+        {
+            Debug.LogWarning("种植声效未设置或AudioSource组件缺失！");
+        }
+    }
 
 }

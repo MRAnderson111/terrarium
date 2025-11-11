@@ -6,7 +6,11 @@ public class ResearchPoint : MonoBehaviour
 {
     public GameObject fxPrefab; // 特效预制体
     public CreateManager createManager; // CreateManager的引用
-    
+
+    [Header("音效设置")]
+    public AudioClip collectSoundClip; // 收集时播放的声效
+    private AudioSource audioSource; // 音频源组件
+
     private Vector3 originalScale; // 原始大小
     private Vector3 targetScale; // 目标大小
     private bool isHitByRay = false; // 是否被射线射中
@@ -19,7 +23,14 @@ public class ResearchPoint : MonoBehaviour
         // 保存原始大小
         originalScale = transform.localScale;
         targetScale = originalScale;
-        
+
+        // 获取或添加AudioSource组件
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
         // 如果没有设置CreateManager引用，尝试获取
         if (createManager == null)
         {
@@ -64,7 +75,10 @@ public class ResearchPoint : MonoBehaviour
                 {
                     Instantiate(fxPrefab, transform.position, transform.rotation);
                 }
-                
+
+                // 播放收集声效
+                PlayCollectSound();
+
                 // 增加金币
                 if (createManager != null)
                 {
@@ -76,7 +90,24 @@ public class ResearchPoint : MonoBehaviour
             }
         }
     }
-    
+
+    /// <summary>
+    /// 播放收集声效
+    /// </summary>
+    private void PlayCollectSound()
+    {
+        if (collectSoundClip != null && audioSource != null)
+        {
+            // 播放声效
+            audioSource.PlayOneShot(collectSoundClip);
+            Debug.Log($"播放收集声效: {collectSoundClip.name}");
+        }
+        else
+        {
+            Debug.LogWarning("收集声效未设置或AudioSource组件缺失！");
+        }
+    }
+
     /// <summary>
     /// 检查当前对象是否被CreateManager的射线击中
     /// </summary>

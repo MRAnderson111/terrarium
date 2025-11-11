@@ -204,3 +204,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fxPrefab: {fileID: 8563599308486965117, guid: d2188f6073e1b4d6e96c2142a0f678a2, type: 3}
+  createManager: {fileID: 0}
+  collectSoundClip: {fileID: 8300000, guid: 723239e350528044680401cf3605d8bc, type: 3}

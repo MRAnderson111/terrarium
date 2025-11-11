@@ -251,6 +251,7 @@ MonoBehaviour:
   fxPlantedPrefab: {fileID: 7810179485025708442, guid: d489f817f1fc3034e8441760ef820c5f, type: 3}
   minScale: 0.4
   maxScale: 0.75
+  plantedSoundClip: {fileID: 8300000, guid: 59294cc6545a8b74881beaf53b95951f, type: 3}
 --- !u!114 &7177617027138277366
 MonoBehaviour:
   m_ObjectHideFlags: 0

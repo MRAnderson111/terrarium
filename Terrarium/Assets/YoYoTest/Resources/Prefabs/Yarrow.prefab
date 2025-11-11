@@ -8986,6 +8986,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7810179485025708442, guid: d489f817f1fc3034e8441760ef820c5f, type: 3}
     - target: {fileID: 8617787716004167593, guid: 5a6c5df185adf0149934ee22239a7f48, type: 3}
+      propertyPath: plantedSoundClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 59294cc6545a8b74881beaf53b95951f, type: 3}
+    - target: {fileID: 8617787716004167593, guid: 5a6c5df185adf0149934ee22239a7f48, type: 3}
       propertyPath: defaultGrowthSpeed
       value: 0.5
       objectReference: {fileID: 0}
