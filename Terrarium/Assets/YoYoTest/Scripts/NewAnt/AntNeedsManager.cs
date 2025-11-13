@@ -31,14 +31,32 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     // 引用导航移动组件
     private AnimalNavMove navMove;
 
+    // 动画控制器引用
+    private Animator animator;
+
     // 伤害力（用于扣植物的血）
     public float hurtForce = 10;
+
+    // 进食动画状态
+    private bool isEating = false;
+    private bool isAnimationPaused = false;
 
     private void Start()
     {
         ant = GetComponent<INewAnt>();
         // 获取导航移动组件
         navMove = GetComponent<AnimalNavMove>();
+        // 获取动画控制器组件（与AnimalNavMove保持一致）
+        animator = GetComponentInChildren<Animator>();
+
+        if (animator != null)
+        {
+            Debug.Log($"AntNeedsManager: 成功获取到Animator组件: {animator.name}");
+        }
+        else
+        {
+            Debug.LogError("AntNeedsManager: 无法获取Animator组件！");
+        }
 
 
 
@@ -52,6 +70,12 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
             Debug.LogError("无法获取蚂蚁组件，使用默认移动速度 2f");
             moveSpeed = 2f;
         }
+    }
+
+    private void Update()
+    {
+        // 检查进食动画是否完成
+        CheckEatingAnimationComplete();
     }
 
     /// <summary>
@@ -89,6 +113,8 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
                 currentWaterSatisfaction = 100;
                 isDrinkWater = true;
                 Debug.Log("蚂蚁喝饱了水");
+                // 停止进食动画
+                StopEatingAnimation();
             }
         }
     }
@@ -199,11 +225,20 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
             {
                 Debug.Log("碰到水目标，喝水");
                 OnTouchWaterTarget(); // 触发停止移动
+
+                // 播放进食动画（喝水也可以用进食动画，或者可以添加专门的喝水动画）
+                PlayEatingAnimation();
+
                 UpdateWaterSatisfaction();
             }
             else
             {
                 Debug.Log("没碰到水目标，去喝水");
+                // 如果不再接触目标，停止进食动画
+                if (isEating)
+                {
+                    StopEatingAnimation();
+                }
                 GoToWaterTarget();
             }
         }
@@ -224,6 +259,10 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
             {
                 Debug.Log("碰到植物目标，吃植物");
                 OnTouchFoodTarget(); // 触发停止移动
+
+                // 播放进食动画
+                PlayEatingAnimation();
+
                 // 检查植物是否有IBeHurt组件
                 IBeHurt beHurtComponent = foodTarget.GetComponent<IBeHurt>();
                 if (beHurtComponent != null)
@@ -239,6 +278,8 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
                         Debug.Log("蚂蚁吃饱了");
                         //变成成虫
                         ant.SetAdult(true);
+                        // 停止进食动画
+                        StopEatingAnimation();
                     }
                 }
                 else
@@ -249,6 +290,11 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
             else
             {
                 Debug.Log("没碰到植物目标，去吃");
+                // 如果不再接触目标，停止进食动画
+                if (isEating)
+                {
+                    StopEatingAnimation();
+                }
                 GoToFoodTarget();
             }
         }
@@ -275,5 +321,93 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
         waterTarget = null;
         foodTarget = null;
         isHaveFoodTarget = false;
+
+        // 重置进食动画状态
+        StopEatingAnimation();
+    }
+
+    /// <summary>
+    /// 播放进食动画
+    /// </summary>
+    public void PlayEatingAnimation()
+    {
+        Debug.Log("AntNeedsManager: PlayEatingAnimation被调用");
+
+        if (animator != null)
+        {
+            isEating = true;
+            isAnimationPaused = true;
+
+            // 停止移动动画，播放进食动画
+            animator.SetBool("bIsWalking", false);
+            animator.SetBool("bIsEating", true);
+            animator.SetBool("bEatingComplete", false);
+
+            Debug.Log($"AntNeedsManager: 开始播放进食动画 - bIsEating设置为true, Animator: {animator.name}");
+
+            // 检查参数是否存在
+            foreach (AnimatorControllerParameter param in animator.parameters)
+            {
+                if (param.name == "bIsEating")
+                {
+                    Debug.Log($"AntNeedsManager: 找到bIsEating参数，类型: {param.type}");
+                    break;
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("AntNeedsManager: Animator为null，无法播放进食动画！");
+        }
+    }
+
+    /// <summary>
+    /// 停止进食动画，恢复正常状态
+    /// </summary>
+    public void StopEatingAnimation()
+    {
+        if (animator != null)
+        {
+            isEating = false;
+            isAnimationPaused = false;
+
+            // 停止进食动画，恢复移动动画控制
+            animator.SetBool("bIsEating", false);
+            animator.SetBool("bEatingComplete", false);
+
+            Debug.Log("AntNeedsManager: 停止进食动画，恢复正常状态");
+        }
+    }
+
+    /// <summary>
+    /// 检查进食动画是否完成
+    /// </summary>
+    private void CheckEatingAnimationComplete()
+    {
+        if (isEating && animator != null)
+        {
+            // 检查Animator中的bEatingComplete参数
+            if (animator.GetBool("bEatingComplete"))
+            {
+                Debug.Log("AntNeedsManager: 检测到进食动画完成");
+                StopEatingAnimation();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 获取当前是否正在进食
+    /// </summary>
+    public bool IsEating()
+    {
+        return isEating;
+    }
+
+    /// <summary>
+    /// 获取当前动画是否被暂停
+    /// </summary>
+    public bool IsAnimationPaused()
+    {
+        return isAnimationPaused;
     }
 }
