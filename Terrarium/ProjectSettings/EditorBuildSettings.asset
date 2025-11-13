@@ -11,9 +11,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/YoYoTest/StartMenu.unity
     guid: 9bd8591bd918111408c093986a6c7185
-  - enabled: 1
+  - enabled: 0
     path: Assets/YoYoTest/TerrariumLevel.unity
     guid: 5bd83af09127a1e4689732df10b51d0f
+  - enabled: 1
+    path: Assets/YoYoTest/TerrariumLevel 1.unity
+    guid: 69fcae68fa5abcb428a2d77feabac38b
   m_configObjects:
     Unity.XR.PXR.Settings: {fileID: 11400000, guid: 63cf2c96ef6f443488c30d3befdb9a1c, type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 1a22bfbcf8200c546b208d12f67c92ab, type: 2}
