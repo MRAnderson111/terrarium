@@ -31,6 +31,9 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     // 当前食物目标对象
     private GameObject currentFoodTarget;
 
+    // 新的效用决策器存在时，由它选择行为；本脚本仍负责昼夜、成长和碰撞状态同步。
+    private S_UtilityAnimal utilityAnimal;
+
     //成虫睡觉时间
     public float toSleepTime = 20f; // 默认晚上8点睡觉
     //成虫醒来时间
@@ -73,6 +76,9 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         // 获取导航移动组件
         navMove = GetComponent<AnimalNavMove>();
 
+        // 试点接入 Utility AI 时避免新旧两套决策逻辑同时控制同一只动物。
+        utilityAnimal = GetComponent<S_UtilityAnimal>();
+
         // 绑定事件监听器
         OnDayStart += CheckIfAntIsSleepingWhenDayStarts;
 
@@ -83,6 +89,11 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     void Update()
     {
         StateCheck();
+
+        if (utilityAnimal != null && utilityAnimal.IsControllingBehavior)
+        {
+            return;
+        }
         
         // 如果蚂蚁正在睡觉，则不执行任何操作
         if (isSleeping)
@@ -313,11 +324,16 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
             Debug.Log("碰到水目标");
         }
         
+        // Utility AI 直接调用需求管理器，因此以管理器当前目标为准；旧流程仍可使用 currentFoodTarget。
+        GameObject foodTarget = needsManager != null && needsManager.FoodTarget != null
+            ? needsManager.FoodTarget
+            : currentFoodTarget;
+
         // 精确检查：碰撞对象是否就是当前食物目标对象
-        if (currentFoodTarget != null && other.attachedRigidbody.gameObject == currentFoodTarget.gameObject)
+        if (foodTarget != null && other.attachedRigidbody != null && other.attachedRigidbody.gameObject == foodTarget)
         {
             needsManager.IsTouchFoodTarget = true;
-            Debug.Log("蚂蚁碰撞到食物目标：" + currentFoodTarget.name);
+            Debug.Log("蚂蚁碰撞到食物目标：" + foodTarget.name);
             return;
         }
         

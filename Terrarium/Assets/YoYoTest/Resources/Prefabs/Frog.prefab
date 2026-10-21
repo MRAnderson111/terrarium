@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: -4756007029834268580}
   - component: {fileID: 7078931711805122421}
   - component: {fileID: -7506185326998799658}
+  - component: {fileID: 8462731991458301623}
   m_Layer: 0
   m_Name: Frog
   m_TagString: Untagged
@@ -213,6 +214,26 @@ MonoBehaviour:
   healthLimit: 100
   currentHealth: 0
   recoverySpeed: 2
+--- !u!114 &8462731991458301623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3253501275212402260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9c9fe2d57a54ddf8cab5152273e298b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  decisionInterval: 0.25
+  sleepScore: 1000
+  drinkScore: 800
+  eatScore: 700
+  homeScore: 300
+  wanderScore: 100
+  currentAction: 0
+  currentActionScore: 0
 --- !u!1001 &6076967385018572826
 PrefabInstance:
   m_ObjectHideFlags: 0
