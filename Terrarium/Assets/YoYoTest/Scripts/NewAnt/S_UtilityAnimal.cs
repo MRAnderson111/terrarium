@@ -9,6 +9,7 @@ using UnityEngine;
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(NewAntTest))]
+
 public class S_UtilityAnimal : MonoBehaviour
 {
     public enum UtilityAction

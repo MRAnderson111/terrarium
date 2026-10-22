@@ -18,18 +18,15 @@ public class AnimalNavMove : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
+        TryPlaceOnNavMesh();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // 检查进食动画是否完成
         CheckEatingAnimationComplete();
-        
-        // 只有在动画未暂停时才控制移动动画
-        if (!isAnimationPaused && animator != null)
+
+        if (!isAnimationPaused && animator != null && agent != null && agent.isOnNavMesh)
         {
-            // 检查agent是否在移动：有路径且没有停止且速度大于阈值
             bool isMoving = agent.hasPath && !agent.isStopped && agent.velocity.magnitude > 0.1f;
             animator.SetBool("bIsWalking", isMoving);
         }
@@ -50,16 +47,54 @@ public class AnimalNavMove : MonoBehaviour
 
     public void SetTarget(Vector3 target)
     {
-        agent.destination = target;
+        if (!EnsureAgentOnNavMesh())
+            return;
+
+        agent.isStopped = false;
+        if (NavMesh.SamplePosition(target, out NavMeshHit hit, 4f, NavMesh.AllAreas))
+            agent.SetDestination(hit.position);
+    }
+
+    /// <summary>
+    /// 昆虫生成点经常高于烘焙好的 NavMesh，代理创建失败后每帧 SetDestination 都会抛异常，移动逻辑就此停住。
+    /// </summary>
+    bool EnsureAgentOnNavMesh()
+    {
+        if (agent == null)
+            agent = GetComponent<NavMeshAgent>();
+        if (agent == null || !agent.enabled)
+            return false;
+        if (agent.isOnNavMesh)
+            return true;
+
+        return TryPlaceOnNavMesh();
+    }
+
+    bool TryPlaceOnNavMesh()
+    {
+        if (agent == null)
+            return false;
+
+        if (agent.isOnNavMesh)
+            return true;
+
+        if (!NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 12f, NavMesh.AllAreas))
+            return false;
+
+        // 代理离 NavMesh 太远时会创建失败，先挪到网格上再重新启用。
+        agent.enabled = false;
+        transform.position = hit.position;
+        agent.enabled = true;
+        return agent.isOnNavMesh;
     }
 
     public void StopMoving()
     {
-        if (agent != null)
+        if (agent != null && agent.isOnNavMesh)
         {
-            agent.isStopped = true;  // 立即停止
-            agent.ResetPath();       // 清除当前路径
-            agent.velocity = Vector3.zero;  // 速度归零
+            agent.isStopped = true;
+            agent.ResetPath();
+            agent.velocity = Vector3.zero;
         }
 
         if (animator != null)

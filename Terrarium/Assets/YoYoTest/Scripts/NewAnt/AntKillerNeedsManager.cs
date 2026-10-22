@@ -197,29 +197,20 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
     {
         if (waterTarget != null)
         {
-            Debug.Log("有水目标，去喝水");
             if (isTouchWaterTarget)
             {
-                Debug.Log("碰到水目标，喝水");
-                OnTouchWaterTarget(); // 触发停止移动
-                
-                // 播放进食动画（喝水也可以用进食动画，或者可以添加专门的喝水动画）
+                OnTouchWaterTarget();
                 if (navMove != null)
-                {
                     navMove.PlayEatingAnimation();
-                }
-                
                 UpdateWaterSatisfaction();
             }
             else
             {
-                Debug.Log("没碰到水目标，去喝水");
                 GoToWaterTarget();
             }
         }
         else
         {
-            Debug.Log("没有水目标，去寻找");
             FindWaterTarget();
         }
     }

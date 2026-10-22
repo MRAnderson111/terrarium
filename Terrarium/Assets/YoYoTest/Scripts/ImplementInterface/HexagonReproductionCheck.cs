@@ -27,7 +27,9 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
     /// </summary>
     private void Start()
     {
-        smallClass = GetComponent<IGetObjectClass>().SmallClass;
+        IGetObjectClass objectClass = GetComponent<IGetObjectClass>();
+        if (objectClass != null)
+            smallClass = objectClass.SmallClass;
     }
 
     private void Update()

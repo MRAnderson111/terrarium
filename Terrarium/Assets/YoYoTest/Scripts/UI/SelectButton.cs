@@ -15,18 +15,55 @@ public class SelectButton : MonoBehaviour
     public int price;
     public Button addButton;
 
-    
-    // Start is called before the first frame update
+    Text legacyNameText;
+    Text legacyQuantityText;
+
     void Start()
     {
         button = GetComponent<Button>();
-        button.onClick.AddListener(OnClick);
-        
+        if (button != null)
+            button.onClick.AddListener(OnClick);
 
-        addButton.onClick.AddListener(OnAddButtonClick);
-        quantityText.text = quantity.ToString();
+        if (addButton != null)
+            addButton.onClick.AddListener(OnAddButtonClick);
 
-        nameText.text = selectPrefab.name;
+        Image image = GetComponent<Image>();
+        if (image != null && image.sprite == null)
+            image.sprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/UISprite.psd");
+
+        BindLegacyLabels();
+        RefreshLabels();
+    }
+
+    void BindLegacyLabels()
+    {
+        if (nameText != null && quantityText != null)
+            return;
+
+        Text[] labels = GetComponentsInChildren<Text>(true);
+        foreach (Text label in labels)
+        {
+            if (label.gameObject == gameObject)
+                continue;
+            if (legacyNameText == null && label.gameObject.name == "Text")
+                legacyNameText = label;
+            else if (legacyQuantityText == null)
+                legacyQuantityText = label;
+        }
+    }
+
+    void RefreshLabels()
+    {
+        string label = selectPrefab != null ? selectPrefab.name : gameObject.name;
+        if (nameText != null)
+            nameText.text = label;
+        else if (legacyNameText != null)
+            legacyNameText.text = label;
+
+        if (quantityText != null)
+            quantityText.text = quantity.ToString();
+        else if (legacyQuantityText != null)
+            legacyQuantityText.text = quantity.ToString();
     }
 
     void OnAddButtonClick()
@@ -37,7 +74,7 @@ public class SelectButton : MonoBehaviour
             {
                 CreateManager.Instance.AddGold(-price);
                 quantity++;
-                quantityText.text = quantity.ToString();
+                RefreshLabels();
             }
             else
             {
@@ -54,6 +91,9 @@ public class SelectButton : MonoBehaviour
 
     public void OnClick()
     {
+        if (selectPrefab == null)
+            return;
+
         Debug.Log("选择预制体：" + selectPrefab.name);
         Events.OnSelectPrefab.Invoke(selectPrefab, this);
         
@@ -65,7 +105,7 @@ public class SelectButton : MonoBehaviour
     public void DecrementQuantity()
     {
         quantity--;
-        quantityText.text = quantity.ToString();
+        RefreshLabels();
         // Debug.Log("当前数量：" + quantity);
     }
 }

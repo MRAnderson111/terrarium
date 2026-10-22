@@ -194,22 +194,18 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     {
         if (waterTarget != null)
         {
-            Debug.Log("有水目标，去喝水");
             if (isTouchWaterTarget)
             {
-                Debug.Log("碰到水目标，喝水");
-                OnTouchWaterTarget(); // 触发停止移动
+                OnTouchWaterTarget();
                 UpdateWaterSatisfaction();
             }
             else
             {
-                Debug.Log("没碰到水目标，去喝水");
                 GoToWaterTarget();
             }
         }
         else
         {
-            Debug.Log("没有水目标，去寻找");
             FindWaterTarget();
         }
     }

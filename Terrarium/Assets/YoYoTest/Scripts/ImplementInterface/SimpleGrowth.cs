@@ -46,52 +46,81 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
     // 最大缩放值
     public float maxScale = 0.75f;
 
-    // Start is called before the first frame update
     void Awake()
     {
-        // 保存原始scale
-        originalScale = meshObject.transform.localScale;
-        Debug.Log("在 Awake 中捕获到的原始 scale: " + originalScale.ToString("F4"));
-
-        // 播放种植特效
-        PlayPlantedEffect();
-
-        // 初始设置为原始scale的0.1倍
-        meshObject.transform.localScale = originalScale * 0.1f;
-        
-        // 如果有meshObject2，初始设置为不可见
-        if (meshObject2 != null)
+        ResolveGrowthTargets();
+        if (meshObject == null)
         {
-            meshObject2.SetActive(false);
+            Debug.LogWarning($"{name} 没有可生长的模型，生长已跳过", this);
+            return;
         }
 
-        // 检测地面并设置生长速度
+        originalScale = meshObject.transform.localScale;
+        PlayPlantedEffect();
+        meshObject.transform.localScale = originalScale * 0.1f;
+
+        if (meshObject2 != null && meshObject2 != meshObject)
+            meshObject2.SetActive(false);
+
         SetGrowthSpeedFromGround();
-        
     }
 
     /// <summary>
-    /// 检测地面并设置生长速度，然后开始生长
+    /// 场景里有的植物把 meshObject 指到了模型资源而不是实例，或者根本没挂生长模型。
+    /// 这两种情况都改成使用自己子层级里真正的渲染物体。
+    /// </summary>
+    private void ResolveGrowthTargets()
+    {
+        if (!IsUsableTarget(meshObject))
+            meshObject = null;
+        if (!IsUsableTarget(meshObject2))
+            meshObject2 = null;
+        if (meshObject != null)
+            return;
+
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        float bestSize = -1f;
+        foreach (Renderer renderer in renderers)
+        {
+            if (renderer is ParticleSystemRenderer)
+                continue;
+
+            string objectName = renderer.gameObject.name;
+            if (objectName.Contains("Sphere") || objectName.Contains("FX") || objectName.Contains("Coverage"))
+                continue;
+
+            float size = renderer.bounds.extents.sqrMagnitude;
+            if (size > bestSize)
+            {
+                bestSize = size;
+                meshObject = renderer.gameObject;
+            }
+        }
+    }
+
+    private bool IsUsableTarget(GameObject target)
+    {
+        return target != null && target.transform.IsChildOf(transform);
+    }
+
+    /// <summary>
+    /// 检测地面并设置生长速度，然后开始生长。
+    /// 肥沃度是 0 到 100 的配置值，按比例换成温和的速度倍率，避免肥沃地面瞬间长完、贫瘠地面完全不动。
     /// </summary>
     private void SetGrowthSpeedFromGround()
     {
-        int fertility = GroundDetectionUtils.GetGroundFertility(transform.position);
-        if (fertility >= 0)
+        int fertility = GroundDetectionUtils.GetGroundFertility(transform.position, 20f, transform);
+        if (fertility > 0)
         {
-            // 根据地面肥沃度调整生长速度
-            GrowthSpeed = defaultGrowthSpeed * fertility;
-            Debug.Log($"根据地面肥沃度设置生长速度为: {GrowthSpeed}");
+            float multiplier = Mathf.Clamp(fertility / 20f, 0.35f, 2.5f);
+            GrowthSpeed = defaultGrowthSpeed * multiplier;
         }
         else
         {
-            // 使用默认生长速度
             GrowthSpeed = defaultGrowthSpeed;
-            Debug.LogWarning("未检测到有效地面，使用默认生长速度: " + GrowthSpeed);
         }
 
         isSpeedSet = true;
-        
-        // 设置好生长速度后自动开始生长
         Growth();
     }
 

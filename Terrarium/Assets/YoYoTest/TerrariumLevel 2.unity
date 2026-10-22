@@ -4842,7 +4842,7 @@ MonoBehaviour:
   selectPosition: {fileID: 0}
   rayOrigin: {fileID: 1564016948}
   rayVisualizer: {fileID: 0}
-  useAdvancedRayVisualizer: 1
+  useAdvancedRayVisualizer: 0
   isHit: 0
   goldCount: 1000
 --- !u!4 &218718880

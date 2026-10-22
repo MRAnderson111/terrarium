@@ -19,9 +19,10 @@ public class Tree : MonoBehaviour, IGetObjectClass, IGetQuantityLimits
     // Start is called before the first frame update
     void Start()
     {
-        Events.OnCreateObject.Invoke(this);
+        if (GetComponent<SimpleGrowth>() == null)
+            gameObject.AddComponent<SimpleGrowth>();
 
-        // 生长速度和生长过程现在都由SimpleGrowth组件自己负责
+        Events.OnCreateObject.Invoke(this);
     }
 
     // Update is called once per frame

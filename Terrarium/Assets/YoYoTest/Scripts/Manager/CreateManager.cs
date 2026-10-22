@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.XR;
 
 public class CreateManager : MonoBehaviour
 {
@@ -32,11 +35,15 @@ public class CreateManager : MonoBehaviour
     public GameObject hitPrefab; // 用于显示鼠标射线指向位置的GameObject
     public GameObject selectPosition; // 用于显示鼠标射线指向位置的GameObject
 
-    public Transform rayOrigin; // 射线的起点（通常是摄像机位置）
+    public Transform rayOrigin; // 旧的 VR 射线起点，没有鼠标时才使用
+
+    [Header("鼠标放置")]
+    public bool useMousePlacement = true;
+    public float placeHeightOffset = 0.5f;
     
     [Header("射线可视化")]
     public AdvancedRayVisualizer rayVisualizer; // 高级射线可视化器
-    public bool useAdvancedRayVisualizer = true; // 是否使用高级射线可视化器
+    public bool useAdvancedRayVisualizer = false;
 
     [Header("预制体")]
     public bool isHit; // 射线是否击中Ground物体的标志位
@@ -62,12 +69,15 @@ public class CreateManager : MonoBehaviour
                 rayVisualizer = gameObject.AddComponent<AdvancedRayVisualizer>();
             }
 
-            // 监听预制体选择事件
             Events.OnSelectPrefab.AddListener(OnSelectPrefab);
 
-            // 实例化位置指示器并初始隐藏（用来显示鼠标射线指向位置）
-            selectPosition = Instantiate(hitPrefab);
-            selectPosition.SetActive(false);
+            if (hitPrefab != null)
+            {
+                selectPosition = Instantiate(hitPrefab);
+                selectPosition.SetActive(false);
+            }
+
+            EnsureDesktopCamera();
         }
         else
         {
@@ -78,29 +88,87 @@ public class CreateManager : MonoBehaviour
 
 
 
-    // Update is called once per frame
     void Update()
     {
-        // 实时检测鼠标射线并更新selectPosition位置
         UpdateSelectPosition();
-
-        // 检测手柄输入
-        HandleControllerInput();
+        HandlePlacementInput();
     }
 
     /// <summary>
-    /// 更新选择位置，根据自定义射线检测结果
+    /// 没有头显时给主相机挂上桌面视角：右键转向，WASD 移动，左键留给放置。
+    /// </summary>
+    private void EnsureDesktopCamera()
+    {
+        if (XRSettings.isDeviceActive)
+            return;
+
+        Camera camera = Camera.main;
+        if (camera != null && camera.GetComponent<MouseCameraController>() == null)
+            camera.gameObject.AddComponent<MouseCameraController>();
+    }
+
+    private bool TryGetPlacementRay(out Ray ray)
+    {
+        if (useMousePlacement)
+        {
+            Camera camera = Camera.main;
+            if (camera != null)
+            {
+                Vector2 screenPosition = Mouse.current != null
+                    ? Mouse.current.position.ReadValue()
+                    : (Vector2)Input.mousePosition;
+                ray = camera.ScreenPointToRay(screenPosition);
+                return true;
+            }
+        }
+
+        if (rayOrigin != null)
+        {
+            ray = new Ray(rayOrigin.position, rayOrigin.forward);
+            return true;
+        }
+
+        ray = default;
+        return false;
+    }
+
+    private bool WasPlacePressedThisFrame()
+    {
+        if (useMousePlacement && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+            return true;
+        if (useMousePlacement && Mouse.current == null && Input.GetMouseButtonDown(0))
+            return true;
+
+        try
+        {
+            return InputActionsManager.Actions.XRIRightInteraction.Activate.WasPressedThisFrame();
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    private bool IsPointerOverUI()
+    {
+        if (EventSystem.current == null)
+            return false;
+        if (EventSystem.current.IsPointerOverGameObject())
+            return true;
+        return Mouse.current != null && EventSystem.current.IsPointerOverGameObject(Mouse.current.deviceId);
+    }
+
+    /// <summary>
+    /// 更新选择位置。鼠标模式下从主相机穿过鼠标位置打射线。
     /// </summary>
     private void UpdateSelectPosition()
     {
-        if (selectPosition == null || rayOrigin == null) return;
+        if (selectPosition == null || !TryGetPlacementRay(out Ray ray)) return;
 
-        // 使用rayOrigin的位置作为射线起点，forward方向作为射线方向
-        Ray ray = new Ray(rayOrigin.position, rayOrigin.forward);
         RaycastHit hit;
 
         // 检测射线是否击中物体
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, 200f, Physics.AllLayers, QueryTriggerInteraction.Ignore))
         {
             // 使用高级射线可视化器绘制射线到击中点（绿色表示击中）
             if (useAdvancedRayVisualizer && rayVisualizer != null)
@@ -216,32 +284,33 @@ public class CreateManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 处理手柄输入，在射线击中位置生成预制体
+    /// 左键或右手柄 Trigger 在击中的地面上生成当前选中的预制体。
     /// </summary>
-    private void HandleControllerInput()
+    private void HandlePlacementInput()
     {
-        // 使用Unity输入系统的按钮按下检测方法
-        if (InputActionsManager.Actions.XRIRightInteraction.Activate.WasPressedThisFrame())
+        if (!WasPlacePressedThisFrame() || IsPointerOverUI())
+            return;
+
+        if (isHit && selectPrefab != null)
         {
-            // 只有当射线击中物体且有选择的预制体时才生成
-            if (isHit && selectPrefab != null)
+            if (selectButton != null && selectButton.quantity > 0)
             {
-                if(selectButton.quantity > 0)
-                {
-                    //让对应的数量限制增加3
-                    StaticCreateLimitManager.AddToCreateLimit(selectPrefab.name);
-                    CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * 0.5f);
-                    selectButton.DecrementQuantity();
-                }
+                StaticCreateLimitManager.AddToCreateLimit(selectPrefab.name);
+                CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * placeHeightOffset);
+                selectButton.DecrementQuantity();
             }
-            else if (!isHit)
+            else if (selectButton == null)
             {
-                Debug.Log("射线未击中任何物体，无法生成预制体");
+                CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * placeHeightOffset);
             }
-            else if (selectPrefab == null)
-            {
-                Debug.Log("未选择预制体，无法生成");
-            }
+        }
+        else if (!isHit)
+        {
+            Debug.Log("射线未击中地面，无法生成预制体");
+        }
+        else if (selectPrefab == null)
+        {
+            Debug.Log("未选择预制体，无法生成");
         }
     }
 

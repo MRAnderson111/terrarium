@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class MouseCameraController : MonoBehaviour
 {
@@ -61,58 +60,11 @@ public class MouseCameraController : MonoBehaviour
 
     void Update()
     {
-        // 按ESC键解锁鼠标
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
-        
-        // 点击屏幕重新锁定鼠标（但排除UI点击）
-        if (Input.GetMouseButtonDown(0) && Cursor.lockState == CursorLockMode.None)
-        {
-            // 检查是否存在EventSystem且是否点击在UI上
-            if (!IsPointerOverUI())
-            {
-                Cursor.lockState = CursorLockMode.Confined; // 改为Confined模式
-            }
-        }
-        
-        // 右键点击也可以激活相机控制
-        if (Input.GetMouseButtonDown(1) && Cursor.lockState == CursorLockMode.None)
-        {
-            if (!IsPointerOverUI())
-            {
-                Cursor.lockState = CursorLockMode.Confined; // 改为Confined模式
-            }
-        }
-        
-        // 按住任意WASD键也可以激活相机控制
-        if (Cursor.lockState == CursorLockMode.None)
-        {
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || 
-                Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D))
-            {
-                Cursor.lockState = CursorLockMode.Confined; // 改为Confined模式
-            }
-        }
-        
-        // 在Confined模式下控制相机
-        if (Cursor.lockState == CursorLockMode.Confined)
-        {
+        // 左键留给放置植物和点 UI。按住右键转动视角，WASD 移动。
+        if (Input.GetMouseButton(1))
             HandleMouseLook();
-            HandleMovement();
-        }
-    }
-    
-    // 安全地检查指针是否在UI上
-    private bool IsPointerOverUI()
-    {
-        // 确保EventSystem存在
-        if (EventSystem.current != null)
-        {
-            return EventSystem.current.IsPointerOverGameObject();
-        }
-        return false; // 如果没有EventSystem，假定不是在UI上
+
+        HandleMovement();
     }
 
     void HandleMouseLook()

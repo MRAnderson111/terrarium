@@ -12,13 +12,14 @@ public class EnvironmentalParaUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // 初始化Slider的值
+        if (sunshineSlider == null || temperatureSlider == null || humiditySlider == null)
+        {
+            Debug.LogWarning("环境参数界面的滑条没有绑定，已跳过初始化", this);
+            return;
+        }
+
         UpdateSlidersFromData();
-        
-        // 订阅环境数据变化事件
         EnvironmentalParaManager.OnEnvironmentalDataChanged += OnEnvironmentalDataChanged;
-        
-        // 添加Slider的值变化监听器
         sunshineSlider.onValueChanged.AddListener(OnSunshineChanged);
         temperatureSlider.onValueChanged.AddListener(OnTemperatureChanged);
         humiditySlider.onValueChanged.AddListener(OnHumidityChanged);
@@ -28,9 +29,12 @@ public class EnvironmentalParaUI : MonoBehaviour
     void OnDestroy()
     {
         EnvironmentalParaManager.OnEnvironmentalDataChanged -= OnEnvironmentalDataChanged;
-        sunshineSlider.onValueChanged.RemoveListener(OnSunshineChanged);
-        temperatureSlider.onValueChanged.RemoveListener(OnTemperatureChanged);
-        humiditySlider.onValueChanged.RemoveListener(OnHumidityChanged);
+        if (sunshineSlider != null)
+            sunshineSlider.onValueChanged.RemoveListener(OnSunshineChanged);
+        if (temperatureSlider != null)
+            temperatureSlider.onValueChanged.RemoveListener(OnTemperatureChanged);
+        if (humiditySlider != null)
+            humiditySlider.onValueChanged.RemoveListener(OnHumidityChanged);
     }
     
     // 根据环境数据更新Slider的值

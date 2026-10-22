@@ -113,49 +113,31 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
             {
                 if (needsManager.IsFull)
                 {
-                    Debug.Log("成虫白天吃饱了");
                     if (homeManager.IsHaveHome)
                     {
                         if (isFinishReproduction)
-                        {
-                            Debug.Log("成虫白天吃饱了，有居住地，完成繁殖");
                             TakeAWalk();
-                        }
                         else
-                        {
-                            Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖");
                             GoHomeAndStay();
-                        }
-                        // Debug.Log("成虫白天吃饱了，有居住地");
-                        // GoHomeAndStay();
                     }
                     else
                     {
-                        Debug.Log("成虫白天吃饱了，没有居住地");
                         homeManager.FindOrCreateHome(bigClass, smallClass, transform.position);
                     }
-
                 }
                 else
                 {
                     FindAndEat();
                 }
             }
+            else if (homeManager.IsHaveHome)
+            {
+                GoHomeAndSleep();
+            }
             else
             {
-                Debug.Log("成虫夜晚");
-                if (homeManager.IsHaveHome)
-                {
-                    Debug.Log("成虫夜晚，有居住地，回家");
-                    GoHomeAndSleep();
-                }
-                else
-                {
-                    Debug.Log("成虫夜晚，没有居住地，创建居住地");
-                    homeManager.FindOrCreateHome(bigClass, smallClass, transform.position);
-                    Debug.Log("成虫夜晚，新建居住地后，回家");
-                    GoHomeAndSleep();
-                }
+                homeManager.FindOrCreateHome(bigClass, smallClass, transform.position);
+                GoHomeAndSleep();
             }
         }
         else
@@ -279,14 +261,11 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
 
         if (needsManager.IsDrinkWater)
         {
-            Debug.Log("喝过水了，去吃东西");
             needsManager.EatFood();
-            // 更新当前食物目标
             currentFoodTarget = needsManager.FoodTarget;
         }
         else
         {
-            Debug.Log("没喝过水，去喝水");
             needsManager.DrinkWater();
         }
     }
@@ -339,18 +318,12 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         
         // 检查碰撞对象是否有刚体和IGetObjectClass组件
         if (other.attachedRigidbody == null)
-        {
-            Debug.LogError("碰撞对象没有刚体");
             return;
-        }
             
 
         IGetObjectClass objectClass = other.attachedRigidbody.GetComponent<IGetObjectClass>();
         if (objectClass == null)
-        {
-            Debug.LogError("碰撞对象没有IGetObjectClass组件");
             return;
-        }
         
 
 
