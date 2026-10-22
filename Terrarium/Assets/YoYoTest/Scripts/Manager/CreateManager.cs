@@ -48,6 +48,7 @@ public class CreateManager : MonoBehaviour
     [Header("预制体")]
     public bool isHit; // 射线是否击中Ground物体的标志位
     public int goldCount = 1000; // 金币数量
+    Vector3 placePoint;
 
     public void AddGold(int amount)
     {
@@ -151,11 +152,10 @@ public class CreateManager : MonoBehaviour
 
     private bool IsPointerOverUI()
     {
-        if (EventSystem.current == null)
+        if (EventSystem.current == null || Mouse.current == null)
             return false;
-        if (EventSystem.current.IsPointerOverGameObject())
-            return true;
-        return Mouse.current != null && EventSystem.current.IsPointerOverGameObject(Mouse.current.deviceId);
+
+        return EventSystem.current.IsPointerOverGameObject(Mouse.current.deviceId);
     }
 
     /// <summary>
@@ -163,64 +163,60 @@ public class CreateManager : MonoBehaviour
     /// </summary>
     private void UpdateSelectPosition()
     {
-        if (selectPosition == null || !TryGetPlacementRay(out Ray ray)) return;
+        isHit = false;
+        if (!TryGetPlacementRay(out Ray ray))
+            return;
 
-        RaycastHit hit;
-
-        // 检测射线是否击中物体
-        if (Physics.Raycast(ray, out hit, 200f, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+        if (TryGetGroundHit(ray, out RaycastHit groundHit))
         {
-            // 使用高级射线可视化器绘制射线到击中点（绿色表示击中）
+            placePoint = groundHit.point;
+            isHit = true;
+            if (selectPosition != null)
+            {
+                selectPosition.transform.position = groundHit.point;
+                selectPosition.SetActive(selectPrefab != null);
+            }
+
             if (useAdvancedRayVisualizer && rayVisualizer != null)
-            {
-                rayVisualizer.DrawRay(ray.origin, hit.point, true);
-            }
+                rayVisualizer.DrawRay(ray.origin, groundHit.point, true);
             else
-            {
-                // 保留原有的Debug.DrawLine作为备用
-                Debug.DrawLine(ray.origin, hit.point, Color.green);
-            }
-            
-            // 检查击中的物体是否有"Ground"标签
-            if (hit.collider.CompareTag("Ground"))
-            {
-                // 将selectPosition移动到射线击中的位置
-                selectPosition.transform.position = hit.point;
-                isHit = true;
-                // 当射线击中Ground物体时，激活selectPosition
-                selectPosition.SetActive(true);
-            }
-            else
-            {
-                // 击中了物体但不是Ground标签，视为未击中
-                Vector3 targetPosition = ray.origin + ray.direction * 10f; // 距离射线起点10单位
-                selectPosition.transform.position = targetPosition;
-                isHit = false;
-                // 当射线没有击中Ground物体时，隐藏selectPosition
-                selectPosition.SetActive(false);
-            }
+                Debug.DrawLine(ray.origin, groundHit.point, Color.green);
+            return;
         }
-        else
-        {
-            // 如果没有击中任何物体，绘制固定长度的射线（红色表示未击中）
-            Vector3 targetPosition = ray.origin + ray.direction * 10f; // 距离射线起点10单位
-            
-            // 使用高级射线可视化器绘制射线
-            if (useAdvancedRayVisualizer && rayVisualizer != null)
-            {
-                rayVisualizer.DrawRay(ray.origin, targetPosition, false);
-            }
-            else
-            {
-                // 保留原有的Debug.DrawLine作为备用
-                Debug.DrawLine(ray.origin, targetPosition, Color.red);
-            }
-            
-            selectPosition.transform.position = targetPosition;
-            isHit = false;
-            // 当射线没有击中物体时，也激活selectPosition
+
+        if (selectPosition != null)
             selectPosition.SetActive(false);
+        Debug.DrawLine(ray.origin, ray.origin + ray.direction * 10f, Color.red);
+    }
+
+    private static bool TryGetGroundHit(Ray ray, out RaycastHit groundHit)
+    {
+        RaycastHit[] hits = Physics.RaycastAll(ray, 200f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+        foreach (RaycastHit hit in hits)
+        {
+            if (!IsPlaceableGround(hit.collider))
+                continue;
+
+            groundHit = hit;
+            return true;
         }
+
+        groundHit = default;
+        return false;
+    }
+
+    private static bool IsPlaceableGround(Collider collider)
+    {
+        Transform current = collider != null ? collider.transform : null;
+        while (current != null)
+        {
+            if (current.CompareTag("Ground") || current.GetComponent<IGetGroundClass>() != null)
+                return true;
+            current = current.parent;
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -293,16 +289,16 @@ public class CreateManager : MonoBehaviour
 
         if (isHit && selectPrefab != null)
         {
-            if (selectButton != null && selectButton.quantity > 0)
+            if (selectButton != null && selectButton.quantity <= 0)
             {
-                StaticCreateLimitManager.AddToCreateLimit(selectPrefab.name);
-                CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * placeHeightOffset);
+                Debug.Log(selectPrefab.name + " 数量为 0，无法放置");
+                return;
+            }
+
+            Vector3 position = placePoint + Vector3.up * placeHeightOffset;
+            StaticCreateLimitManager.AddToCreateLimit(selectPrefab.name);
+            if (CreatePrefab(selectPrefab, position) != null && selectButton != null)
                 selectButton.DecrementQuantity();
-            }
-            else if (selectButton == null)
-            {
-                CreatePrefab(selectPrefab, selectPosition.transform.position + Vector3.up * placeHeightOffset);
-            }
         }
         else if (!isHit)
         {

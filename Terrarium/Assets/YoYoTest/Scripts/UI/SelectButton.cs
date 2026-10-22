@@ -1,11 +1,9 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SelectButton : MonoBehaviour
+public class SelectButton : MonoBehaviour, IPointerClickHandler
 {
     public GameObject selectPrefab;
     private Button button;
@@ -17,9 +15,18 @@ public class SelectButton : MonoBehaviour
 
     Text legacyNameText;
     Text legacyQuantityText;
+    bool clickBound;
 
-    void Start()
+    void Awake()
     {
+        BindClick();
+    }
+
+    public void BindClick()
+    {
+        if (clickBound)
+            return;
+
         button = GetComponent<Button>();
         if (button == null)
         {
@@ -34,10 +41,24 @@ public class SelectButton : MonoBehaviour
         }
 
         if (button != null)
+        {
+            button.interactable = true;
+            button.onClick.RemoveListener(OnClick);
             button.onClick.AddListener(OnClick);
+        }
 
         if (addButton != null)
+        {
+            addButton.onClick.RemoveListener(OnAddButtonClick);
             addButton.onClick.AddListener(OnAddButtonClick);
+        }
+
+        clickBound = true;
+    }
+
+    void Start()
+    {
+        BindClick();
 
         Image image = GetComponent<Image>();
         if (image != null && image.sprite == null)
@@ -107,16 +128,25 @@ public class SelectButton : MonoBehaviour
         
     }
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (addButton != null && eventData.pointerPress != null
+            && (eventData.pointerPress == addButton.gameObject || eventData.pointerPress.transform.IsChildOf(addButton.transform)))
+            return;
+
+        OnClick();
+    }
+
     public void OnClick()
     {
         if (selectPrefab == null)
+        {
+            Debug.LogWarning(name + " 没有对应的预制体");
             return;
+        }
 
-        Debug.Log("选择预制体：" + selectPrefab.name);
+        Debug.Log("选择预制体：" + selectPrefab.name + "，剩余数量：" + quantity);
         Events.OnSelectPrefab.Invoke(selectPrefab, this);
-        
-        // 触发数量减一的action
-        // onQuantityDecrease?.Invoke();
     }
     
     // 独立的让数量减一的方法
