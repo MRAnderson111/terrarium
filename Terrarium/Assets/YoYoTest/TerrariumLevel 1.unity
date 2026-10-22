@@ -353,7 +353,7 @@ Transform:
   - {fileID: 1717011729}
   - {fileID: 301227124}
   - {fileID: 197204155}
-  m_Father: {fileID: 6254119161575108975}
+  m_Father: {fileID: 2114707062}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6811659
 MonoBehaviour:
@@ -63376,7 +63376,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1280878942}
-  - component: {fileID: 1280878943}
   m_Layer: 0
   m_Name: ObjectSelectUI
   m_TagString: Untagged
@@ -63416,7 +63415,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1280878941}
+  m_GameObject: {fileID: 2114707061}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4376681a13672624b8697b7b2d7d5a65, type: 3}
@@ -103012,6 +103011,8 @@ GameObject:
   - component: {fileID: 2114707065}
   - component: {fileID: 2114707064}
   - component: {fileID: 2114707063}
+  - component: {fileID: 1280878943}
+  - component: {fileID: 7626059098920838837}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -103028,10 +103029,14 @@ RectTransform:
   m_GameObject: {fileID: 2114707061}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4206976851770516180}
+  - {fileID: 7678124231012598286}
+  - {fileID: 8131846176847371451}
+  - {fileID: 3848829184283573557}
+  - {fileID: 6811658}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -103100,7 +103105,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!1 &2114714450
 GameObject:
@@ -115132,14 +115137,13 @@ GameObject:
   - component: {fileID: 7012028804867848908}
   - component: {fileID: 7626059098920838836}
   - component: {fileID: 315579572520188312}
-  - component: {fileID: 7626059098920838837}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &2185686833650464188
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -116547,7 +116551,7 @@ Transform:
   - {fileID: 6662518767420330556}
   - {fileID: 7487639332397412838}
   - {fileID: 7214699216715070747}
-  m_Father: {fileID: 6254119161575108975}
+  m_Father: {fileID: 2114707062}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3848829184283573558
 MonoBehaviour:
@@ -117968,10 +117972,6 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7678124231012598286}
-  - {fileID: 8131846176847371451}
-  - {fileID: 3848829184283573557}
-  - {fileID: 6811658}
   - {fileID: 1280878942}
   m_Father: {fileID: 546235433}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -118792,7 +118792,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2184687368669254931}
+  m_GameObject: {fileID: 2114707061}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 48268e1826f38284c855cbaa52b799fa, type: 3}
@@ -118836,7 +118836,7 @@ Transform:
   - {fileID: 3031973130110620815}
   - {fileID: 6816745318089590548}
   - {fileID: 7007931822824185410}
-  m_Father: {fileID: 6254119161575108975}
+  m_Father: {fileID: 2114707062}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!222 &7691248059539302057
 CanvasRenderer:
@@ -119181,7 +119181,7 @@ Transform:
   - {fileID: 6836939809265078046}
   - {fileID: 2173929995297248949}
   - {fileID: 8736854430867885499}
-  m_Father: {fileID: 6254119161575108975}
+  m_Father: {fileID: 2114707062}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8151076606484841576
 GameObject:
@@ -119262,7 +119262,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3469544340350823417}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82b59db23946540409890606c0d31695, type: 3}
   m_Name: 

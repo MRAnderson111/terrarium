@@ -22,7 +22,7 @@ public class AllUIControl : MonoBehaviour
     // 游戏结束事件处理方法
     private void OnGameEndHandler()
     {
-        gameEndUI.SetActive(true);
-        Debug.Log("哈哈哈");
+        if (gameEndUI != null)
+            gameEndUI.SetActive(true);
     }
 }

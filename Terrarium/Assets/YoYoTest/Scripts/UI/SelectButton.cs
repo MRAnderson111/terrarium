@@ -21,6 +21,18 @@ public class SelectButton : MonoBehaviour
     void Start()
     {
         button = GetComponent<Button>();
+        if (button == null)
+        {
+            Button[] buttons = GetComponentsInChildren<Button>(true);
+            foreach (Button candidate in buttons)
+            {
+                if (addButton != null && candidate == addButton)
+                    continue;
+                button = candidate;
+                break;
+            }
+        }
+
         if (button != null)
             button.onClick.AddListener(OnClick);
 
@@ -64,6 +76,12 @@ public class SelectButton : MonoBehaviour
             quantityText.text = quantity.ToString();
         else if (legacyQuantityText != null)
             legacyQuantityText.text = quantity.ToString();
+    }
+
+    public void ApplyStock(int stock)
+    {
+        quantity = Mathf.Max(0, stock);
+        RefreshLabels();
     }
 
     void OnAddButtonClick()

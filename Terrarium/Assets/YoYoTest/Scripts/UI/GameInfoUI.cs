@@ -22,17 +22,34 @@ public class GameInfoUI : MonoBehaviour
     {
         stageManager = StageManager.Instance; // 缓存单例
         lastUpdateTime = Time.time;
+        PlaceOnScreen();
+    }
+
+    void PlaceOnScreen()
+    {
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas == null)
+            return;
+
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+        if (canvasRect == null)
+            return;
+
+        Rect area = canvasRect.rect;
+        transform.localPosition = new Vector3(area.xMax - 220f, area.yMax - 280f, 0f);
     }
 
     void Update()
     {
-        // 按间隔更新，减少性能消耗
-        if (Time.time - lastUpdateTime >= updateInterval)
-        {
+        if (stageManager == null || Time.time - lastUpdateTime < updateInterval)
+            return;
+
+        if (timeText != null)
             timeText.text = $"剩余时间: {stageManager.RemainingTime:F2}";
+        if (stageText != null)
             stageText.text = $"阶段: {stageManager.stage}";
+        if (foodQuantityText != null)
             foodQuantityText.text = $"食物数量: {stageManager.foodQuantity}";
-            lastUpdateTime = Time.time;
-        }
+        lastUpdateTime = Time.time;
     }
 }
