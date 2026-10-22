@@ -1,361 +1,212 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.XR;
+using UnityEngine.UI;
 
 public class CreateManager : MonoBehaviour
 {
-    // 单例实例
-    private static CreateManager instance;
+    public static CreateManager Instance { get; private set; }
 
-    // 公共访问点
-    public static CreateManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = FindObjectOfType<CreateManager>();
-                if (instance == null)
-                {
-                    GameObject go = new GameObject("CreateManager");
-                    instance = go.AddComponent<CreateManager>();
-                    Debug.Log("创建了新的 CreateManager 实例");
-                }
-            }
-            return instance;
-        }
-    }
+    [Header("Scene references")]
+    public Camera placementCamera;
+    public EventSystem eventSystem;
+    public GameObject selectPosition;
+    public TMP_Text placementStatus;
 
-    public GameObject selectPrefab;// button选择的植物预制体
-    public SelectButton selectButton; // 当前选中的SelectButton脚本引用
-    public GameObject hitPrefab; // 用于显示鼠标射线指向位置的GameObject
-    public GameObject selectPosition; // 用于显示鼠标射线指向位置的GameObject
+    [Header("Placement")]
+    public float maxRayDistance = 200f;
+    public float placeHeightOffset = 0.05f;
+    public LayerMask placementLayers = Physics.DefaultRaycastLayers;
+    public int goldCount = 1000;
 
-    public Transform rayOrigin; // 旧的 VR 射线起点，没有鼠标时才使用
+    [Header("Debug (Scene view Gizmos)")]
+    public bool useAdvancedRayVisualizer;
+    public AdvancedRayVisualizer rayVisualizer;
 
-    [Header("鼠标放置")]
-    public bool useMousePlacement = true;
-    public float placeHeightOffset = 0.5f;
-    
-    [Header("射线可视化")]
-    public AdvancedRayVisualizer rayVisualizer; // 高级射线可视化器
-    public bool useAdvancedRayVisualizer = false;
+    [Header("Runtime state")]
+    public GameObject selectPrefab;
+    public SelectButton selectButton;
+    public bool isHit;
+    public bool pointerOverUI;
 
-    [Header("预制体")]
-    public bool isHit; // 射线是否击中Ground物体的标志位
-    public int goldCount = 1000; // 金币数量
+    readonly List<RaycastResult> uiHits = new();
+    readonly PlacementPreview preview = new();
+    PointerEventData pointer;
     Vector3 placePoint;
+    int selectionFrame;
 
-    public void AddGold(int amount)
-    {
-        goldCount += amount;
-        Debug.Log($"金币数量增加: {amount}, 当前总数: {goldCount}");
-    }
- 
-    // 初始化方法，在游戏开始时调用
     void Awake()
     {
-        // 确保只有一个实例
-        if (instance == null)
-        {
-            instance = this;
-            
-            // 如果需要使用高级射线可视化器且未指定，则自动添加
-            if (useAdvancedRayVisualizer && rayVisualizer == null)
-            {
-                rayVisualizer = gameObject.AddComponent<AdvancedRayVisualizer>();
-            }
-
-            Events.OnSelectPrefab.AddListener(OnSelectPrefab);
-
-            if (hitPrefab != null)
-            {
-                selectPosition = Instantiate(hitPrefab);
-                selectPosition.SetActive(false);
-            }
-
-            EnsureDesktopCamera();
-        }
-        else
-        {
-            // 如果已存在实例，销毁此游戏对象
-            Destroy(gameObject);
-        }
+        Instance = this;
+        if (placementCamera == null)
+            placementCamera = Camera.main;
+        if (eventSystem == null)
+            eventSystem = EventSystem.current;
+        if (eventSystem != null)
+            pointer = new PointerEventData(eventSystem);
+        if (selectPosition != null)
+            selectPosition.SetActive(false);
     }
 
+    void OnEnable() => Events.OnSelectPrefab.AddListener(OnSelectPrefab);
 
-
-    void Update()
+    void OnDisable()
     {
-        UpdateSelectPosition();
-        HandlePlacementInput();
+        Events.OnSelectPrefab.RemoveListener(OnSelectPrefab);
+        ClearSelection();
+        if (selectPosition != null)
+            selectPosition.SetActive(false);
     }
 
-    /// <summary>
-    /// 没有头显时给主相机挂上桌面视角：右键转向，WASD 移动，左键留给放置。
-    /// </summary>
-    private void EnsureDesktopCamera()
+    void OnDestroy()
     {
-        if (XRSettings.isDeviceActive)
-            return;
-
-        Camera camera = Camera.main;
-        if (camera != null && camera.GetComponent<MouseCameraController>() == null)
-            camera.gameObject.AddComponent<MouseCameraController>();
+        if (Instance == this)
+            Instance = null;
     }
 
-    private bool TryGetPlacementRay(out Ray ray)
+    void LateUpdate()
     {
-        if (useMousePlacement)
-        {
-            Camera camera = Camera.main;
-            if (camera != null)
-            {
-                Vector2 screenPosition = Mouse.current != null
-                    ? Mouse.current.position.ReadValue()
-                    : (Vector2)Input.mousePosition;
-                ray = camera.ScreenPointToRay(screenPosition);
-                return true;
-            }
-        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+            ClearSelection();
 
-        if (rayOrigin != null)
-        {
-            ray = new Ray(rayOrigin.position, rayOrigin.forward);
-            return true;
-        }
-
-        ray = default;
-        return false;
-    }
-
-    private bool WasPlacePressedThisFrame()
-    {
-        if (useMousePlacement && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
-            return true;
-        if (useMousePlacement && Mouse.current == null && Input.GetMouseButtonDown(0))
-            return true;
-
-        try
-        {
-            return InputActionsManager.Actions.XRIRightInteraction.Activate.WasPressedThisFrame();
-        }
-        catch (Exception)
-        {
-            return false;
-        }
-    }
-
-    private bool IsPointerOverUI()
-    {
-        if (EventSystem.current == null || Mouse.current == null)
-            return false;
-
-        return EventSystem.current.IsPointerOverGameObject(Mouse.current.deviceId);
-    }
-
-    /// <summary>
-    /// 更新选择位置。鼠标模式下从主相机穿过鼠标位置打射线。
-    /// </summary>
-    private void UpdateSelectPosition()
-    {
+        Vector2 mousePosition = Input.mousePosition;
+        pointerOverUI = IsPointerOverUI(mousePosition);
         isHit = false;
-        if (!TryGetPlacementRay(out Ray ray))
-            return;
-
-        if (TryGetGroundHit(ray, out RaycastHit groundHit))
+        if (placementCamera != null && placementCamera.pixelRect.Contains(mousePosition) && !pointerOverUI)
         {
-            placePoint = groundHit.point;
-            isHit = true;
-            if (selectPosition != null)
-            {
-                selectPosition.transform.position = groundHit.point;
-                selectPosition.SetActive(selectPrefab != null);
-            }
+            Ray ray = placementCamera.ScreenPointToRay(mousePosition);
+            isHit = TryGetGroundHit(ray, out RaycastHit hit);
+            if (isHit)
+                placePoint = hit.point;
 
-            if (useAdvancedRayVisualizer && rayVisualizer != null)
-                rayVisualizer.DrawRay(ray.origin, groundHit.point, true);
-            else
-                Debug.DrawLine(ray.origin, groundHit.point, Color.green);
-            return;
+            if (useAdvancedRayVisualizer)
+            {
+                Vector3 end = isHit ? placePoint : ray.GetPoint(maxRayDistance);
+                Debug.DrawLine(ray.origin, end, isHit ? Color.green : Color.red);
+                if (rayVisualizer != null)
+                    rayVisualizer.DrawRay(ray.origin, end, isHit);
+            }
         }
 
         if (selectPosition != null)
-            selectPosition.SetActive(false);
-        Debug.DrawLine(ray.origin, ray.origin + ray.direction * 10f, Color.red);
-    }
-
-    private static bool TryGetGroundHit(Ray ray, out RaycastHit groundHit)
-    {
-        RaycastHit[] hits = Physics.RaycastAll(ray, 200f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
-        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
-        foreach (RaycastHit hit in hits)
         {
-            if (!IsPlaceableGround(hit.collider))
-                continue;
-
-            groundHit = hit;
-            return true;
+            selectPosition.SetActive(isHit);
+            if (isHit)
+                selectPosition.transform.position = placePoint + Vector3.up * 0.02f;
         }
 
-        groundHit = default;
-        return false;
-    }
-
-    private static bool IsPlaceableGround(Collider collider)
-    {
-        Transform current = collider != null ? collider.transform : null;
-        while (current != null)
+        if (selectPrefab == null)
         {
-            if (current.CompareTag("Ground") || current.GetComponent<IGetGroundClass>() != null)
-                return true;
-            current = current.parent;
+            ShowStatus("Select a species from the menu");
+            return;
         }
 
-        return false;
-    }
-
-    /// <summary>
-    /// 生成预制体到指定位置
-    /// </summary>
-    /// <param name="prefab">要生成的预制体</param>
-    /// <param name="position">生成位置</param>
-    /// <returns>生成的GameObject实例</returns>
-    public GameObject CreatePrefab(GameObject prefab, Vector3 position)
-    {
-        if (prefab == null)
-        {
-            Debug.LogWarning("预制体为空，无法生成");
-            return null;
-        }
-
-
-
-        // 获取当前对象数量统计管理器
-        ObjectStatisticsManager statsManager = FindObjectOfType<ObjectStatisticsManager>();
-        if (statsManager != null)
-        {
-            // 获取预制体的名称作为键值
-            string prefabName = prefab.name;
-            int currentCount = 0;
-
-            // 根据预制体名称获取当前数量
-            if (statsManager.smallClassCount.ContainsKey(prefabName))
-            {
-                currentCount = statsManager.smallClassCount[prefabName];
-            }
-
-            // 从静态管理器获取数量限制值
-            int currentQuantityLimit = StaticCreateLimitManager.GetCreateLimit(prefabName, 10); // 默认值为10
-            
-            // 检查是否超过数量限制
-            if (currentCount >= currentQuantityLimit)
-            {
-                Debug.LogWarning($"无法生成 {prefab.name}，当前数量 {currentCount} 已达到限制 {currentQuantityLimit}");
-                return null;
-            }
-
-            Debug.Log($"检查数量限制：{prefab.name}，当前数量 {currentCount}，限制数量 {currentQuantityLimit}");
-        }
-        else
-        {
-            Debug.LogWarning("未找到 ObjectStatisticsManager 实例，无法进行数量限制检查");
-        }
-
-        // 生成随机的Y轴旋转角度（0-360度）
-        float randomYRotation = UnityEngine.Random.Range(0f, 360f);
-        Quaternion randomRotation = Quaternion.Euler(0, randomYRotation, 0);
-        
-        // 在指定位置生成预制体，并应用随机Y轴旋转
-        GameObject newObject = Instantiate(prefab, position, randomRotation);
-        Debug.Log("在位置 " + position + " 生成了预制体：" + prefab.name + "，Y轴旋转：" + randomYRotation + "度");
-
-        // 不在这里触发生成事件，让对象自己的 Start() 方法来触发
-
-        return newObject;
-    }
-
-    /// <summary>
-    /// 左键或右手柄 Trigger 在击中的地面上生成当前选中的预制体。
-    /// </summary>
-    private void HandlePlacementInput()
-    {
-        if (!WasPlacePressedThisFrame() || IsPointerOverUI())
+        bool hasStock = selectButton == null || selectButton.quantity > 0;
+        ShowStatus(!hasStock ? selectPrefab.name + " - out of stock (use +)"
+            : selectPrefab.name + (isHit ? " - click to place | Esc: cancel" : " - move cursor onto soil | Esc: cancel"));
+        if (!isHit || !hasStock)
             return;
 
-        if (isHit && selectPrefab != null)
+        Vector3 position = placePoint + Vector3.up * (placeHeightOffset - preview.BottomOffset);
+        preview.Draw(position, Quaternion.identity, placementCamera);
+        if (Input.GetMouseButtonDown(0) && Time.frameCount != selectionFrame)
         {
-            if (selectButton != null && selectButton.quantity <= 0)
-            {
-                Debug.Log(selectPrefab.name + " 数量为 0，无法放置");
+            if (CreatePrefab(selectPrefab, position) == null)
                 return;
-            }
-
-            Vector3 position = placePoint + Vector3.up * placeHeightOffset;
-            StaticCreateLimitManager.AddToCreateLimit(selectPrefab.name);
-            if (CreatePrefab(selectPrefab, position) != null && selectButton != null)
+            if (selectButton != null)
                 selectButton.DecrementQuantity();
+            if (StaticCreateLimitManager.HasCreateLimit(selectPrefab.name))
+                StaticCreateLimitManager.AddToCreateLimit(selectPrefab.name);
+            ClearSelection();
         }
-        else if (!isHit)
+    }
+
+    // Raycast this frame's UI position instead of mixing legacy pointer IDs with Input System device IDs.
+    public bool IsPointerOverUI(Vector2 screenPosition)
+    {
+        if (eventSystem == null || pointer == null)
+            return false;
+        pointer.Reset();
+        pointer.position = screenPosition;
+        uiHits.Clear();
+        eventSystem.RaycastAll(pointer, uiHits);
+        foreach (RaycastResult hit in uiHits)
+            if (hit.module is GraphicRaycaster)
+                return true;
+        return false;
+    }
+
+    public bool TryGetGroundHit(Ray ray, out RaycastHit groundHit)
+    {
+        groundHit = default;
+        float nearest = float.PositiveInfinity;
+        foreach (RaycastHit hit in Physics.RaycastAll(ray, maxRayDistance, placementLayers, QueryTriggerInteraction.Ignore))
         {
-            Debug.Log("射线未击中地面，无法生成预制体");
+            if (hit.distance >= nearest)
+                continue;
+            for (Transform current = hit.collider.transform; current != null; current = current.parent)
+            {
+                if (!current.CompareTag("Ground") && current.GetComponent<IGetGroundClass>() == null)
+                    continue;
+                groundHit = hit;
+                nearest = hit.distance;
+                break;
+            }
         }
-        else if (selectPrefab == null)
-        {
-            Debug.Log("未选择预制体，无法生成");
-        }
+        return nearest < float.PositiveInfinity;
     }
 
     public void OnSelectPrefab(GameObject prefab, SelectButton button)
     {
+        ClearSelection();
         selectPrefab = prefab;
         selectButton = button;
-        Debug.Log("选择预制体：" + selectPrefab.name + "，SelectButton：" + button.name);
+        selectionFrame = Time.frameCount;
+        if (selectButton != null)
+            selectButton.SetSelected(true);
+        if (prefab != null)
+            preview.SetPrefab(prefab);
     }
 
-    private void OnDestroy()
+    public void ClearSelection()
     {
-        Events.OnSelectPrefab.RemoveListener(OnSelectPrefab);
+        if (selectButton != null)
+            selectButton.SetSelected(false);
+        selectPrefab = null;
+        selectButton = null;
+        preview.Clear();
     }
 
-    /// <summary>
-    /// 获取场景中已存在的同类对象的最新的数量限制值
-    /// </summary>
-    /// <param name="smallClass">小类名称</param>
-    /// <returns>最新的数量限制值</returns>
+    void ShowStatus(string message)
+    {
+        if (placementStatus != null && placementStatus.text != message)
+            placementStatus.text = message;
+    }
+
+    public void AddGold(int amount) => goldCount += amount;
+
+    // Also used by reproduction; only menu placement consumes the button's stock.
+    public GameObject CreatePrefab(GameObject prefab, Vector3 position)
+    {
+        if (prefab == null)
+            return null;
+        ObjectStatisticsManager stats = ObjectStatisticsManager.Instance;
+        int limit = StaticCreateLimitManager.GetCreateLimit(prefab.name, 10);
+        if (stats != null && stats.smallClassCount.TryGetValue(prefab.name, out int count) && count >= limit)
+        {
+            Debug.LogWarning($"Cannot create {prefab.name}: population limit {limit} reached.", this);
+            return null;
+        }
+        return Instantiate(prefab, position, Quaternion.Euler(0f, Random.Range(0f, 360f), 0f));
+    }
+
     public int GetCurrentQuantityLimit(string smallClass)
     {
-        // 查找场景中所有实现了IGetQuantityLimits接口的对象
-        GameObject[] allObjects = FindObjectsOfType<GameObject>();
-        
-        // 默认使用预制体的默认值
-        int currentQuantityLimit = 10;
-        
-        foreach (var gameObject in allObjects)
-        {
-            // 检查对象是否实现了IGetQuantityLimits接口
-            IGetQuantityLimits quantityLimitInterface = gameObject.GetComponent<IGetQuantityLimits>();
-            if (quantityLimitInterface != null)
-            {
-                // 获取对象的IGetObjectClass组件
-                IGetObjectClass objectClassInterface = gameObject.GetComponent<IGetObjectClass>();
-                if (objectClassInterface != null)
-                {
-                    // 检查是否是同类对象
-                    if (objectClassInterface.SmallClass == smallClass)
-                    {
-                        // 找到同类对象，使用其最新的数量限制值
-                        currentQuantityLimit = quantityLimitInterface.QuantityLimits;
-                        break;
-                    }
-                }
-            }
-        }
-        
-        return currentQuantityLimit;
+        foreach (MonoBehaviour component in FindObjectsOfType<MonoBehaviour>())
+            if (component is IGetQuantityLimits limits &&
+                component.TryGetComponent(out IGetObjectClass objectClass) && objectClass.SmallClass == smallClass)
+                return limits.QuantityLimits;
+        return 10;
     }
 }
