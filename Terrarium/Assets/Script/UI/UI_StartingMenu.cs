@@ -104,7 +104,6 @@ public class UI_StartingMenu : MonoBehaviour
         // 或者隐藏菜单开始游戏
         gameObject.SetActive(false);
 
-        Debug.Log("开始游戏");
     }
 
     public void ShowSettings()
@@ -133,7 +132,6 @@ public class UI_StartingMenu : MonoBehaviour
             Application.Quit();
         #endif
 
-        Debug.Log("退出游戏");
     }
 
     public void OnVolumeChanged()

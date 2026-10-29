@@ -40,7 +40,6 @@ public class Date_EnvironmentalFactory : MonoBehaviour
         // 初始化环境数据
         InitializeEnvironmentalData();
         
-        Debug.Log($"环境工厂初始化完成 - 阳光: {Sunlight}, 湿度: {Humidity}, 水源: {WaterSource}, 温度: {Temperature}°C");
     }
     
     void InitializeEnvironmentalData()

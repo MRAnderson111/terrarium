@@ -63,10 +63,6 @@ public class AntKiller : MonoBehaviour, IGetObjectClass
         {
             hasTarget = false;
         }
-        else
-        {
-            
-        }
     }
 
     private void FindATarget()
@@ -80,7 +76,6 @@ public class AntKiller : MonoBehaviour, IGetObjectClass
                 target = randomAnimal;
                 hasTarget = true;
                 isTouchTarget = false; // 重置碰撞状态，确保需要重新碰撞才能攻击
-                Debug.Log("找到动物目标：" + target.name);
             }
             else
             {

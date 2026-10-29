@@ -109,11 +109,11 @@ public class ObjectStatisticsManager : MonoBehaviour
         //     // 检查字典中是否包含 "Grass" 键
         //     if (globalCoolDown.ContainsKey("Grass"))
         //     {
-        //         Debug.LogError("全局冷却时间：" + globalCoolDown["Grass"]);
+        
         //     }
         //     else
         //     {
-        //         Debug.LogError("Grass 不在全局冷却时间字典中");
+        
         //     }
         // }
     }
@@ -132,12 +132,11 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// <param name="arg0">实现了 IGetObjectClass 接口的新生成对象。</param>
     private void OnCreateObject(IGetObjectClass arg0)
     {
-        Debug.Log("生成物种：" + arg0.BigClass + " " + arg0.SmallClass);
 
         // // 检查这个小类是否已经在全局冷却时间中
         // if (globalCoolDown.ContainsKey(arg0.SmallClass))
         // {
-        //     Debug.Log("小类 " + arg0.SmallClass + " 已在全局冷却时间中，跳过生成");
+        
         //     return;
         // }
 
@@ -166,15 +165,12 @@ public class ObjectStatisticsManager : MonoBehaviour
 
         // 将这个小类添加到全局冷却时间中
         globalCoolDown[arg0.SmallClass] = 0f;
-        Debug.Log("小类 " + arg0.SmallClass + " 已添加到全局冷却时间中");
 
         // 如果是植物类对象，更新缓存
         if (arg0.BigClass == "Plant")
         {
             UpdatePlantCache();
         }
-
-        UpdateStatistics(); // 更新并打印统计信息
     }
 
     /// <summary>
@@ -183,7 +179,6 @@ public class ObjectStatisticsManager : MonoBehaviour
     /// <param name="arg0">实现了 IGetObjectClass 接口的被销毁对象。</param>
     private void OnDestroyObject(IGetObjectClass arg0)
     {
-        Debug.Log("销毁物种：" + arg0.BigClass + " " + arg0.SmallClass);
 
         // 更新BigClass数量统计
         if (bigClassCount.ContainsKey(arg0.BigClass))
@@ -217,7 +212,6 @@ public class ObjectStatisticsManager : MonoBehaviour
                 if (globalCoolDown.ContainsKey(arg0.SmallClass))
                 {
                     globalCoolDown[arg0.SmallClass] = 0f;
-                    Debug.Log("小类 " + arg0.SmallClass + " 数量已为0，重置全局冷却时间");
                 }
             }
         }
@@ -227,8 +221,6 @@ public class ObjectStatisticsManager : MonoBehaviour
         {
             UpdatePlantCache();
         }
-        
-        UpdateStatistics(); // 更新并打印统计信息
     }
 #endregion
 
@@ -334,7 +326,6 @@ public class ObjectStatisticsManager : MonoBehaviour
         
         if (objects.Count == 0)
         {
-            Debug.LogWarning($"没有找到任何{className}类对象");
             return null;
         }
         
@@ -380,7 +371,6 @@ public class ObjectStatisticsManager : MonoBehaviour
         
         if (treeObjects.Count == 0)
         {
-            Debug.LogWarning("没有找到任何树类对象");
             return null;
         }
         
@@ -455,27 +445,6 @@ public class ObjectStatisticsManager : MonoBehaviour
         }
 
         return fallbackTargets[UnityEngine.Random.Range(0, fallbackTargets.Count)];
-    }
-#endregion
-
-#region 统计信息计算
-    /// <summary>
-    /// 更新并打印当前所有物种的数量统计信息。
-    /// </summary>
-    [ContextMenu("更新统计信息")]
-    private void UpdateStatistics()
-    {
-        Debug.LogError("=== 大类统计 ===");
-        foreach (var item in bigClassCount)
-        {
-            Debug.LogError("大类：" + item.Key + " 总数量：" + item.Value);
-        }
-
-        Debug.LogError("=== 小类统计 ===");
-        foreach (var item in smallClassCount)
-        {
-            Debug.LogError("小类：" + item.Key + " 数量：" + item.Value);
-        }
     }
 
     /// <summary>
@@ -553,9 +522,9 @@ public class ObjectStatisticsManager : MonoBehaviour
         }
         
         ///Debug.LogError("=== 健康积分统计 ===");
-       // Debug.LogError($"总积分: {totalScore}");
-        //Debug.LogError($"植物积分: {plantScore}");
-        //Debug.LogError($"动物积分: {animalScore} (动物类: {animalClassScore}, 杀手类: {killerClassScore})");
+       
+        
+        
     }
 #endregion
 }

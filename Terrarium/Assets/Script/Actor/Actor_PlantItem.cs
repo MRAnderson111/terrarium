@@ -63,7 +63,6 @@ public class PlantItem : MonoBehaviour
         {
             totalPlantCount = 0;
             environmentalFood = 0;
-            Debug.Log("PlantItem静态变量已重置");
         }
     }
 
@@ -77,7 +76,6 @@ public class PlantItem : MonoBehaviour
     
     void InitializePlant()
     {
-        Debug.Log($"PlantItem初始化前 - 总数量: {totalPlantCount}, 环境食物: {environmentalFood}");
         
         // 只有不是"PlantFirst"的植物才计入总数量
         if (gameObject.name != "PlantFirst")
@@ -86,7 +84,6 @@ public class PlantItem : MonoBehaviour
             UpdateEnvironmentalFood();
         }
         
-        Debug.Log($"PlantItem初始化后 - 总数量: {totalPlantCount}, 环境食物: {environmentalFood}");
         
         // 初始化组件
         InitializeComponents();
@@ -173,7 +170,6 @@ public class PlantItem : MonoBehaviour
         plantComponent.plantType = PlantType.Main;
         plantComponent.canReplicate = true;
         
-        Debug.Log($"在位置 {position} 生成了绿色植物正方形 (主植株)");
     }
     
     void OnCollisionEnter(Collision collision)
@@ -197,7 +193,6 @@ public class PlantItem : MonoBehaviour
             // 开始生长
             StartCoroutine(GrowAfterDelay());
             
-            Debug.Log($"PlantItem接触到地面，完全固定位置，2秒后开始生长 (贫瘠土地: {isOnBarrenGround}, 肥沃土地: {isOnFertileGround})");
         }
     }
     
@@ -222,7 +217,6 @@ public class PlantItem : MonoBehaviour
         if (isOnFertileGround)
         {
             maxReplications = 2;
-            Debug.Log("PlantItem落在肥沃土地上，可复制2次");
         }
     }
     
@@ -238,14 +232,12 @@ public class PlantItem : MonoBehaviour
         if (collider != null)
         {
             collider.isTrigger = false; // 确保不是触发器，保持物理碰撞
-            Debug.Log("植物碰撞器已保留，可以被动物碰撞");
         }
         else
         {
             // 如果碰撞器不存在，重新添加一个
             BoxCollider boxCollider = gameObject.AddComponent<BoxCollider>();
             boxCollider.isTrigger = false;
-            Debug.Log("植物重新添加了碰撞器");
         }
     }
     
@@ -275,7 +267,6 @@ public class PlantItem : MonoBehaviour
         
         float elapsedTime = 0f;
         
-        Debug.Log($"植物开始生长，预计时间: {growthTime:F1}秒 (环境压力影响: {environmentalMultiplier:F2}x)");
         
         // 生长过程
         while (elapsedTime < growthTime)
@@ -294,8 +285,6 @@ public class PlantItem : MonoBehaviour
         transform.localScale = targetScale;
         plantMaterial.color = targetColor;
         
-        Debug.Log($"PlantItem生长完成：体积膨胀到两倍，成年后颜色变化 (贫瘠土地: {isOnBarrenGround}, 肥沃土地: {isOnFertileGround})");
-        Debug.Log($"植物总数量: {totalPlantCount}, 环境食物数值: {environmentalFood}");
         
         // 生长完成后处理
         HandleGrowthCompletion();
@@ -343,7 +332,6 @@ public class PlantItem : MonoBehaviour
         // 检查是否还能继续繁殖
         if (childPlants.Count >= maxReplications)
         {
-            Debug.Log("已达到最大子株数量，停止繁殖");
             return;
         }
         
@@ -367,7 +355,6 @@ public class PlantItem : MonoBehaviour
         // 主植株记录子株
         childPlants.Add(plantComponent);
         
-        Debug.Log($"主植株重新繁殖了子株 (当前子株数量: {childPlants.Count}/{maxReplications})");
     }
     
     void SpawnBlueSphere()
@@ -406,7 +393,6 @@ public class PlantItem : MonoBehaviour
         // 添加自动销毁组件，防止蓝色小球永久存在
         blueSphere.AddComponent<AutoDestroy>();
         
-        Debug.Log($"在位置 {spherePosition} 生成了独立的浮空蓝色小球");
     }
     
     static void UpdateEnvironmentalFood()
@@ -438,7 +424,6 @@ public class PlantItem : MonoBehaviour
             UpdateEnvironmentalFood();
         }
         
-        Debug.Log($"植物被销毁，剩余植物数量: {totalPlantCount}, 环境食物数值: {environmentalFood}");
     }
     
     void OnChildDestroyed(PlantItem childPlant)
@@ -449,7 +434,6 @@ public class PlantItem : MonoBehaviour
         // 如果当前子株数量少于最大复制数量，且主植株还活着，则重新繁殖
         if (childPlants.Count < maxReplications && gameObject != null && canReplicate)
         {
-            Debug.Log($"子株被吃掉，主植株开始重新繁殖 (当前子株数量: {childPlants.Count}/{maxReplications})");
             // 等待5秒后再繁殖
             StartCoroutine(ReplicateAfterChildLoss());
         }
@@ -511,13 +495,8 @@ public class PlantItem : MonoBehaviour
             
             if (extremeStressTimer >= witherTimeLimit)
             {
-                Debug.Log($"植物在极端环境下存活{witherTimeLimit}秒后开始枯萎死亡");
                 StartCoroutine(WitherAndDie());
                 return; // 开始枯萎后不再执行后续逻辑
-            }
-            else
-            {
-                Debug.Log($"植物承受极端环境压力 {extremeStressTimer:F1}/{witherTimeLimit}秒");
             }
         }
         else
@@ -526,7 +505,6 @@ public class PlantItem : MonoBehaviour
             if (extremeStressTimer > 0f)
             {
                 extremeStressTimer = 0f;
-                Debug.Log("环境条件改善，植物脱离极端压力状态");
             }
         }
         
@@ -536,7 +514,6 @@ public class PlantItem : MonoBehaviour
             HandleHighEnvironmentalStress();
         }
         
-        Debug.Log($"植物环境检测 - 温度: {currentTemperature:F1}°C, 湿度: {currentHumidity:F1}%, 光照: {currentSunlight:F1}, 环境压力: {environmentalStress:F2}");
     }
     
     float GetCurrentTemperature()
@@ -663,7 +640,6 @@ public class PlantItem : MonoBehaviour
     {
         if (isInOptimalEnvironment)
         {
-            Debug.Log("植物进入适宜环境，生长状态良好");
             // 恢复正常颜色
             if (plantMaterial != null && !isWithering)
             {
@@ -673,7 +649,6 @@ public class PlantItem : MonoBehaviour
         }
         else
         {
-            Debug.Log("植物离开适宜环境，开始承受环境压力");
             // 颜色变暗表示压力
             if (plantMaterial != null && !isWithering)
             {
@@ -686,19 +661,10 @@ public class PlantItem : MonoBehaviour
     
     void HandleHighEnvironmentalStress()
     {
-        // 高环境压力下的处理
-        Debug.Log("植物承受高环境压力，生长和繁殖受到影响");
-        
-        // 延长生长时间
-        if (isGrowing)
-        {
-            // 可以在这里调整生长速度
-        }
         
         // 降低繁殖几率
         if (canReplicate && Random.Range(0f, 1f) < environmentalStress)
         {
-            Debug.Log("由于环境压力，植物跳过本次繁殖");
             return; // 跳过繁殖
         }
     }
@@ -709,7 +675,6 @@ public class PlantItem : MonoBehaviour
         
         isWithering = true;
         
-        Debug.Log("植物开始枯萎死亡过程");
         
         // 停止其他协程但不停止当前枯萎协程
         StopCoroutine(nameof(MonitorEnvironmentalConditions));
@@ -723,7 +688,6 @@ public class PlantItem : MonoBehaviour
             Color originalColor = plantMaterial.color;
             Vector3 originalScale = transform.localScale;
             
-            Debug.Log($"开始枯萎动画 - 原始颜色: {originalColor}, 原始尺寸: {originalScale}");
             
             // 3秒内逐渐枯萎（颜色变成棕色，体积缩小）
             float witherTime = 3f;
@@ -741,7 +705,6 @@ public class PlantItem : MonoBehaviour
                 plantMaterial.color = Color.Lerp(originalColor, witherColor, progress);
                 transform.localScale = Vector3.Lerp(originalScale, witherScale, progress);
                 
-                Debug.Log($"枯萎进度: {progress:F2}, 当前颜色: {plantMaterial.color}, 当前尺寸: {transform.localScale}");
                 
                 yield return null;
             }
@@ -750,7 +713,6 @@ public class PlantItem : MonoBehaviour
             plantMaterial.color = witherColor;
             transform.localScale = witherScale;
             
-            Debug.Log("植物枯萎完成，1秒后开始消失");
             
             // 等待1秒后开始消失
             yield return new WaitForSeconds(1f);
@@ -768,13 +730,11 @@ public class PlantItem : MonoBehaviour
                 fadeColor.a = alpha;
                 plantMaterial.color = fadeColor;
                 
-                Debug.Log($"消失进度: {elapsedTime / fadeTime:F2}, 透明度: {alpha:F2}");
                 
                 yield return null;
             }
         }
         
-        Debug.Log("植物因极端环境死亡");
         
         // 在枯萎位置留下小型贫瘠土地
         CreateBarrenGroundAtWitherLocation();
@@ -811,7 +771,6 @@ public class PlantItem : MonoBehaviour
         boxCollider.size = new Vector3(3f, 0.1f, 3f);
         boxCollider.isTrigger = false;
         
-        Debug.Log($"在植物枯萎位置 {barrenGroundPosition} 创建了小型贫瘠土地");
     }
     
     Mesh CreateSmallGroundMesh()
@@ -873,7 +832,6 @@ public class BlueSphereClickHandler : MonoBehaviour
         // 增加研究点数
         UI_ResearchPoint.AddResearchPoints(1);
         
-        Debug.Log($"研究点数+1，当前研究点数: {UI_ResearchPoint.ResearchPoints}");
         
         // 销毁小球
         Destroy(gameObject);

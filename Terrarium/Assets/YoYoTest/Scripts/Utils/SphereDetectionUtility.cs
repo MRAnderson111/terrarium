@@ -7,9 +7,6 @@ public static class SphereDetectionUtility
 {
     private static readonly Collider[] colliderBuffer = new Collider[10]; // 预分配缓冲区
     private static Material debugMaterial; // 缓存调试材质，避免重复创建
-
-    // 性能优化开关
-    public static bool enableDetailedLogging = false; // 默认关闭详细日志
     public static bool enableDebugSpheres = false; // 默认关闭调试球体
 
     // 地面检测设置
@@ -49,22 +46,8 @@ public static class SphereDetectionUtility
         {
             Vector3 checkPosition = centerPosition + direction * checkDistance;
 
-            // 只在启用详细日志时输出
-            if (enableDetailedLogging)
-            {
-                Debug.Log($"=== 开始检测 {direction} 方向 ===");
-                Debug.Log($"检测位置: {checkPosition}, 检测半径: {sphereRadius}");
-            }
-
             // 使用OverlapSphereNonAlloc避免内存分配
             int colliderCount = Physics.OverlapSphereNonAlloc(checkPosition, sphereRadius, colliderBuffer);
-
-            if (enableDetailedLogging)
-            {
-                Debug.Log($"在 {direction} 方向检测到 {colliderCount} 个碰撞体");
-                // 详细记录每个检测到的碰撞体信息
-                LogColliderDetails(colliderCount);
-            }
 
             // 根据布尔值决定是否生成可视化球体
             if (drawDebugSphere && enableDebugSpheres)
@@ -75,52 +58,21 @@ public static class SphereDetectionUtility
             // 检查是否有实现IGetObjectClass接口的对象
             if (!CheckForValidObjects(colliderCount))
             {
-                if (enableDetailedLogging)
-                {
-                    Debug.Log($"=== 在 {direction} 方向没有检测到实现IGetObjectClass接口的对象，检查地面 ===");
-                }
 
                 // 第一步：使用原有的地面检测（粗略检测）
                 if (CheckGroundBelow(checkPosition))
                 {
-                    if (enableDetailedLogging)
-                    {
-                        Debug.Log($"=== 在 {direction} 方向通过粗略地面检测，进行精确射线检测 ===");
-                    }
                     
                     // 第二步：进行精确的射线检测
                     if (CheckGroundWithPreciseRaycast(checkPosition, out Vector3 groundHitPoint))
                     {
-                        if (enableDetailedLogging)
-                        {
-                            Debug.Log($"=== 在 {direction} 方向通过精确射线检测，找到合适的繁殖位置 ===");
-                        }
                         
                         // 根据参数决定返回哪个位置
                         emptyPosition = returnGroundHitPoint ? groundHitPoint : checkPosition;
                         return true;
                     }
-                    else
-                    {
-                        if (enableDetailedLogging)
-                        {
-                            Debug.Log($"=== {direction} 方向精确射线检测失败，下方没有合适的地面，继续检查下一个方向 ===");
-                        }
-                    }
-                }
-                else
-                {
-                    if (enableDetailedLogging)
-                    {
-                        Debug.Log($"=== {direction} 方向粗略地面检测失败，继续检查下一个方向 ===");
-                    }
                 }
             }
-        }
-
-        if (enableDetailedLogging)
-        {
-            Debug.Log("四个方向都有物体但没有找到空位置");
         }
         return false;
     }
@@ -156,22 +108,8 @@ public static class SphereDetectionUtility
         {
             Vector3 checkPosition = centerPosition + direction * checkDistance;
 
-            // 只在启用详细日志时输出
-            if (enableDetailedLogging)
-            {
-                Debug.Log($"=== 开始检测六边形方向 {direction} ===");
-                Debug.Log($"检测位置: {checkPosition}, 检测半径: {sphereRadius}");
-            }
-
             // 使用OverlapSphereNonAlloc避免内存分配
             int colliderCount = Physics.OverlapSphereNonAlloc(checkPosition, sphereRadius, colliderBuffer);
-
-            if (enableDetailedLogging)
-            {
-                Debug.Log($"在六边形方向 {direction} 检测到 {colliderCount} 个碰撞体");
-                // 详细记录每个检测到的碰撞体信息
-                LogColliderDetails(colliderCount);
-            }
 
             // 根据布尔值决定是否生成可视化球体
             if (drawDebugSphere && enableDebugSpheres)
@@ -182,88 +120,23 @@ public static class SphereDetectionUtility
             // 检查是否有实现IGetObjectClass接口的对象
             if (!CheckForValidObjects(colliderCount))
             {
-                if (enableDetailedLogging)
-                {
-                    Debug.Log($"=== 在六边形方向 {direction} 没有检测到实现IGetObjectClass接口的对象，检查地面 ===");
-                }
 
                 // 第一步：使用原有的地面检测（粗略检测）
                 if (CheckGroundBelow(checkPosition))
                 {
-                    if (enableDetailedLogging)
-                    {
-                        Debug.Log($"=== 在六边形方向 {direction} 通过粗略地面检测，进行精确射线检测 ===");
-                    }
                     
                     // 第二步：进行精确的射线检测
                     if (CheckGroundWithPreciseRaycast(checkPosition, out Vector3 groundHitPoint))
                     {
-                        if (enableDetailedLogging)
-                        {
-                            Debug.Log($"=== 在六边形方向 {direction} 通过精确射线检测，找到合适的繁殖位置 ===");
-                        }
                         
                         // 根据参数决定返回哪个位置
                         emptyPosition = returnGroundHitPoint ? groundHitPoint : checkPosition;
                         return true;
                     }
-                    else
-                    {
-                        if (enableDetailedLogging)
-                        {
-                            Debug.Log($"=== 六边形方向 {direction} 精确射线检测失败，下方没有合适的地面，继续检查下一个方向 ===");
-                        }
-                    }
-                }
-                else
-                {
-                    if (enableDetailedLogging)
-                    {
-                        Debug.Log($"=== 六边形方向 {direction} 粗略地面检测失败，继续检查下一个方向 ===");
-                    }
                 }
             }
-        }
-
-        if (enableDetailedLogging)
-        {
-            Debug.Log("六个六边形方向都有物体但没有找到空位置");
         }
         return false;
-    }
-    
-    /// <summary>
-    /// 记录碰撞体详细信息（仅在详细日志模式下使用）
-    /// </summary>
-    private static void LogColliderDetails(int colliderCount)
-    {
-        if (!enableDetailedLogging) return;
-
-        for (int i = 0; i < colliderCount; i++)
-        {
-            Collider col = colliderBuffer[i];
-            if (col != null)
-            {
-                string objectName = col.gameObject.name;
-                string colliderType = col.GetType().Name;
-
-                Debug.Log($"  碰撞体 {i + 1}: 名称='{objectName}', 类型={colliderType}");
-
-                // 简化的组件检查，避免性能开销
-                if (col.attachedRigidbody != null)
-                {
-                    Debug.Log($"    - 附加刚体: {col.attachedRigidbody.name}");
-                }
-                else
-                {
-                    Debug.Log($"    - 无附加刚体");
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"  碰撞体 {i + 1}: null");
-            }
-        }
     }
     
     /// <summary>
@@ -277,11 +150,6 @@ public static class SphereDetectionUtility
         visualSphere.name = $"DebugSphere_{direction}";
         visualSphere.transform.position = position;
         visualSphere.transform.localScale = Vector3.one * 1f;
-
-        if (enableDetailedLogging)
-        {
-            Debug.Log($"生成可视化球体: {visualSphere.name} 在位置 {position}");
-        }
 
         // 使用缓存的材质，避免重复创建
         Renderer renderer = visualSphere.GetComponent<Renderer>();
@@ -316,10 +184,6 @@ public static class SphereDetectionUtility
             {
                 if (col.attachedRigidbody.TryGetComponent<IGetObjectClass>(out _))
                 {
-                    if (enableDetailedLogging)
-                    {
-                        Debug.Log($"  找到实现IGetObjectClass接口的对象: {col.attachedRigidbody.name}");
-                    }
                     return true; // 找到一个就返回，提高性能
                 }
             }
@@ -339,41 +203,14 @@ public static class SphereDetectionUtility
         Vector3 rayOrigin = position;
         Vector3 rayDirection = Vector3.down;
 
-        if (enableDetailedLogging)
-        {
-            Debug.Log($"开始地面检测：从位置 {rayOrigin} 向下发射射线，检测距离 {groundCheckDistance}");
-        }
-
         // 发射射线检测地面
         if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, groundCheckDistance))
         {
-            if (enableDetailedLogging)
-            {
-                Debug.Log($"射线击中物体：{hit.collider.name}，标签：{hit.collider.tag}，距离：{hit.distance:F2}");
-            }
 
             // 检查击中的物体是否有Ground标签
             if (hit.collider.CompareTag(groundTag))
             {
-                if (enableDetailedLogging)
-                {
-                    Debug.Log($"找到地面：{hit.collider.name}，位置合适进行繁殖");
-                }
                 return true;
-            }
-            else
-            {
-                if (enableDetailedLogging)
-                {
-                    Debug.Log($"击中物体 {hit.collider.name} 但标签不是 '{groundTag}'，继续检查");
-                }
-            }
-        }
-        else
-        {
-            if (enableDetailedLogging)
-            {
-                Debug.Log($"射线未击中任何物体，该位置下方没有地面");
             }
         }
 
@@ -396,43 +233,15 @@ public static class SphereDetectionUtility
         Vector3 rayOrigin = position + Vector3.up * preciseGroundCheckOffset;
         Vector3 rayDirection = Vector3.down;
         
-        if (enableDetailedLogging)
-        {
-            Debug.Log($"开始精确地面检测：从位置 {rayOrigin} 向下发射射线，检测距离 {preciseGroundCheckDistance}");
-        }
-        
         // 发射射线检测地面
         if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, preciseGroundCheckDistance))
         {
-            if (enableDetailedLogging)
-            {
-                Debug.Log($"精确射线击中物体：{hit.collider.name}，标签：{hit.collider.tag}，距离：{hit.distance:F2}");
-                Debug.Log($"击中点位置：{hit.point}，法线：{hit.normal}");
-            }
             
             // 检查击中的物体是否有Ground标签
             if (hit.collider.CompareTag(groundTag))
             {
-                if (enableDetailedLogging)
-                {
-                    Debug.Log($"精确检测找到地面：{hit.collider.name}，位置合适进行繁殖");
-                }
                 groundHitPoint = hit.point;
                 return true;
-            }
-            else
-            {
-                if (enableDetailedLogging)
-                {
-                    Debug.Log($"精确射线击中物体 {hit.collider.name} 但标签不是 '{groundTag}'，继续检查");
-                }
-            }
-        }
-        else
-        {
-            if (enableDetailedLogging)
-            {
-                Debug.Log($"精确射线未击中任何物体，该位置下方没有地面");
             }
         }
         

@@ -102,6 +102,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68b7b0018cd6ce643be20f20331a0649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  preferredTemperature: 0.593
+  preferredHumidity: 0.6
+  preferredSunlight: 0.5
+  preferredAnimalSmallClass: 
   waterTarget: {fileID: 0}
   currentWaterSatisfaction: 0
   isTouchWaterTarget: 0
@@ -113,6 +117,7 @@ MonoBehaviour:
   isFull: 0
   hurtForce: 10
   foodConsumptionRate: 30
+  interactionRange: 0.75
 --- !u!114 &3199726379695570567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +130,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53762c6776f908d4c83e019db3ba6c87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  preferredTemperature: 0.5
+  preferredHumidity: 0.5
+  preferredSunlight: 0.5
+  preferredPlantSmallClass: 
   waterTarget: {fileID: 0}
   currentWaterSatisfaction: 0
   isTouchWaterTarget: 0
@@ -149,6 +158,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   homePrefab: {fileID: 2109754380365222939, guid: bf5036393ae251942a227bfa9f7173a3, type: 3}
   homeSearchRange: 50
+  homeYOffset: 0.1
 --- !u!114 &-7230120652267141824
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -170,7 +180,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3253501275212402260}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: -1372625422
   m_Radius: 0.3
   m_Speed: 1

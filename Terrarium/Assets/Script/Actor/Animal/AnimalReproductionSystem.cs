@@ -66,7 +66,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
             isNewborn = true;
             isWaiting = true;
             waitTimer = 0f;
-            Debug.Log("新生幼年体开始等待3秒");
         }
     }
     
@@ -96,7 +95,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
             {
                 reason += $", 饥饿: {needsSystem.IsHungry}, 口渴: {needsSystem.IsThirsty}";
             }
-            Debug.Log($"动物不能繁衍 - {reason}");
             return;
         }
 
@@ -104,11 +102,9 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
         int totalAnimalCount = GetTotalAnimalCount();
         if (totalAnimalCount < 2)
         {
-            Debug.Log($"动物总数不足，无法繁衍 (当前: {totalAnimalCount})");
             return;
         }
 
-        Debug.Log($"开始寻找配偶 - 总动物数: {totalAnimalCount}");
         
         // 查找所有其他成年动物
         AnimalItem[] allAnimals = FindObjectsOfType<AnimalItem>();
@@ -135,7 +131,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
             if (isAdult && notHungry && noCooldown && hasTransform)
             {
                 float distance = Vector3.Distance(transform.position, animal.transform.position);
-                Debug.Log($"发现潜在配偶: {animal.name}, 距离: {distance:F2}m");
 
                 if (distance <= mateSearchRadius && distance < nearestDistance)
                 {
@@ -152,17 +147,14 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
                 if (!noCooldown) reason += $"冷却中({animalReproduction?.reproductionCooldown:F1}s) ";
                 if (!hasTransform) reason += "无Transform ";
 
-                Debug.Log($"动物 {animal.name} 不适合繁衍: {reason}");
             }
         }
 
-        Debug.Log($"配偶搜索结果 - 检查了{checkedAnimals}只动物，找到{suitableAnimals}只合适的");
         
         if (suitableMate != null && suitableMate.transform != null)
         {
             targetMate = suitableMate.transform;
             isLookingForMate = true;
-            Debug.Log($"找到配偶，开始接近进行繁衍，距离: {nearestDistance:F2}");
             OnMateFound?.Invoke(targetMate);
         }
     }
@@ -174,7 +166,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
         
         if (mate == null)
         {
-            Debug.Log("配偶为空，停止繁衍尝试");
             StopLookingForMate();
             return;
         }
@@ -192,7 +183,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
             float finalReproductionChance = reproductionChance * environmentalReproductionModifier;
             if (Random.Range(0f, 1f) > finalReproductionChance)
             {
-                Debug.Log($"繁衍失败，环境影响成功率: {finalReproductionChance:F2}");
                 FailedMating();
                 mateReproduction.FailedMating();
                 return;
@@ -214,7 +204,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
             CompleteMating();
             mateReproduction.CompleteMating();
 
-            Debug.Log("繁衍成功，生成了幼年体");
             OnReproductionCompleted?.Invoke();
             mateReproduction.OnReproductionCompleted?.Invoke();
         }
@@ -222,7 +211,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
         {
             // 配偶状态不符合，停止寻找配偶
             StopLookingForMate();
-            Debug.Log("配偶状态不符合繁衍条件，停止寻找配偶");
         }
     }
     
@@ -261,7 +249,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
         transform.localScale = targetScale;
         animalMaterial.color = targetColor;
         
-        Debug.Log("成长为成年体：体型变大，颜色变暗");
         OnBecameAdult?.Invoke();
     }
     
@@ -282,7 +269,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
                 rb.mass = 1f;
             }
             
-            Debug.Log("新生幼年体等待结束，开始自然下落");
             OnNewbornWaitCompleted?.Invoke();
         }
     }
@@ -296,7 +282,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
         // 添加AnimalItem组件
         AnimalItem offspringComponent = offspring.AddComponent<AnimalItem>();
         
-        Debug.Log($"在位置 {position} 繁衍了新的幼年体动物");
     }
     
     private void CompleteMating()
@@ -305,7 +290,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
         targetMate = null;
         isReproducing = false;
         
-        Debug.Log("繁衍完成");
     }
     
     public void FailedMating()
@@ -314,7 +298,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
         targetMate = null;
         isReproducing = false;
         
-        Debug.Log("繁衍失败");
         OnReproductionFailed?.Invoke();
     }
     
@@ -322,7 +305,6 @@ public class AnimalReproductionSystem : MonoBehaviour, IAnimalReproduction
     {
         isLookingForMate = false;
         targetMate = null;
-        Debug.Log("停止寻找配偶");
     }
     
     public void SetEnvironmentalReproductionModifier(float modifier)

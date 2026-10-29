@@ -22,7 +22,6 @@ public class ArchiveSettings : MonoBehaviour
         // 保存更改
         PlayerPrefs.Save();
 
-        Debug.Log("所有存档数据已重置！");
     }
 
 

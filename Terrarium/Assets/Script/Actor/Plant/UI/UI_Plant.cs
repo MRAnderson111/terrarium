@@ -76,7 +76,6 @@ public class UI_Plant : MonoBehaviour
         if (rectangularPanel != null)
         {
             rectangularPanel.SetActive(true);
-            Debug.Log("显示植物UI");
         }
     }
 
@@ -85,7 +84,6 @@ public class UI_Plant : MonoBehaviour
         if (rectangularPanel != null)
         {
             rectangularPanel.SetActive(false);
-            Debug.Log("隐藏植物UI");
         }
     }
 
@@ -144,7 +142,6 @@ public class UI_Plant : MonoBehaviour
         // 调用ActorManager参数
         if (ActorManager.Instance != null)
         {
-            Debug.Log("点击第一个方块，调用ActorManager");
             ActorManager.OnFirstSquareClicked();
             // 在这里添加具体的ActorManager调用逻辑
         }
@@ -158,7 +155,6 @@ public class UI_Plant : MonoBehaviour
     {
         if (ActorManager.Instance != null)
         {
-            Debug.Log("点击第二个方块，调用ActorManager");
             ActorManager.OnSecondSquareClicked();
         }
     }
@@ -167,7 +163,6 @@ public class UI_Plant : MonoBehaviour
     {
         if (ActorManager.Instance != null)
         {
-            Debug.Log("点击第二个方块，调用ActorManager");
             ActorManager.OnThirdSquareClicked();
         }
     }
@@ -176,7 +171,6 @@ public class UI_Plant : MonoBehaviour
     {
         if (ActorManager.Instance != null)
         {
-            Debug.Log("点击第四个方块，调用ActorManager");
             ActorManager.OnFourthSquareClicked();
         }
     }

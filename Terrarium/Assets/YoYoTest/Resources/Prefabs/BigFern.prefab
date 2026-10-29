@@ -134,6 +134,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d93cf290d9a3384cbfc6f91428639f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  preferredTemperature: 0.644
+  preferredHumidity: 0.635
+  preferredSunlight: 0.635
   growthProgress: 0
   meshObject: {fileID: 2776310096090744509}
   meshObject2: {fileID: 8710237057526469987}

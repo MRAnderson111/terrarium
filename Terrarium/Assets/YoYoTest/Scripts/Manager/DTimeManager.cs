@@ -234,7 +234,6 @@ public class DTimeManager : MonoBehaviour
     public void StartTime()
     {
         isTimeRunning = true;
-        Debug.Log($"时间管理器开始计时 - {FormattedDateTime}");
     }
 
     /// <summary>
@@ -243,7 +242,6 @@ public class DTimeManager : MonoBehaviour
     public void PauseTime()
     {
         isTimeRunning = false;
-        Debug.Log($"时间管理器暂停计时 - {FormattedDateTime}");
     }
 
     /// <summary>
@@ -258,7 +256,6 @@ public class DTimeManager : MonoBehaviour
         // 初始化灯光亮度
         UpdateDirectionalLight();
         
-        Debug.Log($"时间已重置 - {FormattedDateTime}");
     }
 
     /// <summary>
@@ -268,7 +265,6 @@ public class DTimeManager : MonoBehaviour
     public void SetTimeSpeed(float speed)
     {
         timeSpeed = Mathf.Max(0f, speed);
-        Debug.Log($"时间流逝速度设置为: {timeSpeed}x");
     }
 
     /// <summary>
@@ -352,7 +348,6 @@ public class DTimeManager : MonoBehaviour
     /// </summary>
     private void OnNewDay()
     {
-        Debug.Log($"新的一天开始了！ - 第{currentDay}天");
         // 这里可以添加新一天的事件，比如重置某些状态、触发特定事件等
     }
 
@@ -374,7 +369,6 @@ public class DTimeManager : MonoBehaviour
         // 更新灯光亮度
         UpdateDirectionalLight();
         
-        Debug.Log($"时间已设置为: {FormattedTime}");
     }
 
     /// <summary>
@@ -390,7 +384,6 @@ public class DTimeManager : MonoBehaviour
         }
 
         currentDay = day;
-        Debug.Log($"天数已设置为: 第{currentDay}天");
     }
 
     /// <summary>

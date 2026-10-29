@@ -175,14 +175,13 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         {
             // 触发白天开始事件
             OnDayStart?.Invoke();
-            Debug.Log("白天开始了！触发事件");
         }
 
         // 更新上一次的状态
         wasDayLastFrame = isDay;
 
         // 调试输出
-        // Debug.Log($"当前时间: {currentTime:F2}, 睡觉时间: {toSleepTime:F2}, 醒来时间: {toAwakeTime:F2}, 是否白天: {isDay}");
+        
     }
 
 
@@ -195,14 +194,12 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
             return;
         }
 
-        Debug.Log("成虫白天吃饱了，有居住地，完成繁殖，去散步");
         
         // 如果蚂蚁在居住地内，先离开居住地
         if (isInHome)
         {
             homeManager.LeaveHome(this, (isNowInHome) => {
                 this.isInHome = isNowInHome; // 这里回调会传入false
-                Debug.Log($"蚂蚁已离开居住地，isInHome状态: {this.isInHome}");
                 // 离开居住地后开始散步
                 walkManager.StartWalking(this);
             });
@@ -221,7 +218,6 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         if (walkManager != null)
         {
             walkManager.StopWalking();
-            Debug.Log("停止散步状态，开始回家停留");
         }
         
         // 使用居住地管理器的回家方法
@@ -233,10 +229,8 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         // 在寻找食物前，检查是否需要先离开居住地
         if (isInHome)
         {
-            Debug.Log("需要寻找食物，但当前在居住地内，先离开。");
             homeManager.LeaveHome(this, (isNowInHome) => {
                 this.isInHome = isNowInHome; // 回调会传入false
-                Debug.Log($"为寻找食物而离开居住地，isInHome状态: {this.isInHome}");
                 // 离开居住地后开始寻找食物
                 ExecuteFindAndEatSequence();
             });
@@ -255,7 +249,6 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     {
         if (needsManager.IsFull)
         {
-            Debug.Log("吃饱了");
             return;
         }
 
@@ -277,7 +270,6 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         if (walkManager != null)
         {
             walkManager.StopWalking();
-            Debug.Log("停止散步状态，开始回家睡觉");
         }
         
         // 使用居住地管理器的回家方法
@@ -291,7 +283,6 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     {
         // 当白天开始时，无论蚂蚁是否在睡觉，都重置其状态
         // 这确保了在回家途中被清晨打断的蚂蚁也能正确开始新的一天
-        Debug.Log("白天开始了，重置蚂蚁状态。");
         ResetStates();
     }
 
@@ -300,7 +291,6 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         if (other.gameObject.name == "water")
         {
             needsManager.IsTouchWaterTarget = true;
-            Debug.Log("碰到水目标");
         }
         
         // Utility AI 直接调用需求管理器，因此以管理器当前目标为准；旧流程仍可使用 currentFoodTarget。
@@ -312,7 +302,6 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         if (foodTarget != null && other.attachedRigidbody != null && other.attachedRigidbody.gameObject == foodTarget)
         {
             needsManager.IsTouchFoodTarget = true;
-            Debug.Log("蚂蚁碰撞到食物目标：" + foodTarget.name);
             return;
         }
         
@@ -357,7 +346,6 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
             walkManager.StopWalking();
         }
         
-        Debug.Log("蚂蚁状态已重置，开始新的一天");
     }
 
     public void Death()
@@ -379,7 +367,6 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         // 检测从未成年到成年的状态变化
         if (!wasAdultLastFrame && isAdult)
         {
-            Debug.Log("蚂蚁从未成年变成成年，触发成长动画");
             StartCoroutine(GrowthAnimation());
         }
         
@@ -414,7 +401,6 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         
         // 确保最终scale准确设置为目标值
         transform.localScale = initialScale * targetScale;
-        Debug.Log("成长动画完成，当前scale: " + transform.localScale);
     }
 
     public void SetInHome(bool inHome)

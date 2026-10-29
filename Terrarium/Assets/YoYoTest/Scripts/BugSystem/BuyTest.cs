@@ -37,14 +37,6 @@ public class BuyTest : MonoBehaviour
         {
             InitializeDefaultData();
         }
-        
-        // 打印当前存档信息（用于测试）
-        Debug.Log("当前金币数量: " + currentCoins);
-        Debug.Log("物品库存:");
-        foreach (var item in itemsDictionary)
-        {
-            Debug.Log(item.Key + ": " + item.Value);
-        }
     }
     
     void Update()
@@ -53,25 +45,21 @@ public class BuyTest : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             AddCoins(10);
-            Debug.Log("增加了10个金币，当前金币: " + currentCoins);
         }
         
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             AddItem("苹果", 1);
-            Debug.Log("增加了1个苹果，当前苹果数量: " + GetItemCount("苹果"));
         }
         
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             RemoveItem("苹果", 1);
-            Debug.Log("减少了1个苹果，当前苹果数量: " + GetItemCount("苹果"));
         }
         
         if (Input.GetKeyDown(KeyCode.R))
         {
             ResetGameData();
-            Debug.Log("游戏数据已重置");
         }
     }
     
@@ -234,7 +222,6 @@ public class BuyTest : MonoBehaviour
             itemsDictionary[itemName] = 0;
             PlayerPrefs.SetInt(ITEMS_PREFIX + itemName, 0);
             PlayerPrefs.Save();
-            Debug.Log("已添加新物品: " + itemName);
         }
         else
         {

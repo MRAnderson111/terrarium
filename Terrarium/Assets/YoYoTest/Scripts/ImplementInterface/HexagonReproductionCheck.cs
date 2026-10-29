@@ -18,7 +18,6 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
     [Header("繁殖控制")]
     public string smallClass = null;
     public float coolDownTime = 3f; // 冷却时间
-    public bool enableReproductionLogging = false; // 是否启用繁殖日志
 
     private GameObject reproductionPrefab; // 缓存加载的预制体
 
@@ -62,7 +61,6 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
             return false;
         }
 
-        Debug.Log($"成功加载预制体：{reproductionPrefab.name} 从路径：{reproductionPrefabPath}");
         return true;
     }
 
@@ -87,9 +85,7 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
                 // 检查是否超过数量限制
                 if (currentCount >= currentQuantityLimit)
                 {
-                    if (enableReproductionLogging)
                     {
-                        Debug.Log($"小类 {smallClass} 当前数量 {currentCount} 已达到限制 {currentQuantityLimit}，无法繁殖");
                     }
                     return;
                 }
@@ -100,9 +96,7 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
             {
                 // 如果成功，则重置全局冷却时间
                 ObjectStatisticsManager.Instance.ResetGlobalCoolDown(smallClass);
-                if (enableReproductionLogging)
                 {
-                    Debug.Log($"小类 {smallClass} 的全局冷却时间已重置为0");
                 }
             }
         }
@@ -117,7 +111,6 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
         // 尝试加载预制体
         if (!LoadReproductionPrefab())
         {
-            if (enableReproductionLogging)
             {
                 Debug.LogError("无法加载繁殖预制体，跳过本次检测");
             }
@@ -141,15 +134,12 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
             if (CreateManager.Instance != null)
             {
                 CreateManager.Instance.CreatePrefab(reproductionPrefab, emptyPosition);
-                if (enableReproductionLogging)
                 {
-                    Debug.Log($"使用CreateManager在位置 {emptyPosition} 生成了预制体：{reproductionPrefab.name}");
                 }
                 return true; // 成功繁殖
             }
             else
             {
-                if (enableReproductionLogging)
                 {
                     Debug.LogError("CreateManager引用为空，无法生成预制体");
                 }
@@ -158,9 +148,7 @@ public class HexagonReproductionCheck : MonoBehaviour, IReproductionCheck
         }
         else
         {
-            if (enableReproductionLogging)
             {
-                Debug.Log("没有找到合适的空位置进行繁殖");
             }
             return false; // 未成功繁殖
         }

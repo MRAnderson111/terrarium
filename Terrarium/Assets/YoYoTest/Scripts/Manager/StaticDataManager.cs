@@ -32,7 +32,6 @@ public static class GlobalCooldownManager
         _isInitialized = false;
         
         // 在这里添加您需要清理的所有资源
-        Debug.Log("静态数据管理器已清理");
     }
     
     /// <summary>
@@ -44,7 +43,6 @@ public static class GlobalCooldownManager
         {
             // 在这里初始化您的数据
             _isInitialized = true;
-            Debug.Log("静态数据管理器已初始化");
         }
     }
     

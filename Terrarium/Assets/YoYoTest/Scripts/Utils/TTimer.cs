@@ -47,7 +47,6 @@ public static class TTimer
             stopwatch.Stop();
             long ticks = stopwatch.ElapsedTicks;
             double milliseconds = (double)ticks / Stopwatch.Frequency * 1000;
-            UnityEngine.Debug.Log($"计时结束: {taskName}, 耗时(ticks): {ticks}, 耗时(毫秒): {milliseconds:F3}");
             runningTimers.Remove(taskName); // 停止后移除
         }
         else

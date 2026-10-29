@@ -51,7 +51,6 @@ public static class GroundDetectionUtils
         if (fertility >= 0)
         {
             growthSpeedSetter?.Invoke(fertility);
-            Debug.Log($"生长速度设置为: {fertility}");
         }
         else
         {

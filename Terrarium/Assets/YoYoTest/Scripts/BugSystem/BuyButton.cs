@@ -63,7 +63,6 @@ public class BuyButton : MonoBehaviour
 
     public void OnClick()
     {
-        Debug.Log("购买物品：" + itemName);
         
         // 获取当前金币数量
         int currentCoins = PlayerPrefs.GetInt(COINS_KEY, DEFAULT_COINS);
@@ -89,12 +88,6 @@ public class BuyButton : MonoBehaviour
             // 更新显示文本
             UpdatePriceText();
             
-            Debug.Log("购买成功！花费 " + itemPrice + " 金币，剩余金币: " + currentCoins);
-            Debug.Log("物品 '" + itemName + "' 数量: " + currentItemCount);
-        }
-        else
-        {
-            Debug.Log("金币不足！需要 " + itemPrice + " 金币，当前只有 " + currentCoins + " 金币");
         }
     }
     

@@ -28,7 +28,6 @@ public class Date_GameOver : MonoBehaviour
             if (currentPlantCount > 0)
             {
                 hasFirstPlant = true;
-                Debug.Log("检测到第一株植物，开始监控植物数量");
                 
                 // 开始定期检查植物数量
                 StartCoroutine(CheckPlantCount());
@@ -82,7 +81,6 @@ public class Date_GameOver : MonoBehaviour
         
         gameEnded = true;
         
-        Debug.Log("游戏结束：环境中没有植物了！");
         
         // 3秒后重新开始游戏
         StartCoroutine(RestartGameAfterDelay());

@@ -52,7 +52,6 @@ public class AnimalHabitatSystem : MonoBehaviour
             // 使用现有的共享居住地
             myHabitat = sharedHabitat;
             hasHabitat = true;
-            Debug.Log("使用现有的共享居住地");
             OnHabitatBuilt?.Invoke();
         }
         else if (!isCreatingHabitat)
@@ -84,7 +83,6 @@ public class AnimalHabitatSystem : MonoBehaviour
         {
             myHabitat = sharedHabitat;
             hasHabitat = true;
-            Debug.Log("等待后使用了共享居住地");
             OnHabitatBuilt?.Invoke();
         }
         else if (!isCreatingHabitat)
@@ -118,7 +116,6 @@ public class AnimalHabitatSystem : MonoBehaviour
             // 使用现有的共享居住地
             myHabitat = sharedHabitat;
             hasHabitat = true;
-            Debug.Log("在等待期间发现了共享居住地，直接使用");
             OnHabitatBuilt?.Invoke();
         }
         
@@ -133,7 +130,6 @@ public class AnimalHabitatSystem : MonoBehaviour
         {
             myHabitat = sharedHabitat;
             hasHabitat = true;
-            Debug.Log("发现居住地已存在，直接使用");
             OnHabitatBuilt?.Invoke();
             return;
         }
@@ -158,7 +154,6 @@ public class AnimalHabitatSystem : MonoBehaviour
                 myHabitat = sharedHabitat;
                 hasHabitat = true;
                 
-                Debug.Log($"在最佳位置 {bestPosition} 建立了共享居住地");
                 OnHabitatBuilt?.Invoke();
             }
             else
@@ -200,7 +195,6 @@ public class AnimalHabitatSystem : MonoBehaviour
             }
         }
         
-        Debug.Log($"居住地选址完成，最佳评分: {bestScore:F2}");
         return bestPosition;
     }
     
@@ -348,7 +342,6 @@ public class AnimalHabitatSystem : MonoBehaviour
         {
             // 夜晚且有居住地，前往睡觉
             isGoingToSleep = true;
-            Debug.Log("夜晚到来，前往居住地睡觉");
         }
         else if (!isNight && isSleeping)
         {
@@ -388,7 +381,6 @@ public class AnimalHabitatSystem : MonoBehaviour
         isSleeping = true;
         isGoingToSleep = false;
         
-        Debug.Log("开始睡觉");
         OnSleepStarted?.Invoke();
     }
     
@@ -397,7 +389,6 @@ public class AnimalHabitatSystem : MonoBehaviour
         isSleeping = false;
         isGoingToSleep = false;
         
-        Debug.Log("醒来");
         OnSleepEnded?.Invoke();
     }
     
@@ -406,7 +397,6 @@ public class AnimalHabitatSystem : MonoBehaviour
         // 检查是否进入了自己的居住地
         if (myHabitat != null && other.transform == myHabitat)
         {
-            Debug.Log("进入了自己的居住地");
             OnHabitatEntered?.Invoke();
         }
     }
@@ -416,7 +406,6 @@ public class AnimalHabitatSystem : MonoBehaviour
         // 检查是否离开了自己的居住地
         if (myHabitat != null && other.transform == myHabitat)
         {
-            Debug.Log("离开了自己的居住地");
             OnHabitatExited?.Invoke();
         }
     }

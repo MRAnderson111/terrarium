@@ -23,13 +23,11 @@ public class GameOverUI : MonoBehaviour
 
     private void OnRestartButtonClick()
     {
-        Debug.Log("重新开始");
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void OnToMainMenuButtonClick()
     {
-        Debug.Log("返回主菜单");
         SceneManager.LoadScene("Start");
     }
 }

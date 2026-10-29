@@ -39,7 +39,6 @@ public static class StaticCreateLimitManager
 
         DiscountToCreateLimit();
         
-        Debug.Log("创建限制管理器已清理并重置默认值");
     }
 
     /// <summary>
@@ -50,7 +49,6 @@ public static class StaticCreateLimitManager
         if (!_isInitialized)
         {
             _isInitialized = true;
-            Debug.Log("创建限制管理器已初始化");
         }
     }
 
@@ -81,10 +79,6 @@ public static class StaticCreateLimitManager
 
     public static void LogAllCreateLimit()
     {
-        foreach (var item in createLimit)
-        {
-            Debug.Log("CreateLimit: " + item.Key + " " + item.Value);
-        }
     }
 
     /// <summary>
@@ -98,7 +92,6 @@ public static class StaticCreateLimitManager
             // 从 createAddCount 字典中获取要增加的数值，如果不存在则使用默认值2
             int valueToAdd = createAddCount.TryGetValue(key, out int count) ? count : 2;
             createLimit[key] += valueToAdd;
-            Debug.Log($"键 '{key}' 的创建限制值已增加 {valueToAdd}，当前值为: {createLimit[key]}");
         }
         else
         {
@@ -118,7 +111,6 @@ public static class StaticCreateLimitManager
             {
                 int valueToSubtract = createAddCount[key];
                 createLimit[key] -= valueToSubtract;
-                Debug.Log($"键 '{key}' 的创建限制值已减少 {valueToSubtract}，当前值为: {createLimit[key]}");
             }
         }
     }

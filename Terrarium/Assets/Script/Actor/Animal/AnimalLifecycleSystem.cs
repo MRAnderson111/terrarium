@@ -36,8 +36,6 @@ public class AnimalLifecycleSystem : MonoBehaviour, IAnimalLifecycle
         
         // 初始化生命计时器
         lifeTimer = 0f;
-        Debug.Log($"动物开始生命周期，将在{maxLifeTime}秒后死亡");
-        Debug.Log($"动物数量: {totalAnimalCount}, 环境动物数量: {environmentalAnimalValue}");
     }
     
     void Update()
@@ -66,7 +64,6 @@ public class AnimalLifecycleSystem : MonoBehaviour, IAnimalLifecycle
     {
         isDying = true;
         
-        Debug.Log($"动物开始死亡过程，存活时间: {lifeTimer:F1}秒");
         OnDeathStarted?.Invoke();
         
         // 停止所有行为
@@ -95,7 +92,6 @@ public class AnimalLifecycleSystem : MonoBehaviour, IAnimalLifecycle
             }
         }
         
-        Debug.Log("动物死亡消散完成");
         OnDeathCompleted?.Invoke();
         
         // 销毁对象
@@ -135,7 +131,6 @@ public class AnimalLifecycleSystem : MonoBehaviour, IAnimalLifecycle
         totalAnimalCount--;
         UpdateEnvironmentalAnimalValue();
         
-        Debug.Log($"动物被销毁，剩余动物数量: {totalAnimalCount}, 环境动物数值: {environmentalAnimalValue}");
     }
     
     private static void UpdateEnvironmentalAnimalValue()
@@ -158,7 +153,6 @@ public class AnimalLifecycleSystem : MonoBehaviour, IAnimalLifecycle
     public void SetMaxLifeTime(float newMaxLifeTime)
     {
         maxLifeTime = newMaxLifeTime;
-        Debug.Log($"设置动物最大生命时间为: {maxLifeTime}秒");
     }
     
     // 获取生命进度百分比
@@ -177,7 +171,6 @@ public class AnimalLifecycleSystem : MonoBehaviour, IAnimalLifecycle
     public void ExtendLifeTime(float additionalTime)
     {
         maxLifeTime += additionalTime;
-        Debug.Log($"延长动物生命时间 {additionalTime}秒，新的最大生命时间: {maxLifeTime}秒");
     }
     
     // 立即死亡（用于被捕食等情况）
@@ -186,7 +179,6 @@ public class AnimalLifecycleSystem : MonoBehaviour, IAnimalLifecycle
         if (!isDying)
         {
             lifeTimer = maxLifeTime; // 设置为最大值触发死亡
-            Debug.Log("动物立即死亡");
         }
     }
     
@@ -201,6 +193,5 @@ public class AnimalLifecycleSystem : MonoBehaviour, IAnimalLifecycle
     {
         lifeTimer = 0f;
         isDying = false;
-        Debug.Log("重置动物生命计时器");
     }
 }

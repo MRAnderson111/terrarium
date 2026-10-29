@@ -52,7 +52,6 @@ public class MiddleEnvirmentEffect : MonoBehaviour
                 // 如果为true，则Log一个"哈哈哈"
                 isSpeedSet = true;
                 maxGrowthSpeed = growthComponent.GrowthSpeed;
-                Debug.Log("哈哈哈");
                 
                 // 主动获取当前环境参数
                 EnvironmentalData currentData = EnvironmentalParaManager.Instance.EnvironmentalData;
@@ -74,14 +73,12 @@ public class MiddleEnvirmentEffect : MonoBehaviour
             {
                 isQuantityLimitSet = true;
                 maxQuantityLimits = quantityLimitsComponent.QuantityLimits;
-                Debug.Log("生长数量上限已设置");
                 
                 // 主动获取当前环境参数
                 EnvironmentalData currentData = EnvironmentalParaManager.Instance.EnvironmentalData;
                 
                 // 使用环境数据手动设置生长数量上限
                 quantityLimitsComponent.QuantityLimits = Mathf.RoundToInt(maxQuantityLimits * CalculateOptimalValue(currentData.humidity));
-                Debug.Log($"原始数量上限: {maxQuantityLimits}, 湿度倍数: {currentData.humidity}, 调整后数量上限: {quantityLimitsComponent.QuantityLimits}");
             }
         }
     }
@@ -98,7 +95,6 @@ public class MiddleEnvirmentEffect : MonoBehaviour
         {
             // 直接修改数量上限
             quantityLimitsComponent.QuantityLimits = Mathf.RoundToInt(maxQuantityLimits * CalculateOptimalValue(data.humidity));
-            Debug.Log($"环境变化调整数量上限: {quantityLimitsComponent.QuantityLimits}, 湿度: {data.humidity}");
         }
     }
 

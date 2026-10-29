@@ -78,7 +78,6 @@ public class AddMoneyButton : MonoBehaviour
         // 立即更新显示
         UpdateMoneyText();
         
-        Debug.Log("成功添加 " + ADD_COINS_AMOUNT + " 金币，当前金币总数: " + currentCoins);
     }
     
     // OnDestroy时移除事件监听，避免内存泄漏

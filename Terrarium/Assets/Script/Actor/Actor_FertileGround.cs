@@ -45,7 +45,6 @@ public class Actor_FertileGround : MonoBehaviour
         if (fertileMaterial != null)
         {
             meshRenderer.material = fertileMaterial;
-            Debug.Log("成功应用FertileGround材质");
         }
         else
         {
@@ -61,7 +60,6 @@ public class Actor_FertileGround : MonoBehaviour
         // 设置物理碰撞器
         SetupCollider();
         
-        Debug.Log("FertileGround富饶土地设置完成");
     }
     
     Mesh CreateGroundMesh()
@@ -131,6 +129,5 @@ public class Actor_FertileGround : MonoBehaviour
         boxCollider.center = new Vector3(0f, 0f, 0f);
         boxCollider.isTrigger = false; // 保持物理碰撞
         
-        Debug.Log("FertileGround碰撞器设置完成");
     }
 }

@@ -23,7 +23,6 @@ public class Interact_PlantIndex : MonoBehaviour
     // 事件回调方法
     void OnPlantIndexChanged(int newIndex)
     {
-        Debug.Log($"Interact_PlantIndex 收到通知：PlantIndex 变为 {newIndex}");
         
         // 在这里处理PlantIndex变化的逻辑
         HandlePlantIndexChange(newIndex);
@@ -41,22 +40,17 @@ public class Interact_PlantIndex : MonoBehaviour
         switch (index)
         {
             case 0:
-                Debug.Log("植物索引重置");
                 break;
             case 1:
-                Debug.Log("选择了第一种植物");
                 CreateFollowingPlant(plant1);
                 break;
             case 2:
-                Debug.Log("选择了第二种植物");
                 CreateFollowingPlant(plant2);
                 break;
             case 3:
-                Debug.Log("选择了第三种植物");
                 CreateFollowingPlant(plant3);
                 break;
             case 4:
-                Debug.Log("选择了第四种植物");
                 CreateFollowingPlant(plant4);
                 break;
         }
@@ -69,7 +63,6 @@ public class Interact_PlantIndex : MonoBehaviour
             // 在鼠标位置生成植物
             currentFollowingPlant = Instantiate(plantPrefab);
 
-            Debug.Log("生成了跟随鼠标的植物");
         }
     }
 
@@ -117,14 +110,12 @@ public class Interact_PlantIndex : MonoBehaviour
             if (currentFollowingPlant.GetComponent<Collider>() == null)
             {
                 currentFollowingPlant.AddComponent<BoxCollider>();
-                Debug.Log("为下落植物添加了碰撞器");
             }
             
             // 启用重力让植物下落
             rb.useGravity = true;
             rb.isKinematic = false;
             
-            Debug.Log("植物开始自由下落至地面");
             
             // 清空当前跟随的植物引用
             currentFollowingPlant = null;

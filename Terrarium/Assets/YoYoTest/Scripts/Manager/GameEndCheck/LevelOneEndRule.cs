@@ -38,7 +38,6 @@ public class LevelOneEndRule : MonoBehaviour
             // 如果植物数量为0且还没有记录过
             if (count == 0 && !hasLoggedPlantExtinction)
             {
-                Debug.Log("植物死光了 所以游戏结束");
                 Events.OnGameEnd.Invoke();
                 hasLoggedPlantExtinction = true;
             }

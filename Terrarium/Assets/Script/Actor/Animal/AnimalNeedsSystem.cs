@@ -84,8 +84,6 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
             return;
         }
 
-        Debug.Log($"动物开始进食: {food.name}");
-        Debug.Log($"进食前状态 - 饥饿: {isHungry}, 已进食: {hasEaten}");
 
         // 检查是否是植物（通过组件或名称）
         var plantComponent = food.GetComponent<MonoBehaviour>();
@@ -98,7 +96,6 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
 
         if (isPlant)
         {
-            Debug.Log($"确认为植物，动物开始进食: {food.name}");
 
             // 销毁植物
             Destroy(food.gameObject);
@@ -109,12 +106,10 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
             hungerTimer = 0f;
             targetPlant = null;
 
-            Debug.Log($"进食后状态 - 饥饿: {isHungry}, 已进食: {hasEaten}");
 
             // 触发事件
             OnAteFood?.Invoke();
 
-            Debug.Log("动物进食完毕，不再饥饿，触发OnAteFood事件");
         }
         else
         {
@@ -130,8 +125,6 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
             return;
         }
 
-        Debug.Log($"动物开始喝水: {water.name}");
-        Debug.Log($"喝水前状态 - 口渴: {isThirsty}, 已喝水: {hasDrunk}");
 
         // 更新状态
         isThirsty = false;
@@ -139,12 +132,10 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
         thirstTimer = 0f;
         targetWater = null;
 
-        Debug.Log($"喝水后状态 - 口渴: {isThirsty}, 已喝水: {hasDrunk}");
 
         // 触发事件
         OnDrankWater?.Invoke();
 
-        Debug.Log("动物喝水完毕，不再口渴，触发OnDrankWater事件");
     }
     
     public void FindNearestPlant()
@@ -193,7 +184,6 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
         targetPlant = nearestPlant;
         if (targetPlant != null)
         {
-            Debug.Log($"找到最近的植物，距离: {nearestDistance:F2}");
             OnFoodFound?.Invoke(targetPlant);
         }
     }
@@ -249,7 +239,6 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
         targetWater = nearestWater;
         if (targetWater != null)
         {
-            Debug.Log($"找到最近的水源，距离: {nearestDistance:F2}");
             OnWaterFound?.Invoke(targetWater);
         }
     }
@@ -258,7 +247,6 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
     {
         isHungry = true;
         hungerTimer = 0f;
-        Debug.Log("动物变得饥饿");
         OnBecameHungry?.Invoke();
     }
     
@@ -266,7 +254,6 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
     {
         isThirsty = true;
         thirstTimer = 0f;
-        Debug.Log("动物变得口渴");
         OnBecameThirsty?.Invoke();
     }
     
@@ -281,7 +268,6 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
         thirstTimer = 0f;
         targetPlant = null;
         targetWater = null;
-        Debug.Log("重置动物需求状态");
     }
     
     // 设置需求状态（用于特殊情况，如繁衍后消耗体力）
@@ -291,7 +277,6 @@ public class AnimalNeedsSystem : MonoBehaviour, IAnimalNeeds
         isThirsty = true;
         hungerTimer = 0f;
         thirstTimer = 0f;
-        Debug.Log("设置动物为饥饿和口渴状态");
         OnBecameHungry?.Invoke();
         OnBecameThirsty?.Invoke();
     }

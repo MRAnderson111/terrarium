@@ -56,7 +56,6 @@ public class Actor_Plant : MonoBehaviour, IResearchPoint
     {
         if (!HasGrounded && IsGroundObject(collision.gameObject))
         {
-            Debug.Log($"植物接触到地面: {collision.gameObject.name}");
             
             // 优化地面类型检测 - 按优先级检测
             if (IsFertileGround(collision.gameObject))
@@ -64,21 +63,18 @@ public class Actor_Plant : MonoBehaviour, IResearchPoint
                 GrowSpeed = 3;
                 PluralReproduction = true;
                 SingleReproduction = false;
-                Debug.Log("接触到肥沃土地，生长速度设置为3");
             }
             else if (IsBarrenGround(collision.gameObject))
             {
                 GrowSpeed = 1;
                 SingleReproduction = true;
                 PluralReproduction = false;
-                Debug.Log("接触到贫瘠土地，生长速度设置为1");
             }
             else
             {
                 GrowSpeed = 2;
                 SingleReproduction = true;
                 PluralReproduction = false;
-                Debug.Log("接触到普通地面，生长速度设置为2");
             }
             
             FixPosition();
@@ -117,7 +113,6 @@ public class Actor_Plant : MonoBehaviour, IResearchPoint
         if (rb != null)
             Object.Destroy(rb);
         HasGrounded = true;
-        Debug.Log("植物已固定在地面上");
         if(HasGrounded && !growthSystem.IsGrowing)
         {
             Sprout();
@@ -140,7 +135,6 @@ public class Actor_Plant : MonoBehaviour, IResearchPoint
 
     private void OnFirstGrowthCompleted()
     {
-        Debug.Log("收到第一阶段生长完成通知");
         SecondGrowth();
     }
 

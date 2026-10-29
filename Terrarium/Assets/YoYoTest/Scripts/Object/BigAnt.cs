@@ -67,13 +67,13 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
                     // 攻击目标
                     beHurtComponent.BeHurt(hurtForce * Time.deltaTime);
                     nutrition += 10 * Time.deltaTime;
-                    // Debug.Log("蚂蚁正在攻击植物：" + target.name + "，营养度：" + nutrition);
+                    
                 }
                 else
                 {
                     // 如果目标没有IBeHurt组件，重置状态
                     isTouchTarget = false;
-                    // Debug.LogWarning("目标植物没有IBeHurt组件：" + target.name);
+                    
                 }
             }
         }
@@ -132,7 +132,6 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
                 target = randomPlant;
                 hasTarget = true;
                 isTouchTarget = false; // 重置碰撞状态，确保需要重新碰撞才能攻击
-                Debug.Log("找到植物目标：" + target.name);
             }
             else
             {
@@ -173,7 +172,6 @@ public class BigAnt : MonoBehaviour, IGetObjectClass
         if (collision.gameObject == target.gameObject)
         {
             isTouchTarget = true;
-            Debug.Log("蚂蚁碰撞到目标植物：" + target.name);
         }
     }
 

@@ -57,7 +57,6 @@ public class PlantGrowthSystem : MonoBehaviour
         float growthTime = 3f;
         float elapsedTime = 0f;
         
-        Debug.Log("植物开始从幼年体成长为壮年体");
         
         while (elapsedTime < growthTime)
         {
@@ -75,7 +74,6 @@ public class PlantGrowthSystem : MonoBehaviour
         transform.localScale = targetScale;
         plantMaterial.color = targetColor;
         
-        Debug.Log("植物成长完成：体型变大，颜色变深");
         isGrowing = false;
         FirstGrowthDone = true;
         
@@ -122,7 +120,6 @@ public class PlantGrowthSystem : MonoBehaviour
         float growthTime = 5f / speedMultiplier; // 根据速度调整生长时间：速度越快，时间越短
         float elapsedTime = 0f;
         
-        Debug.Log($"植物开始第二阶段生长：长高{heightMultiplier}倍，生长时间{growthTime:F1}秒");
         
         while (elapsedTime < growthTime)
         {
@@ -140,7 +137,6 @@ public class PlantGrowthSystem : MonoBehaviour
         transform.localScale = targetScale;
         plantMaterial.color = targetColor;
         
-        Debug.Log("植物第二阶段生长完成：长高且颜色更深");
         isGrowing = false;
         SecondGrowthDone = true;
         OnSecondGrowthCompleted?.Invoke();

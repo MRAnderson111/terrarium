@@ -51,59 +51,9 @@ public class InputTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (rightTriggerAction.triggered)
-        {
-            Debug.Log("右手柄扳机按下 (Select Value)");
-        }
-        if (leftTriggerAction.triggered)
-        {
-            Debug.Log("左手柄扳机按下 (Select Value)");
-        }
-        if (rightSelectAction.triggered)
-        {
-            Debug.Log("右手柄握持按钮按下 (Select)");
-        }
-        if (leftSelectAction.triggered)
-        {
-            Debug.Log("左手柄握持按钮按下 (Select)");
-        }
-        if (rightActivateAction.triggered)
-        {
-            Debug.Log("右手柄激活按钮按下 (Activate)");
-        }
-        if (leftActivateAction.triggered)
-        {
-            Debug.Log("左手柄激活按钮按下 (Activate)");
-        }
-        if (rightUIPressAction.triggered)
-        {
-            Debug.Log("右手柄UI交互按钮按下 (UI Press)");
-        }
-        if (leftUIPressAction.triggered)
-        {
-            Debug.Log("左手柄UI交互按钮按下 (UI Press)");
-        }
-        if (rightScaleToggleAction.triggered)
-        {
-            Debug.Log("右手柄缩放切换按钮按下 (Scale Toggle)");
-        }
-        if (leftScaleToggleAction.triggered)
-        {
-            Debug.Log("左手柄缩放切换按钮按下 (Scale Toggle)");
-        }
         
         // 输出摇杆值
         Vector2 rightStickValue = rightPrimary2DAxisAction.ReadValue<Vector2>();
         Vector2 leftStickValue = leftPrimary2DAxisAction.ReadValue<Vector2>();
-        
-        // 只在摇杆有实际输入时输出
-        if (rightStickValue.sqrMagnitude > 0.01f)
-        {
-            Debug.Log($"右手柄摇杆: X={rightStickValue.x:F2}, Y={rightStickValue.y:F2}");
-        }
-        if (leftStickValue.sqrMagnitude > 0.01f)
-        {
-            Debug.Log($"左手柄摇杆: X={leftStickValue.x:F2}, Y={leftStickValue.y:F2}");
-        }
     }
 }

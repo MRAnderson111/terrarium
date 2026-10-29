@@ -40,7 +40,6 @@ public class PickPrefabUI : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.A))
         {
-            Debug.Log(GetClassDataJson());
         }
     }
     
@@ -91,7 +90,6 @@ public class PickPrefabUI : MonoBehaviour
         // 增加计数
         classData[bigClass][smallClass]++;
         
-        Debug.Log($"添加预制体: {prefab.name} -> 大类: {bigClass}, 小类: {smallClass}, 当前数量: {classData[bigClass][smallClass]}");
         
         // 数据更新后，同步到YoYoGameManager
         SyncDataToGameManager();
@@ -125,7 +123,6 @@ public class PickPrefabUI : MonoBehaviour
                 classData[bigClass][smallClass] = 0; // 确保计数不为负数
             }
             
-            Debug.Log($"移除预制体: {prefab.name} -> 大类: {bigClass}, 小类: {smallClass}, 当前数量: {classData[bigClass][smallClass]}");
             
             // 数据更新后，同步到YoYoGameManager
             SyncDataToGameManager();
@@ -200,7 +197,6 @@ public class PickPrefabUI : MonoBehaviour
                 classData[bigClassPair.Key][smallClassPair] = 0;
             }
         }
-        Debug.Log("所有分类计数已重置");
         
         // 数据重置后，同步到YoYoGameManager
         SyncDataToGameManager();
@@ -234,6 +230,5 @@ public class PickPrefabUI : MonoBehaviour
     public void ForceSyncToGameManager()
     {
         SyncDataToGameManager();
-        Debug.Log("手动同步分类数据到YoYoGameManager完成");
     }
 }

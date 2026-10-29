@@ -108,7 +108,6 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     {
         if (navMove != null)
         {
-            Debug.Log("碰到水目标，停止移动");
             navMove.StopMoving();
         }
     }
@@ -120,7 +119,6 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     {
         if (navMove != null)
         {
-            Debug.Log("碰到食物目标，停止移动");
             navMove.StopMoving();
         }
     }
@@ -136,7 +134,7 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
             {
                 currentWaterSatisfaction = requiredWater;
                 isDrinkWater = true;
-                Debug.Log("蚂蚁喝饱了水");
+                navMove?.StopEatingAnimation();
             }
         }
     }
@@ -151,7 +149,7 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
             {
                 currentFullness = 100;
                 isFull = true;
-                Debug.Log("蚂蚁吃饱了");
+                navMove?.StopEatingAnimation();
                 //变成成虫
                 ant.SetAdult(true);
             }
@@ -166,13 +164,11 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
 
         if (waterObject != null)
         {
-            Debug.Log("找到水目标: " + waterObject.name);
             waterTarget = waterObject;
             isTouchWaterTarget = false;
         }
         else
         {
-            Debug.Log("未找到水目标");
             waterTarget = null;
             isDrinkWater = false;
         }
@@ -208,7 +204,6 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
 
         if (selectedPlant == null)
         {
-            Debug.LogWarning("未找到植物目标");
             foodTarget = null;
             isHaveFoodTarget = false;
             return;
@@ -221,7 +216,6 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
         }
 
         isHaveFoodTarget = true;
-        Debug.Log("找到植物目标: " + foodTarget.name);
     }
 
     private bool IsCurrentPreferredFood(string preferredSmallClass)
@@ -242,11 +236,6 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
         {
             // 使用导航移动组件移动到水目标
             navMove.SetTarget(waterTarget.transform.position);
-            Debug.Log("正在向水目标移动");
-        }
-        else
-        {
-            Debug.Log("水目标不存在");
         }
     }
 
@@ -257,11 +246,6 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
         {
             // 使用导航移动组件移动到食物目标
             navMove.SetTarget(foodTarget.transform.position);
-            Debug.Log("正在向食物目标移动");
-        }
-        else
-        {
-            Debug.Log("食物目标不存在");
         }
     }
 
@@ -293,10 +277,8 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
 
         if (foodTarget != null)
         {
-            Debug.Log("有植物目标，去吃");
             if (isTouchFoodTarget)
             {
-                Debug.Log("碰到植物目标，吃植物");
                 OnTouchFoodTarget(); // 触发停止移动
                 // 检查植物是否有IBeHurt组件
                 IBeHurt beHurtComponent = foodTarget.GetComponent<IBeHurt>();
@@ -310,7 +292,7 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
                     {
                         currentFullness = 100;
                         isFull = true;
-                        Debug.Log("蚂蚁吃饱了");
+                navMove?.StopEatingAnimation();
                         //变成成虫
                         ant.SetAdult(true);
                     }
@@ -322,13 +304,11 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
             }
             else
             {
-                Debug.Log("没碰到植物目标，去吃");
                 GoToFoodTarget();
             }
         }
         else
         {
-            Debug.Log("没有植物目标，去寻找");
             FindFoodTarget();
         }
     }
@@ -336,6 +316,7 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     // 重置状态
     public void ResetStates()
     {
+        navMove?.StopEatingAnimation();
         currentFullness = 0f;
         isFull = false;
         currentWaterSatisfaction = 0f;

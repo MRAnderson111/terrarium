@@ -114,7 +114,6 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
     {
         if (navMove != null)
         {
-            Debug.Log("碰到水目标，停止移动");
             navMove.StopMoving();
         }
     }
@@ -126,7 +125,6 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
     {
         if (navMove != null)
         {
-            Debug.Log("碰到食物目标，停止移动");
             navMove.StopMoving();
         }
     }
@@ -142,7 +140,7 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
             {
                 currentWaterSatisfaction = requiredWater;
                 isDrinkWater = true;
-                Debug.Log("蚂蚁喝饱了水");
+                navMove?.StopEatingAnimation();
             }
         }
     }
@@ -157,7 +155,7 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
             {
                 currentFullness = 100;
                 isFull = true;
-                Debug.Log("蚂蚁吃饱了");
+                navMove?.StopEatingAnimation();
                 //变成成虫
                 ant.SetAdult(true);
             }
@@ -172,13 +170,11 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
 
         if (waterObject != null)
         {
-            Debug.Log("找到水目标: " + waterObject.name);
             waterTarget = waterObject;
             isTouchWaterTarget = false;
         }
         else
         {
-            Debug.Log("未找到水目标");
             waterTarget = null;
             isDrinkWater = false;
         }
@@ -214,7 +210,6 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
 
         if (selectedAnimal == null)
         {
-            Debug.LogWarning("未找到动物目标");
             foodTarget = null;
             isHaveFoodTarget = false;
             return;
@@ -227,7 +222,6 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
         }
 
         isHaveFoodTarget = true;
-        Debug.Log("找到动物目标: " + foodTarget.name);
     }
 
     private bool IsCurrentPreferredFood(string preferredSmallClass)
@@ -248,11 +242,6 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
         {
             // 使用导航移动组件移动到水目标
             navMove.SetTarget(waterTarget.transform.position);
-            Debug.Log("正在向水目标移动");
-        }
-        else
-        {
-            Debug.Log("水目标不存在");
         }
     }
 
@@ -263,11 +252,6 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
         {
             // 使用导航移动组件移动到食物目标
             navMove.SetTarget(foodTarget.transform.position);
-            Debug.Log("正在向食物目标移动");
-        }
-        else
-        {
-            Debug.Log("食物目标不存在");
         }
     }
 
@@ -302,11 +286,9 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
 
         if (foodTarget != null)
         {
-            Debug.Log("有动物目标，去攻击");
             isTouchFoodTarget = IsWithinInteractionRange(foodTarget);
             if (isTouchFoodTarget)
             {
-                Debug.Log("进入攻击范围，攻击动物");
                 OnTouchFoodTarget(); // 触发停止移动
                 
                 // 播放进食动画
@@ -327,7 +309,7 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
                     {
                         currentFullness = 100;
                         isFull = true;
-                        Debug.Log("蚂蚁吃饱了");
+                navMove?.StopEatingAnimation();
                         //变成成虫
                         ant.SetAdult(true);
                     }
@@ -339,13 +321,11 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
             }
             else
             {
-                Debug.Log("没进入攻击范围，继续追击");
                 GoToFoodTarget();
             }
         }
         else
         {
-            Debug.Log("没有动物目标，去寻找");
             FindFoodTarget();
         }
     }
@@ -379,6 +359,7 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
     // 重置状态
     public void ResetStates()
     {
+        navMove?.StopEatingAnimation();
         currentFullness = 0f;
         isFull = false;
         currentWaterSatisfaction = 0f;

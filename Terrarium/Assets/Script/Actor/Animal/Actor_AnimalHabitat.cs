@@ -21,7 +21,6 @@ public class Actor_AnimalHabitat : MonoBehaviour
         SetupPhysics();
         
         isInitialized = true;
-        Debug.Log("动物栖息地初始化完成");
     }
     
     void SetupComponents()
@@ -94,7 +93,6 @@ public class Actor_AnimalHabitat : MonoBehaviour
     {
         if (IsAnimalItem(other.gameObject))
         {
-            Debug.Log($"动物 {other.name} 进入栖息地");
         }
     }
     
@@ -102,7 +100,6 @@ public class Actor_AnimalHabitat : MonoBehaviour
     {
         if (IsAnimalItem(other.gameObject))
         {
-            Debug.Log($"动物 {other.name} 离开栖息地");
         }
     }
     

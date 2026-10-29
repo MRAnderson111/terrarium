@@ -54,7 +54,6 @@ public class AntHomeTest : MonoBehaviour
         {
             // 将蚂蚁添加到居住地的蚂蚁列表中
             antsInHome.Add(ant);
-            Debug.Log($"蚂蚁已进入居住地，当前居住地内蚂蚁数量: {antsInHome.Count}");
             
             // 回调蚂蚁的action，设置蚂蚁的布尔属性为true（表示已在居住地内）
             onAntEntered?.Invoke(true);
@@ -84,7 +83,6 @@ public class AntHomeTest : MonoBehaviour
         // 从列表中移除蚂蚁
         if (antsInHome.Remove(ant))
         {
-            Debug.Log($"蚂蚁已离开居住地，当前居住地内蚂蚁数量: {antsInHome.Count}");
             
             // 回调蚂蚁的action，设置蚂蚁的布尔属性为false（表示已离开居住地）
             onAntLeft?.Invoke(false);
@@ -136,7 +134,6 @@ public class AntHomeTest : MonoBehaviour
                 parent1.isFinishReproduction = true;
                 parent2.isFinishReproduction = true;
                 
-                Debug.Log($"蚂蚁繁殖取消: {parent1.gameObject.name} (睡觉: {parent1IsSleeping}) 和 {parent2.gameObject.name} (睡觉: {parent2IsSleeping})，因为至少有一只蚂蚁在睡觉");
                 
                 // 从列表中移除已经繁殖过的蚂蚁
                 unReproducedAdultAnts.Remove(parent1);
@@ -156,7 +153,6 @@ public class AntHomeTest : MonoBehaviour
                 unReproducedAdultAnts.Remove(parent1);
                 unReproducedAdultAnts.Remove(parent2);
                 
-                Debug.Log($"蚂蚁繁殖成功: {parent1.gameObject.name} 和 {parent2.gameObject.name} 已繁殖");
             }
         }
     }
@@ -180,10 +176,8 @@ public class AntHomeTest : MonoBehaviour
             GameObject newAntObject = Instantiate(antPrefab, spawnPosition, Quaternion.identity);
             newAntObject.name = "NewAnt_" + DateTime.Now.ToString("HHmmssfff");
             
-            Debug.Log($"新蚂蚁已生成: {newAntObject.name}");
         }
         
-        Debug.Log($"总共生成了 {count} 只新蚂蚁");
     }
     
     /// <summary>
@@ -191,10 +185,8 @@ public class AntHomeTest : MonoBehaviour
     /// </summary>
     public void PrintAntsInHome()
     {
-        Debug.Log($"居住地内共有 {antsInHome.Count} 只蚂蚁:");
         for (int i = 0; i < antsInHome.Count; i++)
         {
-            Debug.Log($"  {i + 1}. 蚂蚁 {antsInHome[i].gameObject.name} - 成虫: {antsInHome[i].isAdult}, 已繁殖: {antsInHome[i].isFinishReproduction}");
         }
     }
 }

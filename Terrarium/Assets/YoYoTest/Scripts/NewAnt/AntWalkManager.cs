@@ -37,7 +37,6 @@ public class AntWalkManager : MonoBehaviour, INewAntWalk
         walkTargetPosition = GetRandomWalkPosition();
 
         //同步状态到animator
-        Debug.Log($"蚂蚁开始散步，目标位置: {walkTargetPosition}");
     }
     
     /// <summary>
@@ -46,7 +45,6 @@ public class AntWalkManager : MonoBehaviour, INewAntWalk
     public void StopWalking()
     {
         isWalking = false;
-        Debug.Log("蚂蚁停止散步");
         
     }
 
@@ -76,7 +74,6 @@ public class AntWalkManager : MonoBehaviour, INewAntWalk
         {
             // 到达目标位置，生成新的目标位置
             walkTargetPosition = GetRandomWalkPosition();
-            Debug.Log($"蚂蚁到达目标位置，设置新目标: {walkTargetPosition}");
         }
         else
         {

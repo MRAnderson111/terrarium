@@ -50,12 +50,10 @@ public class Actor_Predator : MonoBehaviour
             FindNearestAnimal();
             if (targetAnimal != null)
             {
-                Debug.Log($"Predator目标动物已消失，找到新目标: {targetAnimal.name}");
             }
             else
             {
                 isMovingToAnimal = false;
-                Debug.Log("Predator未找到新的动物目标，停止移动");
             }
         }
     }
@@ -68,7 +66,6 @@ public class Actor_Predator : MonoBehaviour
             // 首先检查碰撞对象是否为动物，如果是则忽略
             if (IsAnimalObject(collision.gameObject))
             {
-                Debug.Log($"Predator碰撞到动物 {collision.gameObject.name}，忽略碰撞");
                 return;
             }
 
@@ -83,14 +80,9 @@ public class Actor_Predator : MonoBehaviour
                     DestroyImmediate(rb);
                 }
 
-                Debug.Log($"Predator落地在 {collision.gameObject.name}，完全固定位置");
 
                 // 2秒后开始寻找动物
                 StartCoroutine(StartMovingToAnimalAfterDelay());
-            }
-            else
-            {
-                Debug.Log($"Predator碰撞到 {collision.gameObject.name}，但不是地面，继续下落");
             }
         }
     }
@@ -106,11 +98,6 @@ public class Actor_Predator : MonoBehaviour
         if (targetAnimal != null)
         {
             isMovingToAnimal = true;
-            Debug.Log($"Predator开始向最近的动物移动: {targetAnimal.name}");
-        }
-        else
-        {
-            Debug.Log("Predator未找到附近的动物");
         }
     }
     
@@ -156,10 +143,6 @@ public class Actor_Predator : MonoBehaviour
         }
         
         targetAnimal = nearestAnimal;
-        if (targetAnimal != null)
-        {
-            Debug.Log($"找到最近的动物，距离: {nearestDistance:F2}");
-        }
     }
     
     void MoveTowardsAnimal()
@@ -177,7 +160,6 @@ public class Actor_Predator : MonoBehaviour
         {
             isMovingToAnimal = false;
             EatAnimal();
-            Debug.Log("Predator到达动物附近，停止移动");
         }
     }
     
@@ -202,7 +184,6 @@ public class Actor_Predator : MonoBehaviour
             
             if (animalComponent != null)
             {
-                Debug.Log($"Predator吃掉了动物: {targetAnimal.name}");
                 Destroy(targetAnimal.gameObject);
                 
                 // 吃掉动物后继续寻找下一个目标
@@ -220,11 +201,6 @@ public class Actor_Predator : MonoBehaviour
         if (targetAnimal != null)
         {
             isMovingToAnimal = true;
-            Debug.Log($"Predator找到下一个目标: {targetAnimal.name}");
-        }
-        else
-        {
-            Debug.Log("Predator没有找到更多动物");
         }
     }
     
@@ -251,7 +227,6 @@ public class Actor_Predator : MonoBehaviour
         // 添加Actor_Predator组件
         newPredator.AddComponent<Actor_Predator>();
         
-        Debug.Log($"在位置 {position} 生成了黄色捕食者正方形");
     }
     
     Mesh CreateCubeMesh()

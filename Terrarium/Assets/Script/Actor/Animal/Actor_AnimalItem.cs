@@ -27,7 +27,6 @@ public class AnimalItem : MonoBehaviour
 
     void Start()
     {
-        Debug.Log($"动物开始初始化，位置: {transform.position}");
 
         // 首先确保基础物理组件存在
         EnsurePhysicsComponents();
@@ -35,8 +34,6 @@ public class AnimalItem : MonoBehaviour
         InitializeSystems();
         SetupEventHandlers();
 
-        Debug.Log($"动物初始化完成，总数量: {AnimalLifecycleSystem.GetTotalAnimalCount()}");
-        Debug.Log($"动物组件状态 - 刚体: {GetComponent<Rigidbody>() != null}, 碰撞器: {GetComponent<Collider>() != null}");
 
         // 检查场景中的地面对象
         CheckGroundObjects();
@@ -51,14 +48,12 @@ public class AnimalItem : MonoBehaviour
             rb.mass = 1f;
             rb.drag = 0.5f;
             rb.angularDrag = 0.5f;
-            Debug.Log("添加了刚体组件");
         }
 
         // 确保有碰撞器
         if (GetComponent<Collider>() == null)
         {
             gameObject.AddComponent<BoxCollider>();
-            Debug.Log("添加了碰撞器组件");
         }
     }
 
@@ -72,11 +67,9 @@ public class AnimalItem : MonoBehaviour
             if (IsGroundObject(obj))
             {
                 groundCount++;
-                Debug.Log($"发现地面对象: {obj.name}, 位置: {obj.transform.position}");
             }
         }
 
-        Debug.Log($"场景中共发现 {groundCount} 个地面对象");
     }
     
     private void InitializeSystems()
@@ -168,10 +161,6 @@ public class AnimalItem : MonoBehaviour
         // 只有落地后才能执行移动行为
         if (!hasGrounded)
         {
-            if (Time.frameCount % 300 == 0) // 每5秒输出一次
-            {
-                Debug.Log("动物尚未落地，等待落地中...");
-            }
             return;
         }
 
@@ -198,10 +187,6 @@ public class AnimalItem : MonoBehaviour
             // 如果饥饿或口渴，优先满足需求
             if (needsSystem.IsHungry || needsSystem.IsThirsty)
             {
-                if (Time.frameCount % 300 == 0) // 每5秒输出一次
-                {
-                    Debug.Log($"动物正在处理需求 - 饥饿: {needsSystem.IsHungry}, 口渴: {needsSystem.IsThirsty}");
-                }
                 HandleNeedsMovement();
                 return;
             }
@@ -210,10 +195,6 @@ public class AnimalItem : MonoBehaviour
         // 处理繁衍行为
         if (reproductionSystem != null && reproductionSystem.IsLookingForMate)
         {
-            if (Time.frameCount % 300 == 0) // 每5秒输出一次
-            {
-                Debug.Log("动物正在寻找配偶");
-            }
             HandleMateMovement();
             return;
         }
@@ -225,10 +206,6 @@ public class AnimalItem : MonoBehaviour
             // 尝试寻找配偶（如果不在冷却期且不是夜晚）
             if (reproductionSystem.CanReproduce && !IsNight())
             {
-                if (Time.frameCount % 300 == 0) // 每5秒输出一次
-                {
-                    Debug.Log("成年动物尝试寻找配偶进行繁衍");
-                }
                 reproductionSystem.TryFindMate();
             }
             else if (Time.frameCount % 300 == 0) // 每5秒输出一次
@@ -242,14 +219,6 @@ public class AnimalItem : MonoBehaviour
                 {
                     reason += "夜晚时间 ";
                 }
-                Debug.Log($"成年动物游荡但不尝试繁衍: {reason}");
-            }
-        }
-        else if (Time.frameCount % 300 == 0) // 每5秒输出一次
-        {
-            if (reproductionSystem != null && reproductionSystem.IsAdult)
-            {
-                Debug.Log($"成年动物不在游荡状态 - 游荡: {movementSystem?.IsWandering}");
             }
         }
 
@@ -264,7 +233,6 @@ public class AnimalItem : MonoBehaviour
             status += $"口渴={needsSystem?.IsThirsty}, ";
             status += $"寻找配偶={reproductionSystem?.IsLookingForMate}, ";
             status += $"可繁衍={reproductionSystem?.CanReproduce}";
-            Debug.Log(status);
         }
     }
     
@@ -338,11 +306,6 @@ public class AnimalItem : MonoBehaviour
         {
             habitatSystem.TryEstablishHabitat();
         }
-        
-        if (debugMode)
-        {
-            Debug.Log("开始游荡行为");
-        }
     }
     
     private bool IsNight()
@@ -382,10 +345,6 @@ public class AnimalItem : MonoBehaviour
         {
             keyProcessedThisFrame = true;
             SpawnAnimalAtPosition(new Vector3(-25, 15, -25));
-            if (debugMode)
-            {
-                Debug.Log("按下2键，生成新动物");
-            }
         }
     }
 
@@ -398,7 +357,6 @@ public class AnimalItem : MonoBehaviour
         // 添加AnimalItem组件
         newAnimal.AddComponent<AnimalItem>();
 
-        Debug.Log($"在位置 {position} 生成了新动物");
     }
 
     // 事件处理方法
@@ -414,11 +372,6 @@ public class AnimalItem : MonoBehaviour
         {
             needsSystem.FindNearestPlant();
         }
-
-        if (debugMode)
-        {
-            Debug.Log("动物变得饥饿，开始寻找食物");
-        }
     }
 
     private void OnBecameThirsty()
@@ -432,11 +385,6 @@ public class AnimalItem : MonoBehaviour
         if (needsSystem != null)
         {
             needsSystem.FindNearestWater();
-        }
-
-        if (debugMode)
-        {
-            Debug.Log("动物变得口渴，开始寻找水源");
         }
     }
 
@@ -475,12 +423,10 @@ public class AnimalItem : MonoBehaviour
             // 幼年体吃掉植物后，检查是否也喝过水以满足成长条件
             if (needsSystem.HasDrunk)
             {
-                Debug.Log("幼年体已满足成长条件（吃过植物且喝过水），开始成长");
                 reproductionSystem.GrowToAdult();
             }
             else
             {
-                Debug.Log("幼年体吃过植物但还未喝水，尚未满足成长条件，开始游荡");
                 StartWandering();
             }
         }
@@ -499,7 +445,6 @@ public class AnimalItem : MonoBehaviour
         }
 
         // 喝水后不触发成长，只负责解除口渴状态并开始游荡
-        Debug.Log("动物喝完水，开始游荡");
         StartWandering();
     }
 
@@ -520,30 +465,25 @@ public class AnimalItem : MonoBehaviour
 
     private void OnReproductionCompleted()
     {
-        Debug.Log("动物繁衍完成，开始处理繁衍后状态");
 
         // 繁衍消耗体力，需要重新进食和喝水
         if (needsSystem != null)
         {
             needsSystem.SetHungryAndThirsty();
-            Debug.Log("繁衍后设置动物为饥饿和口渴状态");
         }
 
         // 停止当前的移动行为
         if (movementSystem != null)
         {
             movementSystem.StopMovement();
-            Debug.Log("停止当前移动和游荡行为");
         }
 
         // 重置繁衍相关状态（确保完全停止繁衍）
         if (reproductionSystem != null)
         {
             reproductionSystem.StopLookingForMate();
-            Debug.Log("确保停止寻找配偶");
         }
 
-        Debug.Log("繁衍后处理完成，动物将重新开始寻找食物和水源");
     }
 
     private void OnNewbornWaitCompleted()
@@ -558,7 +498,6 @@ public class AnimalItem : MonoBehaviour
 
     private void OnTargetReached()
     {
-        Debug.Log("动物到达目标位置");
 
         // 到达目标后的处理
         if (needsSystem != null)
@@ -566,17 +505,11 @@ public class AnimalItem : MonoBehaviour
             // 检查是否到达食物或水源
             if (needsSystem.IsHungry && needsSystem.TargetPlant != null)
             {
-                Debug.Log($"动物到达植物目标，准备进食: {needsSystem.TargetPlant.name}");
                 needsSystem.Eat(needsSystem.TargetPlant);
             }
             else if (needsSystem.IsThirsty && needsSystem.TargetWater != null)
             {
-                Debug.Log($"动物到达水源目标，准备喝水: {needsSystem.TargetWater.name}");
                 needsSystem.Drink(needsSystem.TargetWater);
-            }
-            else
-            {
-                Debug.Log($"动物到达目标但状态不匹配 - 饥饿: {needsSystem.IsHungry}, 口渴: {needsSystem.IsThirsty}, 植物目标: {needsSystem.TargetPlant?.name}, 水源目标: {needsSystem.TargetWater?.name}");
             }
         }
         else
@@ -604,15 +537,10 @@ public class AnimalItem : MonoBehaviour
 
     private void OnHabitatBuilt()
     {
-        if (debugMode)
-        {
-            Debug.Log("居住地建立完成");
-        }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log($"动物碰撞检测：碰撞到 {collision.gameObject.name}，当前落地状态: {hasGrounded}");
 
         // 改进的地面检测：检查碰撞是否来自下方
         if (!hasGrounded)
@@ -620,7 +548,6 @@ public class AnimalItem : MonoBehaviour
             // 首先检查碰撞对象是否为其他动物，如果是则忽略
             if (IsAnimalObject(collision.gameObject))
             {
-                Debug.Log($"碰撞到其他动物 {collision.gameObject.name}，忽略碰撞");
                 return;
             }
 
@@ -629,12 +556,10 @@ public class AnimalItem : MonoBehaviour
 
             foreach (ContactPoint contact in collision.contacts)
             {
-                Debug.Log($"碰撞点法线: {contact.normal}, Y分量: {contact.normal.y}");
                 // 如果碰撞点的法线向上（Y分量为正），说明是地面碰撞
                 if (contact.normal.y > 0.5f)
                 {
                     isGroundCollision = true;
-                    Debug.Log("通过法线检测确认为地面碰撞");
                     break;
                 }
             }
@@ -643,22 +568,16 @@ public class AnimalItem : MonoBehaviour
             if (!isGroundCollision)
             {
                 isGroundCollision = IsGroundObject(collision.gameObject);
-                if (isGroundCollision)
-                {
-                    Debug.Log("通过名称/标签检测确认为地面碰撞");
-                }
             }
 
             if (isGroundCollision)
             {
                 hasGrounded = true;
-                Debug.Log($"动物成功落地在 {collision.gameObject.name}");
 
                 // 通知移动系统动物已落地
                 if (movementSystem != null)
                 {
                     movementSystem.SetGrounded(true);
-                    Debug.Log("已通知移动系统动物落地");
                 }
 
                 // 固定动物位置，但保留刚体用于移动
@@ -668,20 +587,11 @@ public class AnimalItem : MonoBehaviour
                     rb.velocity = Vector3.zero;
                     rb.angularVelocity = Vector3.zero;
                     rb.isKinematic = true; // 设置为运动学模式，不受物理影响但可以移动
-                    Debug.Log("刚体已设置为运动学模式");
                 }
 
                 // 2秒后开始寻找食物和水源
                 StartCoroutine(StartBehaviorAfterDelay());
             }
-            else
-            {
-                Debug.Log($"碰撞到 {collision.gameObject.name}，但不是地面，继续下落");
-            }
-        }
-        else
-        {
-            Debug.Log("动物已经落地，忽略后续碰撞");
         }
     }
 
@@ -722,14 +632,12 @@ public class AnimalItem : MonoBehaviour
         // 等待2秒
         yield return new WaitForSeconds(2f);
 
-        Debug.Log("动物落地后开始初始行为");
 
         // 所有动物落地后都应该开始寻找食物（设置为饥饿状态）
         if (needsSystem != null)
         {
             // 设置初始饥饿状态，让动物开始寻找食物
             needsSystem.SetHungryAndThirsty();
-            Debug.Log("设置动物为饥饿和口渴状态，开始寻找食物和水源");
         }
     }
 }

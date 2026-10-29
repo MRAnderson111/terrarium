@@ -77,7 +77,6 @@ public class YoYoGameManager : MonoBehaviour
         {
             // 将JSON数据传递给ObjectSelectUI
             objectSelectUI.LoadFromJson(infoTestJson);
-            Debug.Log("成功加载JSON数据到ObjectSelectUI");
         }
         else
         {
@@ -99,14 +98,12 @@ public class YoYoGameManager : MonoBehaviour
         if (objectSelectUI != null)
         {
             objectSelectUI.LoadFromJson(newJsonData);
-            Debug.Log("成功更新JSON数据到ObjectSelectUI");
         }
         else
         {
             Debug.LogError("在场景中未找到ObjectSelectUI组件");
         }
         
-        Debug.Log("JSON数据已更新");
     }
 
     [ContextMenu("StartGame")]

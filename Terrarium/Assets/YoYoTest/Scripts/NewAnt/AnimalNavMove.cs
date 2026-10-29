@@ -1,174 +1,114 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
 
 public class AnimalNavMove : MonoBehaviour
 {
     public NavMeshAgent agent;
     private Animator animator;
-    
-    // 动画状态控制
-    private bool isEating = false;
-    private bool isAnimationPaused = false;
-    
-    // Start is called before the first frame update
-    void Start()
+    private bool hasWalkingParameter;
+    private bool hasEatingParameter;
+    private bool isEating;
+    private float nextPlacementAttempt;
+    private bool navigationWarningReported;
+
+    private static readonly int Walking = Animator.StringToHash("bIsWalking");
+    private static readonly int Eating = Animator.StringToHash("bIsEating");
+
+    private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponentInChildren<Animator>();
-        TryPlaceOnNavMesh();
+        if (animator == null || animator.runtimeAnimatorController == null) return;
+
+        // 各物种的控制器不同；没有进食动画的物种仍可正常进食。
+        foreach (var parameter in animator.parameters)
+        {
+            if (parameter.type != AnimatorControllerParameterType.Bool) continue;
+            hasWalkingParameter |= parameter.nameHash == Walking;
+            hasEatingParameter |= parameter.nameHash == Eating;
+        }
     }
 
-    void Update()
+    private void Start()
     {
-        CheckEatingAnimationComplete();
+        EnsureAgentOnNavMesh();
+    }
 
-        if (!isAnimationPaused && animator != null && agent != null && agent.isOnNavMesh)
+    private bool AgentReady => agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh;
+
+    private void Update()
+    {
+        if (hasWalkingParameter && animator != null)
         {
-            bool isMoving = agent.hasPath && !agent.isStopped && agent.velocity.magnitude > 0.1f;
-            animator.SetBool("bIsWalking", isMoving);
+            bool moving = !isEating && AgentReady && agent.hasPath &&
+                          !agent.isStopped && agent.velocity.sqrMagnitude > 0.01f;
+            animator.SetBool(Walking, moving);
         }
-        // if (Input.GetMouseButtonDown(0))
-        // {
-        //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //     RaycastHit hit;
-        //     if (Physics.Raycast(ray, out hit))
-        //     {
-        //         agent.destination = hit.point;
-        //     }
-        // }
-        // if (Input.GetKeyDown(KeyCode.Space))
-        // {
-        //     StopMoving();
-        // }
     }
 
     public void SetTarget(Vector3 target)
     {
-        if (!EnsureAgentOnNavMesh())
-            return;
+        StopEatingAnimation();
+        if (!EnsureAgentOnNavMesh()) return;
 
-        agent.isStopped = false;
-        if (NavMesh.SamplePosition(target, out NavMeshHit hit, 4f, NavMesh.AllAreas))
+        var filter = new NavMeshQueryFilter { agentTypeID = agent.agentTypeID, areaMask = agent.areaMask };
+        if (NavMesh.SamplePosition(target, out NavMeshHit hit, 4f, filter))
+        {
+            agent.isStopped = false;
             agent.SetDestination(hit.position);
+        }
     }
 
-    /// <summary>
-    /// 昆虫生成点经常高于烘焙好的 NavMesh，代理创建失败后每帧 SetDestination 都会抛异常，移动逻辑就此停住。
-    /// </summary>
-    bool EnsureAgentOnNavMesh()
+    private bool EnsureAgentOnNavMesh()
     {
-        if (agent == null)
-            agent = GetComponent<NavMeshAgent>();
-        if (agent == null || !agent.enabled)
-            return false;
-        if (agent.isOnNavMesh)
-            return true;
+        if (AgentReady) return true;
+        if (agent == null || !isActiveAndEnabled || Time.time < nextPlacementAttempt) return false;
+        nextPlacementAttempt = Time.time + 1f;
 
-        return TryPlaceOnNavMesh();
-    }
-
-    bool TryPlaceOnNavMesh()
-    {
-        if (agent == null)
-            return false;
-
-        if (agent.isOnNavMesh)
-            return true;
-
-        if (!NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 12f, NavMesh.AllAreas))
-            return false;
-
-        // 代理离 NavMesh 太远时会创建失败，先挪到网格上再重新启用。
+        // 预制体中的代理默认关闭，先找到同类型的导航网格，再启用，避免创建失败。
         agent.enabled = false;
+        var filter = new NavMeshQueryFilter { agentTypeID = agent.agentTypeID, areaMask = agent.areaMask };
+        if (!NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 12f, filter))
+        {
+            if (!navigationWarningReported)
+            {
+                Debug.LogWarning($"{name} 附近没有可用的 NavMesh，暂时无法移动。请检查地面的导航烘焙和 Agent Type。", this);
+                navigationWarningReported = true;
+            }
+            return false;
+        }
+
         transform.position = hit.position;
         agent.enabled = true;
-        return agent.isOnNavMesh;
+        return AgentReady;
     }
 
     public void StopMoving()
     {
-        if (agent != null && agent.isOnNavMesh)
+        if (AgentReady)
         {
             agent.isStopped = true;
             agent.ResetPath();
             agent.velocity = Vector3.zero;
         }
-
-        if (animator != null)
-        {
-            animator.SetBool("bIsWalking", false);
-        }
+        if (hasWalkingParameter && animator != null) animator.SetBool(Walking, false);
     }
-    
-    /// <summary>
-    /// 播放进食动画
-    /// </summary>
+
     public void PlayEatingAnimation()
     {
-        if (animator != null)
-        {
-            isEating = true;
-            isAnimationPaused = true;
-            
-            // 停止移动动画，播放进食动画
-            animator.SetBool("bIsWalking", false);
-            animator.SetBool("bIsEating", true);
-            animator.SetBool("bEatingComplete", false);
-            
-            Debug.Log("开始播放进食动画");
-        }
+        if (isEating) return;
+        isEating = true;
+        StopMoving();
+        if (hasEatingParameter && animator != null) animator.SetBool(Eating, true);
     }
-    
-    /// <summary>
-    /// 停止进食动画，恢复正常状态
-    /// </summary>
+
     public void StopEatingAnimation()
     {
-        if (animator != null)
-        {
-            isEating = false;
-            isAnimationPaused = false;
-            
-            // 停止进食动画，恢复移动动画控制
-            animator.SetBool("bIsEating", false);
-            animator.SetBool("bEatingComplete", false);
-            
-            Debug.Log("停止进食动画，恢复正常状态");
-        }
+        if (!isEating) return;
+        isEating = false;
+        if (hasEatingParameter && animator != null) animator.SetBool(Eating, false);
     }
-    
-    /// <summary>
-    /// 检查进食动画是否完成
-    /// </summary>
-    private void CheckEatingAnimationComplete()
-    {
-        if (isEating && animator != null)
-        {
-            // 检查Animator中的bEatingComplete参数
-            if (animator.GetBool("bEatingComplete"))
-            {
-                Debug.Log("检测到进食动画完成");
-                StopEatingAnimation();
-            }
-        }
-    }
-    
-    /// <summary>
-    /// 获取当前是否正在进食
-    /// </summary>
-    public bool IsEating()
-    {
-        return isEating;
-    }
-    
-    /// <summary>
-    /// 获取当前动画是否被暂停
-    /// </summary>
-    public bool IsAnimationPaused()
-    {
-        return isAnimationPaused;
-    }
+
+    public bool IsEating() => isEating;
+    public bool IsAnimationPaused() => isEating;
 }

@@ -35,7 +35,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
     /// <param name="antPosition">蚂蚁当前位置（用于在蚂蚁位置创建居住地）</param>
     public void FindOrCreateHome(string bigClass, string smallClass, Vector3 antPosition)
     {
-        Debug.Log($"FindOrCreateHome被调用: bigClass={bigClass}, smallClass={smallClass}, antPosition={antPosition}");
         // 如果当前已经有关联的家，先检查这个家是否与请求的物种匹配
         if (isHaveHome && homeScript != null)
         {
@@ -45,7 +44,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
                 isHaveHome = false;
                 homeObject = null;
                 homeScript = null;
-                Debug.Log($"物种不匹配，重置HomeManager以寻找 {bigClass}/{smallClass} 的新家。");
             }
             else
             {
@@ -70,7 +68,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
                     homeObject = homeScript.gameObject;
                     isHaveHome = true; // 确保状态被设置
                     OnHomeFound?.Invoke(homeObject);
-                    Debug.Log($"找到匹配的居住地: {homeObject.name} for class {bigClass}/{smallClass}");
                     return; // 找到后立即返回
                 }
             }
@@ -80,7 +77,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         // 这个判断是必需的，防止在上面已经找到家的情况下还去创建
         if (!isHaveHome)
         {
-            Debug.Log($"场景中没有找到 {bigClass}/{smallClass} 的居住地，创建新的居住地");
         
         // 检查是否有预制体
         if (homePrefab == null)
@@ -91,7 +87,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         
         // 在蚂蚁当前位置生成居住地，直接提高Y轴位置避免穿模
         Vector3 homePosition = new Vector3(antPosition.x, antPosition.y + homeYOffset, antPosition.z);
-        Debug.Log($"创建home位置: {homePosition} (Y轴偏移: {homeYOffset})");
         
         // 生成居住地预制体
         homeObject = Instantiate(homePrefab, homePosition, Quaternion.identity);
@@ -112,7 +107,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         isHaveHome = true;
         OnHomeCreated?.Invoke(homeObject);
         
-        Debug.Log($"为 {bigClass}/{smallClass} 创建了新居住地，位置: {homePosition}");
         }
     }
     
@@ -188,7 +182,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
             homeObject = null;
             homeScript = null;
             
-            Debug.Log("居住地已重置");
         }
     }
     
@@ -236,7 +229,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         
         // 在蚂蚁当前位置生成居住地，直接提高Y轴位置避免穿模
         Vector3 homePosition = new Vector3(antPosition.x, antPosition.y + homeYOffset, antPosition.z);
-        Debug.Log($"ForceCreateHome - 创建home位置: {homePosition} (Y轴偏移: {homeYOffset})");
         
         // 生成居住地预制体
         homeObject = Instantiate(homePrefab, homePosition, Quaternion.identity);
@@ -257,7 +249,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         isHaveHome = true;
         OnHomeCreated?.Invoke(homeObject);
         
-        Debug.Log($"强制创建新居住地，位置: {homePosition}，分类: {bigClass}/{smallClass}");
     }
     
     /// <summary>
@@ -283,14 +274,12 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         // 检查是否到达居住地（1米以内）
         if (IsAtHome(1f))
         {
-            Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，已到达居住地");
             
             // 调用居住地的接口方法，通知蚂蚁已到达
             if (HomeScript != null)
             {
                 HomeScript.OnAntEntered(ant.GetGameObject().GetComponent<NewAntTest>(), (isInHome) => {
                     ant.SetInHome(isInHome);
-                    Debug.Log($"蚂蚁已进入居住地，isInHome状态: {isInHome}");
                 });
             }
             else
@@ -302,11 +291,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         {
             // 使用导航移动组件移动到居住地
             navMove.SetTarget(GetHomePosition());
-            Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，正在回家，距离: " + distance);
-        }
-        else
-        {
-            Debug.Log("成虫白天吃饱了，有居住地，未完成繁殖，但居住地不存在");
         }
     }
     
@@ -333,18 +317,15 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         // 检查是否到达居住地（1米以内）
         if (IsAtHome(1f))
         {
-            Debug.Log("成虫夜晚，有居住地，已到达居住地");
             
             // 设置蚂蚁为睡觉状态
             ant.SetSleeping(true);
-            Debug.Log("蚂蚁开始睡觉");
             
             // 调用居住地的接口方法，通知蚂蚁已到达
             if (HomeScript != null)
             {
                 HomeScript.OnAntEntered(ant.GetGameObject().GetComponent<NewAntTest>(), (isInHome) => {
                     ant.SetInHome(isInHome);
-                    Debug.Log($"蚂蚁已进入居住地，isInHome状态: {isInHome}");
                 });
             }
             else
@@ -356,11 +337,6 @@ public class AntHomeManager : MonoBehaviour, INewAntHome
         {
             // 使用导航移动组件移动到居住地
             navMove.SetTarget(GetHomePosition());
-            Debug.Log("成虫夜晚，有居住地，正在回家睡觉，距离: " + distance);
-        }
-        else
-        {
-            Debug.Log("成虫夜晚，有居住地，但居住地不存在");
         }
     }
 }

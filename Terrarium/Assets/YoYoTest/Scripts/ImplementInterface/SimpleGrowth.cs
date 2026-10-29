@@ -169,14 +169,13 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
             // 根据生长进度计算scale，从0.1到1.0
             float targetScale = 0.1f + (growthProgress / 100f) * 0.9f;
             meshObject.transform.localScale = originalScale * targetScale;
-            // Debug.Log("originalScale：" + originalScale + " targetScale：" + targetScale + " progress：" + growthProgress.ToString("F2"));
+            
 
             // 每帧更新一次
             yield return null;
         }
 
 
-        Debug.Log("生长完成");
 
         // 播放带timeline的particle system特效
         PlayTimelineWithParticleSystem();
@@ -188,7 +187,6 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
             meshObject.SetActive(false);
             // 显示meshObject2
             meshObject2.SetActive(true);
-            Debug.Log("植物已完全生长，切换到meshObject2");
         }
 
         // 释放研究点
@@ -198,11 +196,6 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
             if (Random.value <= researchPointProbability)
             {
                 releaseComponent.ReleaseResearchPoint();
-                Debug.Log($"研究点数生成成功，概率: {researchPointProbability}");
-            }
-            else
-            {
-                Debug.Log($"研究点数生成失败，概率: {researchPointProbability}");
             }
         }
 
@@ -269,7 +262,6 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
             }
         }
 
-        Debug.Log($"特效缩放应用: {randomScale:F2} (范围: {minScale:F2} - {maxScale:F2})，预制体: {effectPrefab.name}");
 
         // 重置并播放所有组件
         StartCoroutine(ResetAndPlayEffect(fx));
@@ -322,7 +314,6 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
                 StopEffectsInGameObject(obj);
             }
         }
-        Debug.Log("所有FX_Grown特效已停止");
     }
 
     /// <summary>

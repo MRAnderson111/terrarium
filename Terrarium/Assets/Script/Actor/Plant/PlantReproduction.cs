@@ -37,7 +37,6 @@ public class PlantReproduction : MonoBehaviour
         }
         rb.mass = 1f;
         
-        Debug.Log($"植物在位置 {reproductionPosition} 繁殖了新的后代");
     }
 
     public void StartDoubleReproduction()
@@ -51,7 +50,6 @@ public class PlantReproduction : MonoBehaviour
         if (newPlant1 != null)
         {
             newPlant1.name = "Actor_Plant_Offspring_1";
-            Debug.Log($"成功生成第一个后代在位置: {reproductionPosition1}");
         }
         Rigidbody rb1 = newPlant1.GetComponent<Rigidbody>();
         if (rb1 == null)
@@ -68,7 +66,6 @@ public class PlantReproduction : MonoBehaviour
         if (newPlant2 != null)
         {
             newPlant2.name = "Actor_Plant_Offspring_2";
-            Debug.Log($"成功生成第二个后代在位置: {reproductionPosition2}");
         }
         Rigidbody rb2 = newPlant2.GetComponent<Rigidbody>();
         if (rb2 == null)

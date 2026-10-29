@@ -57,7 +57,6 @@ public class Actor_Daylight : MonoBehaviour
             CurrentLightIntensity = currentIntensity;
         }
 
-        Debug.Log($"日夜循环系统初始化完成 - 白天: {dayDuration}秒, 夜晚: {nightDuration}秒");
     }
 
     void FindDaylightSource()
@@ -69,7 +68,6 @@ public class Actor_Daylight : MonoBehaviour
             daylightSource = daylightObject.GetComponent<Light>();
             if (daylightSource != null)
             {
-                Debug.Log("找到Daylight光源，已建立连接");
             }
             else
             {
@@ -146,7 +144,6 @@ public class Actor_Daylight : MonoBehaviour
         targetIntensity = dayIntensity;
         IsNight = false;
 
-        Debug.Log("白天开始 - 光照强度目标: " + dayIntensity);
     }
 
     void StartTransitionToNight()
@@ -154,7 +151,6 @@ public class Actor_Daylight : MonoBehaviour
         currentState = DayNightState.TransitionToNight;
         targetIntensity = nightIntensity;
 
-        Debug.Log("开始过渡到夜晚 - 光照强度目标: " + nightIntensity);
     }
 
     void StartNight()
@@ -164,7 +160,6 @@ public class Actor_Daylight : MonoBehaviour
         targetIntensity = nightIntensity;
         IsNight = true;
 
-        Debug.Log("夜晚开始 - 光照强度: " + nightIntensity);
     }
 
     void StartTransitionToDay()
@@ -172,6 +167,5 @@ public class Actor_Daylight : MonoBehaviour
         currentState = DayNightState.TransitionToDay;
         targetIntensity = dayIntensity;
 
-        Debug.Log("开始过渡到白天 - 光照强度目标: " + dayIntensity);
     }
 }

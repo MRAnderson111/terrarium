@@ -67,7 +67,6 @@ public class ButtonGroupManager : MonoBehaviour
             }
         }
         
-        Debug.Log($"在指定容器中找到了 {_buttons.Count} 个按钮");
     }
 
     void OnButtonClicked(Button clickedButton)
@@ -94,6 +93,5 @@ public class ButtonGroupManager : MonoBehaviour
         }
 
         // 在这里可以执行与按钮选择相关的其他逻辑
-        Debug.Log(clickedButton.name + " was selected!");
     }
 }

@@ -109,13 +109,8 @@ public class AnimalEnvironmentSystem : MonoBehaviour, IAnimalEnvironment
             
             if (extremeStressTimer >= environmentalDeathTimeLimit)
             {
-                Debug.Log($"动物在极端环境下存活{environmentalDeathTimeLimit}秒后开始死亡");
                 StartCoroutine(DieFromEnvironment());
                 return;
-            }
-            else
-            {
-                Debug.Log($"动物承受极端环境压力 {extremeStressTimer:F1}/{environmentalDeathTimeLimit}秒");
             }
         }
         else
@@ -124,11 +119,9 @@ public class AnimalEnvironmentSystem : MonoBehaviour, IAnimalEnvironment
             if (extremeStressTimer > 0f)
             {
                 extremeStressTimer = 0f;
-                Debug.Log("环境条件改善，动物脱离极端压力状态");
             }
         }
         
-        Debug.Log($"动物环境检测 - 温度: {currentTemperature:F1}°C, 湿度: {currentHumidity:F1}%, 环境压力: {environmentalStress:F2}");
     }
     
     private IEnumerator MonitorEnvironmentalConditions()
@@ -214,7 +207,6 @@ public class AnimalEnvironmentSystem : MonoBehaviour, IAnimalEnvironment
         environmentalSpeedModifier = Mathf.Lerp(1f, 0.3f, environmentalStress); // 最低降到30%
         environmentalReproductionModifier = Mathf.Lerp(1f, 0.1f, environmentalStress); // 最低降到10%
         
-        Debug.Log($"环境修正系数 - 速度: {environmentalSpeedModifier:F2}, 繁衍: {environmentalReproductionModifier:F2}");
     }
     
     private IEnumerator DieFromEnvironment()
@@ -223,7 +215,6 @@ public class AnimalEnvironmentSystem : MonoBehaviour, IAnimalEnvironment
         
         isDyingFromEnvironment = true;
         
-        Debug.Log("动物开始因极端环境死亡");
         
         // 停止所有行为
         var movement = GetComponent<AnimalMovementSystem>();
@@ -253,7 +244,6 @@ public class AnimalEnvironmentSystem : MonoBehaviour, IAnimalEnvironment
             }
         }
         
-        Debug.Log("动物因极端环境死亡");
         OnEnvironmentalDeath?.Invoke();
         
         // 销毁对象

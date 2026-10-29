@@ -5,15 +5,9 @@ using UnityEngine;
 /// </summary>
 public class PerformanceManager : MonoBehaviour
 {
-    [Header("全局性能设置")]
-    [Tooltip("启用详细的调试日志输出（会显著影响性能）")]
-    public bool enableDetailedLogging = false;
 
     [Tooltip("启用调试球体显示（会影响性能和内存）")]
     public bool enableDebugSpheres = false;
-
-    [Tooltip("启用繁殖系统日志")]
-    public bool enableReproductionLogging = false;
 
     [Header("地面检测设置")]
     [Tooltip("向下检测地面的距离")]
@@ -48,7 +42,6 @@ public class PerformanceManager : MonoBehaviour
                 {
                     GameObject go = new GameObject("PerformanceManager");
                     instance = go.AddComponent<PerformanceManager>();
-                    Debug.Log("创建了新的 PerformanceManager 实例");
                 }
             }
             return instance;
@@ -96,18 +89,12 @@ public class PerformanceManager : MonoBehaviour
     /// </summary>
     public void ApplyPerformanceSettings()
     {
-        // 应用到球形检测工具
-        SphereDetectionUtility.enableDetailedLogging = enableDetailedLogging;
         SphereDetectionUtility.enableDebugSpheres = enableDebugSpheres;
         SphereDetectionUtility.groundCheckDistance = groundCheckDistance;
         SphereDetectionUtility.groundTag = groundTag;
 
         // 应用到所有繁殖检测组件
         SimpleReproductionCheck[] reproductionChecks = FindObjectsOfType<SimpleReproductionCheck>();
-        foreach (var check in reproductionChecks)
-        {
-            check.enableReproductionLogging = enableReproductionLogging;
-        }
 
         reproductionObjectCount = reproductionChecks.Length;
     }
@@ -132,36 +119,6 @@ public class PerformanceManager : MonoBehaviour
         return $"FPS: {fps:F1} | Frame Time: {frameTime:F1}ms | Reproduction Objects: {reproductionObjectCount}";
     }
     
-    /// <summary>
-    /// 优化建议
-    /// </summary>
-    public void LogPerformanceRecommendations()
-    {
-        Debug.Log("=== 性能优化建议 ===");
-        
-        if (enableDetailedLogging)
-        {
-            Debug.LogWarning("建议：关闭详细日志以提高性能");
-        }
-        
-        if (enableDebugSpheres)
-        {
-            Debug.LogWarning("建议：关闭调试球体以节省内存和提高性能");
-        }
-        
-        if (reproductionObjectCount > 50)
-        {
-            Debug.LogWarning($"建议：繁殖对象数量较多({reproductionObjectCount})，考虑增加繁殖间隔时间");
-        }
-        
-        if (fps < 30)
-        {
-            Debug.LogWarning($"性能警告：当前FPS较低({fps:F1})，建议优化设置");
-        }
-        
-        Debug.Log("=== 优化建议结束 ===");
-    }
-    
     void OnGUI()
     {
         if (!showPerformanceStats) return;
@@ -184,10 +141,6 @@ public class PerformanceManager : MonoBehaviour
         
         // 快捷按钮
         GUI.color = Color.white;
-        if (GUI.Button(new Rect(10, 60, 120, 30), "优化建议"))
-        {
-            LogPerformanceRecommendations();
-        }
         
         if (GUI.Button(new Rect(140, 60, 120, 30), "应用设置"))
         {

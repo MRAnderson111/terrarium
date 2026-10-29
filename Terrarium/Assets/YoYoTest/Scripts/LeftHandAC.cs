@@ -41,7 +41,6 @@ public class LeftHandAC : MonoBehaviour
                 {
                     // 触发动画播放
                     animator.SetTrigger("bIsTrigger");
-                    Debug.Log("LeftHandAC: 扳机按下 - 触发动画");
                 }
             }
             previousTriggerState = triggerPressed;
@@ -53,7 +52,6 @@ public class LeftHandAC : MonoBehaviour
             if (animator != null)
             {
                 animator.SetTrigger("bIsTrigger");
-                Debug.Log("LeftHandAC: 键盘测试 - 触发动画");
             }
         }
     }

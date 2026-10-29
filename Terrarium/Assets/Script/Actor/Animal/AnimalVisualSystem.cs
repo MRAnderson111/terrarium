@@ -63,7 +63,6 @@ public class AnimalVisualSystem : MonoBehaviour, IAnimalVisual
         // 注意：刚体组件现在由AnimalItem主控制器负责添加
         // 这里不再重复添加，避免组件初始化顺序问题
 
-        Debug.Log("动物视觉组件初始化完成");
     }
     
     private Mesh CreateCubeMesh()
@@ -81,7 +80,6 @@ public class AnimalVisualSystem : MonoBehaviour, IAnimalVisual
         {
             animalMaterial.color = color;
             OnColorChanged?.Invoke(color);
-            Debug.Log($"动物颜色变更为: {color}");
         }
     }
     
@@ -120,7 +118,6 @@ public class AnimalVisualSystem : MonoBehaviour, IAnimalVisual
         {
             // 成年体：体型变大，颜色变暗
             transform.localScale = transform.localScale * 2f;
-            Debug.Log("设置为成年体视觉效果：体型变大，颜色变暗");
         }
         
         UpdateVisualState();
@@ -130,22 +127,12 @@ public class AnimalVisualSystem : MonoBehaviour, IAnimalVisual
     {
         isHungry = hungry;
         UpdateVisualState();
-        
-        if (hungry)
-        {
-            Debug.Log("设置饥饿视觉效果：变成鲜红色");
-        }
     }
     
     public void SetThirstyVisual(bool thirsty)
     {
         isThirsty = thirsty;
         UpdateVisualState();
-        
-        if (thirsty)
-        {
-            Debug.Log("设置口渴视觉效果：变成橙色");
-        }
     }
     
     public void SetTransparency(float alpha)
@@ -188,7 +175,6 @@ public class AnimalVisualSystem : MonoBehaviour, IAnimalVisual
         // 添加点击脚本
         blueSphere.AddComponent<AnimalBlueSphereClickHandler>();
         
-        Debug.Log($"在位置 {spherePosition} 生成了浮空蓝色小球");
     }
     
     // 获取当前颜色
@@ -206,7 +192,6 @@ public class AnimalVisualSystem : MonoBehaviour, IAnimalVisual
         thirstyColor = thirsty;
         
         UpdateVisualState();
-        Debug.Log("更新动物颜色配置");
     }
     
     // 闪烁效果（用于特殊状态提示）
@@ -290,7 +275,6 @@ public class AnimalBlueSphereClickHandler : MonoBehaviour
                 {
                     addMethod.Invoke(null, new object[] { 1 });
                     int currentPoints = (int)pointsProperty.GetValue(null);
-                    Debug.Log($"研究点数+1，当前研究点数: {currentPoints}");
                 }
             }
         }

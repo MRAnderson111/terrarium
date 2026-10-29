@@ -147,7 +147,6 @@ public class StageManager : MonoBehaviour
     #region 游戏控制方法
     public void OnGameStart()
     {
-        Debug.Log("游戏开始");
         StartTime();
         ChangeStage(1);
     }
@@ -171,7 +170,6 @@ public class StageManager : MonoBehaviour
         // 触发阶段切换事件
         Events.OnGameEnterStage.Invoke(newStage);
 
-        Debug.Log($"阶段切换：从阶段{previousStage}切换到阶段{newStage}");
     }
     #endregion
 
@@ -186,7 +184,6 @@ public class StageManager : MonoBehaviour
         // 开始计时器
         isTimerRunning = true;
 
-        Debug.Log("计时开始！剩余时间：" + RemainingTime + "秒");
     }
 
     /// <summary>
@@ -194,7 +191,6 @@ public class StageManager : MonoBehaviour
     /// </summary>
     private void OnTimeUp()
     {
-        Debug.Log("时间到！");
         // 触发游戏结束事件
         Events.OnGameEnd.Invoke();
         // 在这里可以添加时间用完后的逻辑
@@ -206,7 +202,6 @@ public class StageManager : MonoBehaviour
     public void StopTimer()
     {
         isTimerRunning = false;
-        Debug.Log("计时器已停止");
     }
 
     /// <summary>
@@ -216,7 +211,6 @@ public class StageManager : MonoBehaviour
     {
         isTimerRunning = false;
         RemainingTime = 0f;
-        Debug.Log("计时器已重置");
     }
 
     /// <summary>
@@ -226,7 +220,6 @@ public class StageManager : MonoBehaviour
     {
         secondStageRemainingTime = secondStageTimeLimit;
         isSecondStageTimerRunning = true;
-        Debug.Log("第二阶段计时开始！时间：" + secondStageTimeLimit + "秒");
     }
 
     /// <summary>
@@ -235,7 +228,6 @@ public class StageManager : MonoBehaviour
     private void OnSecondStageTimeUp()
     {
         ChangeStage(3);
-        Debug.Log("第二阶段时间到！进入阶段3");
         // 在这里可以添加进入阶段3后的逻辑
     }
     #endregion

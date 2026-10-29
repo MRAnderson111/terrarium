@@ -29,7 +29,6 @@ public class PickButton : MonoBehaviour
 
     public void OnClick()
     {
-        Debug.Log("选择预制体：" + selectPrefab.name);
         
         // 获取预制体的分类信息
         IGetObjectClass objectClass = selectPrefab.GetComponent<IGetObjectClass>();
@@ -51,7 +50,6 @@ public class PickButton : MonoBehaviour
         // 检查是否超过购买数量
         if (currentCount >= purchasedCount)
         {
-            Debug.Log($"无法添加 {smallClass}！当前已选择 {currentCount} 个，最多只能选择 {purchasedCount} 个");
             return;
         }
         

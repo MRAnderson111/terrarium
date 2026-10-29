@@ -60,14 +60,12 @@ public class AnimalMovementSystem : MonoBehaviour, IAnimalMovement
         isMoving = true;
         isWandering = false;
         
-        Debug.Log($"开始移动到目标位置: {target}");
     }
     
     public void StopMovement()
     {
         isMoving = false;
         isWandering = false;
-        Debug.Log("停止移动");
     }
     
     public void StartWandering()
@@ -82,16 +80,11 @@ public class AnimalMovementSystem : MonoBehaviour, IAnimalMovement
         isMoving = false;
         wanderTimer = 0f;
         ChooseNewWanderTarget();
-        Debug.Log("开始游荡行为");
     }
     
     public void SetGrounded(bool grounded)
     {
         hasGrounded = grounded;
-        if (grounded)
-        {
-            Debug.Log("动物已落地，可以开始移动");
-        }
     }
     
     public void SetEnvironmentalSpeedModifier(float modifier)
@@ -124,7 +117,6 @@ public class AnimalMovementSystem : MonoBehaviour, IAnimalMovement
             transform.position.z + randomDirection.y
         );
         
-        Debug.Log($"选择新的游荡目标: {wanderTarget}");
     }
     
     private void MoveTowardsWanderTarget()
@@ -167,7 +159,6 @@ public class AnimalMovementSystem : MonoBehaviour, IAnimalMovement
         if (distance < 3f)
         {
             isMoving = false;
-            Debug.Log("到达目标位置");
             
             // 触发到达目标事件
             OnTargetReached?.Invoke();
