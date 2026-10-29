@@ -56100,9 +56100,9 @@ MonoBehaviour:
   minLightIntensity: 0
   maxLightIntensity: 5
   environmentalData:
-    sunshine: 0
-    temperature: 0
-    humidity: 0
+    sunshine: 0.5
+    temperature: 0.5
+    humidity: 0.5
   sunshineSlider: {fileID: 676831537}
   temperatureSlider: {fileID: 259922363}
   humiditySlider: {fileID: 1377427756}

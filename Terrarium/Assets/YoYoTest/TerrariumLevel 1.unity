@@ -3156,6 +3156,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1025560993}
     m_Modifications:
+    - target: {fileID: -7506185326998799658, guid: 6d8413761f1aea244bc0a0f8e9614b0b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3253501275212402260, guid: 6d8413761f1aea244bc0a0f8e9614b0b, type: 3}
       propertyPath: m_Name
       value: Frog
@@ -60030,16 +60034,16 @@ MonoBehaviour:
   maxColorTemperature: 9500
   minLightIntensity: 1.8
   maxLightIntensity: 3
-  environmentalData:
-    sunshine: 0
-    temperature: 0
-    humidity: 0
-  sunshineSlider: {fileID: 676831537}
-  temperatureSlider: {fileID: 259922363}
-  humiditySlider: {fileID: 1377427756}
   waterDropImage: {fileID: 354176221}
   minWaterDropAlpha: 0
   maxWaterDropAlpha: 4
+  environmentalData:
+    sunshine: 0.5
+    temperature: 0.5
+    humidity: 0.5
+  sunshineSlider: {fileID: 676831537}
+  temperatureSlider: {fileID: 259922363}
+  humiditySlider: {fileID: 1377427756}
 --- !u!1 &1286469659
 GameObject:
   m_ObjectHideFlags: 0

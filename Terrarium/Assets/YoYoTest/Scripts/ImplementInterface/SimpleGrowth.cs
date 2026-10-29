@@ -4,6 +4,18 @@ using UnityEngine.Playables;
 
 public class SimpleGrowth : MonoBehaviour, IGrowth
 {
+    [Header("环境偏好（0-1）")]
+    [SerializeField, Range(0f, 1f)]
+    private float preferredTemperature = 0.5f;
+    [SerializeField, Range(0f, 1f)]
+    private float preferredHumidity = 0.5f;
+    [SerializeField, Range(0f, 1f)]
+    private float preferredSunlight = 0.5f;
+
+    public float PreferredTemperature => preferredTemperature;
+    public float PreferredHumidity => preferredHumidity;
+    public float PreferredSunlight => preferredSunlight;
+
     //生长速度（接口）
     public float GrowthSpeed { get; set; }
     //生长进度（接口）
@@ -40,6 +52,8 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
     // 防止重复播放种植特效的标志
     private bool hasPlayedPlantedEffect = false;
 
+    private EnvironmentPreferenceDriver preferenceDriver;
+
     [Header("特效随机化设置")]
     // 最小缩放值
     public float minScale = 0.4f;
@@ -48,6 +62,7 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
 
     void Awake()
     {
+        preferenceDriver = new EnvironmentPreferenceDriver(this, true, true, false);
         ResolveGrowthTargets();
         if (meshObject == null)
         {
@@ -63,6 +78,16 @@ public class SimpleGrowth : MonoBehaviour, IGrowth
             meshObject2.SetActive(false);
 
         SetGrowthSpeedFromGround();
+    }
+
+    void Update()
+    {
+        preferenceDriver?.Tick(preferredTemperature, preferredHumidity, preferredSunlight);
+    }
+
+    void OnDestroy()
+    {
+        preferenceDriver?.Dispose();
     }
 
     /// <summary>

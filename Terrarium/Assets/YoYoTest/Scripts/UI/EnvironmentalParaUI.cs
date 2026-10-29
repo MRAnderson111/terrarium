@@ -40,9 +40,9 @@ public class EnvironmentalParaUI : MonoBehaviour
     // 根据环境数据更新Slider的值
     void UpdateSlidersFromData()
     {
-        sunshineSlider.value = EnvironmentalParaManager.Instance.EnvironmentalData.sunshine;
-        temperatureSlider.value = EnvironmentalParaManager.Instance.EnvironmentalData.temperature;
-        humiditySlider.value = EnvironmentalParaManager.Instance.EnvironmentalData.humidity;
+        sunshineSlider.SetValueWithoutNotify(EnvironmentalParaManager.Instance.EnvironmentalData.sunshine);
+        temperatureSlider.SetValueWithoutNotify(EnvironmentalParaManager.Instance.EnvironmentalData.temperature);
+        humiditySlider.SetValueWithoutNotify(EnvironmentalParaManager.Instance.EnvironmentalData.humidity);
     }
     
     // 当环境数据改变时的回调

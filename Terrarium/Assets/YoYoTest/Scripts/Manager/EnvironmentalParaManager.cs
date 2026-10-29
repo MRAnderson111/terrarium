@@ -10,6 +10,13 @@ public struct EnvironmentalData
     public float sunshine;
     public float temperature;
     public float humidity;
+
+    public static EnvironmentalData MidValues => new EnvironmentalData
+    {
+        sunshine = 0.5f,
+        temperature = 0.5f,
+        humidity = 0.5f
+    };
 }
 
 public class EnvironmentalParaManager : MonoBehaviour
@@ -149,7 +156,7 @@ public class EnvironmentalParaManager : MonoBehaviour
     }
 
     [SerializeField]
-    private EnvironmentalData environmentalData = new EnvironmentalData();
+    private EnvironmentalData environmentalData = EnvironmentalData.MidValues;
     
     public Slider sunshineSlider;
     public Slider temperatureSlider;
@@ -170,6 +177,12 @@ public class EnvironmentalParaManager : MonoBehaviour
         
         // 确保对象在场景切换时不会被销毁
         DontDestroyOnLoad(gameObject);
+
+        // 游戏开始时三个环境参数都从中间值起步
+        environmentalData = EnvironmentalData.MidValues;
+        ApplySliderValue(sunshineSlider, environmentalData.sunshine);
+        ApplySliderValue(temperatureSlider, environmentalData.temperature);
+        ApplySliderValue(humiditySlider, environmentalData.humidity);
         
         // 初始化时更新所有灯光
         UpdateLightingFromEnvironmentalData();
@@ -181,20 +194,30 @@ public class EnvironmentalParaManager : MonoBehaviour
         if (sunshineSlider != null)
         {
             sunshineSlider.onValueChanged.AddListener(OnSunshineChanged);
-            sunshineSlider.value = Sunshine;
+            ApplySliderValue(sunshineSlider, Sunshine);
         }
 
         if (temperatureSlider != null)
         {
             temperatureSlider.onValueChanged.AddListener(OnTemperatureChanged);
-            temperatureSlider.value = Temperature;
+            ApplySliderValue(temperatureSlider, Temperature);
         }
 
         if (humiditySlider != null)
         {
             humiditySlider.onValueChanged.AddListener(OnHumidityChanged);
-            humiditySlider.value = Humidity;
+            ApplySliderValue(humiditySlider, Humidity);
         }
+    }
+
+    private static void ApplySliderValue(Slider slider, float value)
+    {
+        if (slider == null)
+        {
+            return;
+        }
+
+        slider.SetValueWithoutNotify(value);
     }
 
     public void OnSunshineChanged(float value)

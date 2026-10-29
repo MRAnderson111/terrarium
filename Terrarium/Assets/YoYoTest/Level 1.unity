@@ -3627,9 +3627,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   environmentalData:
-    sunshine: 0
-    temperature: 0
-    humidity: 0
+    sunshine: 0.5
+    temperature: 0.5
+    humidity: 0.5
 --- !u!1 &1332577401
 GameObject:
   m_ObjectHideFlags: 0

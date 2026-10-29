@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class AntNeedsManager : MonoBehaviour, INewAntNeeds
 {
+    [Header("环境偏好（0-1）")]
+    [SerializeField, Range(0f, 1f)]
+    private float preferredTemperature = 0.5f;
+    [SerializeField, Range(0f, 1f)]
+    private float preferredHumidity = 0.5f;
+    [SerializeField, Range(0f, 1f)]
+    private float preferredSunlight = 0.5f;
+
+    public float PreferredTemperature => preferredTemperature;
+    public float PreferredHumidity => preferredHumidity;
+    public float PreferredSunlight => preferredSunlight;
+
     // 水相关属性
     public GameObject waterTarget;
     public float currentWaterSatisfaction = 0f;  // 饮水满足度，0-100
@@ -34,13 +46,14 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     // 伤害力（用于扣植物的血）
     public float hurtForce = 10;
 
+    private EnvironmentPreferenceDriver preferenceDriver;
+
     private void Start()
     {
         ant = GetComponent<INewAnt>();
         // 获取导航移动组件
         navMove = GetComponent<AnimalNavMove>();
-
-
+        preferenceDriver = new EnvironmentPreferenceDriver(this, true, true, true);
 
         // 从蚂蚁类获取移动速度
         if (ant != null)
@@ -52,6 +65,33 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
             Debug.LogError("无法获取蚂蚁组件，使用默认移动速度 2f");
             moveSpeed = 2f;
         }
+    }
+
+    private void Update()
+    {
+        preferenceDriver?.Tick(preferredTemperature, preferredHumidity, preferredSunlight);
+        RefreshDrinkState();
+    }
+
+    private void OnDestroy()
+    {
+        preferenceDriver?.Dispose();
+    }
+
+    private float GetRequiredWaterAmount()
+    {
+        EnvironmentalData data = EnvironmentPreferenceUtility.GetCurrentEnvironment();
+        return EnvironmentPreferenceUtility.GetWaterNeed(data.sunshine, data.temperature);
+    }
+
+    private void RefreshDrinkState()
+    {
+        isDrinkWater = currentWaterSatisfaction >= GetRequiredWaterAmount();
+    }
+
+    private float GetGrowthRateMultiplier()
+    {
+        return preferenceDriver != null ? preferenceDriver.StatMultiplier : 1f;
     }
 
     /// <summary>
@@ -83,10 +123,11 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     {
         if (isTouchWaterTarget && waterTarget != null)
         {
+            float requiredWater = GetRequiredWaterAmount();
             currentWaterSatisfaction += 30 * Time.deltaTime;
-            if (currentWaterSatisfaction >= 100)
+            if (currentWaterSatisfaction >= requiredWater)
             {
-                currentWaterSatisfaction = 100;
+                currentWaterSatisfaction = requiredWater;
                 isDrinkWater = true;
                 Debug.Log("蚂蚁喝饱了水");
             }
@@ -98,7 +139,7 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     {
         if (isTouchFoodTarget && foodTarget != null)
         {
-            currentFullness += 30 * Time.deltaTime;
+            currentFullness += 30 * Time.deltaTime * GetGrowthRateMultiplier();
             if (currentFullness >= 100)
             {
                 currentFullness = 100;
@@ -227,7 +268,7 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
                     // 扣植物的血
                     beHurtComponent.BeHurt(hurtForce * Time.deltaTime);
                     // 增加饱腹感（相当于营养度）
-                    currentFullness += 30 * Time.deltaTime;
+                    currentFullness += 30 * Time.deltaTime * GetGrowthRateMultiplier();
                     if (currentFullness >= 100)
                     {
                         currentFullness = 100;

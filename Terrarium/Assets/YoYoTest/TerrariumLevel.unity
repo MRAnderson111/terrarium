@@ -46141,9 +46141,9 @@ MonoBehaviour:
   minLightIntensity: 0
   maxLightIntensity: 5
   environmentalData:
-    sunshine: 0
-    temperature: 0
-    humidity: 0
+    sunshine: 0.5
+    temperature: 0.5
+    humidity: 0.5
 --- !u!1001 &1303262417
 PrefabInstance:
   m_ObjectHideFlags: 0
