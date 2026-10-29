@@ -44,8 +44,8 @@ PlayerSettings:
   m_HolographicTrackingLossScreen: {fileID: 0}
   defaultScreenWidth: 1920
   defaultScreenHeight: 1080
-  defaultScreenWidthWeb: 960
-  defaultScreenHeightWeb: 600
+  defaultScreenWidthWeb: 1920
+  defaultScreenHeightWeb: 1080
   m_StereoRenderingPath: 0
   m_ActiveColorSpace: 1
   unsupportedMSAAFallback: 0
@@ -141,11 +141,10 @@ PlayerSettings:
   loadStoreDebugModeEnabled: 0
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
-  bundleVersion: 0.2
+  bundleVersion: 0.2.1
   preloadedAssets:
-  - {fileID: -2823063419526048610, guid: 1a22bfbcf8200c546b208d12f67c92ab, type: 2}
-  - {fileID: 2961170707622189250, guid: b39419dda0f1b124981d55a0e53ed983, type: 2}
   - {fileID: 11400000, guid: 63cf2c96ef6f443488c30d3befdb9a1c, type: 2}
+  - {fileID: -5466308932614854643, guid: b39419dda0f1b124981d55a0e53ed983, type: 2}
   metroInputSource: 0
   wsaTransparentSwapchain: 0
   m_HolographicPauseOnTrackingLoss: 1
@@ -470,6 +469,8 @@ PlayerSettings:
     m_EncodingQuality: 1
   - m_BuildTarget: tvOS
     m_EncodingQuality: 1
+  - m_BuildTarget: WebGL
+    m_EncodingQuality: 2
   m_BuildTargetGroupHDRCubemapEncodingQuality:
   - m_BuildTarget: Android
     m_EncodingQuality: 1
@@ -750,6 +751,7 @@ PlayerSettings:
   scriptingDefineSymbols:
     Android: USE_INPUT_SYSTEM_POSE_CONTROL;USE_STICK_CONTROL_THUMBSTICKS;PICO_SPATIALIZER;AMPLIFY_SHADER_EDITOR
     Standalone: USE_INPUT_SYSTEM_POSE_CONTROL;USE_STICK_CONTROL_THUMBSTICKS;PICO_SPATIALIZER;AMPLIFY_SHADER_EDITOR
+    WebGL: PICO_SPATIALIZER;AMPLIFY_SHADER_EDITOR
     Windows Store Apps: USE_INPUT_SYSTEM_POSE_CONTROL;USE_STICK_CONTROL_THUMBSTICKS
   additionalCompilerArguments: {}
   platformArchitecture: {}
