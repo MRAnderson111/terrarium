@@ -66,6 +66,11 @@ public class DTimeManager : MonoBehaviour
     public float minLuminance = 0.1f; // 最小亮度
     public float dayStartHour = 6f; // 白天开始时间（6点）
     public float nightStartHour = 18f; // 夜晚开始时间（18点
+    [SerializeField, Min(0f)]
+    private float dayNightIntensityOffset = 0.3f;
+
+    private float environmentalBaseIntensity;
+    private bool hasEnvironmentalBaseIntensity;
 
     #region 公共属性
     /// <summary>
@@ -99,6 +104,16 @@ public class DTimeManager : MonoBehaviour
     {
         // 初始化时间为第1天的0点
         // ResetTime();
+
+        EnvironmentalParaManager environmentalManager = FindObjectOfType<EnvironmentalParaManager>();
+        if (environmentalManager != null)
+        {
+            environmentalBaseIntensity = Mathf.Lerp(
+                environmentalManager.MinLightIntensity,
+                environmentalManager.MaxLightIntensity,
+                Mathf.Clamp01(environmentalManager.Sunshine));
+            hasEnvironmentalBaseIntensity = true;
+        }
         
         // 初始化灯光亮度
         UpdateDirectionalLight();
@@ -195,6 +210,22 @@ public class DTimeManager : MonoBehaviour
     {
         return Instance.IsTimeInRange(startHour, startMinute, endHour, endMinute);
     }
+
+    /// <summary>
+    /// 如果指定灯光由昼夜系统管理，则更新阳光基础强度并立即刷新灯光。
+    /// </summary>
+    public static bool TryApplySunlightIntensity(Light light, float intensity)
+    {
+        if (instance == null || instance.directionalLight != light)
+        {
+            return false;
+        }
+
+        instance.environmentalBaseIntensity = Mathf.Max(0f, intensity);
+        instance.hasEnvironmentalBaseIntensity = true;
+        instance.UpdateDirectionalLight();
+        return true;
+    }
     #endregion
 
     /// <summary>
@@ -282,10 +313,19 @@ public class DTimeManager : MonoBehaviour
     {
         if (directionalLight == null) return;
 
+        bool isNight = currentTime >= nightStartHour || currentTime < dayStartHour;
+
+        if (hasEnvironmentalBaseIntensity)
+        {
+            float offset = isNight ? -dayNightIntensityOffset : dayNightIntensityOffset;
+            directionalLight.intensity = Mathf.Max(0f, environmentalBaseIntensity + offset);
+            return;
+        }
+
         float targetLuminance = minLuminance;
 
         // 计算当前时间段的亮度
-        if (currentTime >= nightStartHour || currentTime < dayStartHour)
+        if (isNight)
         {
             // 夜晚时间 (18:00 - 6:00)，保持最小亮度
             targetLuminance = minLuminance;

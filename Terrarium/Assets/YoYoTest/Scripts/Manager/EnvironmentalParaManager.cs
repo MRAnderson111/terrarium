@@ -52,6 +52,14 @@ public class EnvironmentalParaManager : MonoBehaviour
     private float minLightIntensity = 0f; // 光照强度最小值
     [SerializeField]
     private float maxLightIntensity = 5f; // 光照强度最大值
+
+    [Header("湿度视觉效果")]
+    [SerializeField]
+    private Image waterDropImage;
+    [SerializeField, Range(0f, 255f)]
+    private float minWaterDropAlpha = 0f;
+    [SerializeField, Range(0f, 255f)]
+    private float maxWaterDropAlpha = 4f;
     
     // 公开属性，用于访问色温范围
     public float MinColorTemperature
@@ -92,6 +100,7 @@ public class EnvironmentalParaManager : MonoBehaviour
                 environmentalData = value;
                 OnEnvironmentalDataChanged?.Invoke(environmentalData);
                 UpdateLightingFromEnvironmentalData();
+                UpdateWaterDropFromEnvironmentalData();
             }
         }
     }
@@ -164,6 +173,7 @@ public class EnvironmentalParaManager : MonoBehaviour
         
         // 初始化时更新所有灯光
         UpdateLightingFromEnvironmentalData();
+        UpdateWaterDropFromEnvironmentalData();
     }
 
     void Start()
@@ -219,9 +229,27 @@ public class EnvironmentalParaManager : MonoBehaviour
                 
                 // 应用灯光属性
                 light.colorTemperature = colorTemperature;
-                light.intensity = lightIntensity;
+                if (!DTimeManager.TryApplySunlightIntensity(light, lightIntensity))
+                {
+                    light.intensity = lightIntensity;
+                }
             }
         }
+    }
+
+    // 将湿度(0-1)映射到 UI 颜色面板中的 Alpha(0-255)
+    private void UpdateWaterDropFromEnvironmentalData()
+    {
+        if (waterDropImage == null)
+        {
+            return;
+        }
+
+        float normalizedHumidity = Mathf.Clamp01(environmentalData.humidity);
+        float alphaByte = Mathf.Lerp(minWaterDropAlpha, maxWaterDropAlpha, normalizedHumidity);
+        Color color = waterDropImage.color;
+        color.a = alphaByte / 255f;
+        waterDropImage.color = color;
     }
     
     // 添加灯光到监听列表
@@ -259,7 +287,10 @@ public class EnvironmentalParaManager : MonoBehaviour
             
             // 应用灯光属性
             light.colorTemperature = colorTemperature;
-            light.intensity = lightIntensity;
+            if (!DTimeManager.TryApplySunlightIntensity(light, lightIntensity))
+            {
+                light.intensity = lightIntensity;
+            }
         }
     }
     
