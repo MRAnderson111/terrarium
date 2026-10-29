@@ -16,6 +16,13 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     public float PreferredHumidity => preferredHumidity;
     public float PreferredSunlight => preferredSunlight;
 
+    [Header("食物偏好")]
+    [Tooltip("最喜欢的植物 SmallClass。场景中存在时优先食用，留空则随机选择植物。")]
+    [SerializeField]
+    private string preferredPlantSmallClass;
+
+    public string PreferredPlantSmallClass => preferredPlantSmallClass;
+
     // 水相关属性
     public GameObject waterTarget;
     public float currentWaterSatisfaction = 0f;  // 饮水满足度，0-100
@@ -174,30 +181,58 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     // 寻找食物目标
     public void FindFoodTarget()
     {
-        // 从ObjectStatisticsManager获取随机植物对象
-        if (ObjectStatisticsManager.Instance != null)
-        {
-            GameObject randomPlant = ObjectStatisticsManager.Instance.GetRandomPlantObject();
-            if (randomPlant != null)
-            {
-                foodTarget = randomPlant;
-                isHaveFoodTarget = true;
-                isTouchFoodTarget = false;
-                Debug.Log("找到植物目标: " + foodTarget.name);
-            }
-            else
-            {
-                Debug.LogWarning("未找到植物目标");
-                foodTarget = null;
-                isHaveFoodTarget = false;
-            }
-        }
-        else
+        if (ObjectStatisticsManager.Instance == null)
         {
             Debug.LogError("ObjectStatisticsManager.Instance 为空");
             foodTarget = null;
             isHaveFoodTarget = false;
+            return;
         }
+
+        // 正在吃当前植物时不改目标；离开或目标消失后，再优先选择喜好植物。
+        if (isTouchFoodTarget && foodTarget != null)
+        {
+            return;
+        }
+
+        if (foodTarget != null && (string.IsNullOrEmpty(preferredPlantSmallClass) || IsCurrentPreferredFood(preferredPlantSmallClass)))
+        {
+            return;
+        }
+
+        GameObject selectedPlant = ObjectStatisticsManager.Instance.GetPriorityTarget(
+            "Plant",
+            preferredPlantSmallClass,
+            transform.position,
+            gameObject);
+
+        if (selectedPlant == null)
+        {
+            Debug.LogWarning("未找到植物目标");
+            foodTarget = null;
+            isHaveFoodTarget = false;
+            return;
+        }
+
+        if (foodTarget != selectedPlant)
+        {
+            foodTarget = selectedPlant;
+            isTouchFoodTarget = false;
+        }
+
+        isHaveFoodTarget = true;
+        Debug.Log("找到植物目标: " + foodTarget.name);
+    }
+
+    private bool IsCurrentPreferredFood(string preferredSmallClass)
+    {
+        if (foodTarget == null)
+        {
+            return false;
+        }
+
+        IGetObjectClass objectClass = foodTarget.GetComponent<IGetObjectClass>();
+        return objectClass != null && objectClass.SmallClass == preferredSmallClass;
     }
 
     // 移动到水目标
@@ -254,6 +289,8 @@ public class AntNeedsManager : MonoBehaviour, INewAntNeeds
     // 吃食物逻辑
     public void EatFood()
     {
+        FindFoodTarget();
+
         if (foodTarget != null)
         {
             Debug.Log("有植物目标，去吃");

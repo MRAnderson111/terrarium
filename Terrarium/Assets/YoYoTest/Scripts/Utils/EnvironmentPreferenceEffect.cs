@@ -295,10 +295,15 @@ public class EnvironmentPreferenceDriver
             return;
         }
 
-        ApplyFlash(true);
+        // 动物由 NewAnimalBeHurt 自己播放同一套闪红，避免两套材质修改互相覆盖。
+        if (animalBeHurt == null)
+        {
+            ApplyFlash(true);
+        }
+
         beHurt.BeHurt(EnvironmentPreferenceUtility.LethalDamagePerSecond);
 
-        if (owner == null || !owner.isActiveAndEnabled)
+        if (animalBeHurt != null || owner == null || !owner.isActiveAndEnabled)
         {
             return;
         }

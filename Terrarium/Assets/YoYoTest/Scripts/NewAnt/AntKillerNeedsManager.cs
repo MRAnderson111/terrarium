@@ -16,6 +16,13 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
     public float PreferredHumidity => preferredHumidity;
     public float PreferredSunlight => preferredSunlight;
 
+    [Header("食物偏好")]
+    [Tooltip("最喜欢的猎物 SmallClass。场景中存在时优先捕食，留空则随机选择动物。")]
+    [SerializeField]
+    private string preferredAnimalSmallClass;
+
+    public string PreferredAnimalSmallClass => preferredAnimalSmallClass;
+
     // 水相关属性
     public GameObject waterTarget;
     public float currentWaterSatisfaction = 0f;  // 饮水满足度，0-100
@@ -48,6 +55,9 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
     
     // 食物消耗速度（饱腹感增加速度）
     public float foodConsumptionRate = 30f;
+
+    [SerializeField]
+    private float interactionRange = 0.75f;
 
     private EnvironmentPreferenceDriver preferenceDriver;
 
@@ -177,30 +187,58 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
     // 寻找食物目标
     public void FindFoodTarget()
     {
-        // 从ObjectStatisticsManager获取随机植物对象
-        if (ObjectStatisticsManager.Instance != null)
-        {
-            GameObject randomPlant = ObjectStatisticsManager.Instance.GetRandomAnimalObject();
-            if (randomPlant != null)
-            {
-                foodTarget = randomPlant;
-                isHaveFoodTarget = true;
-                isTouchFoodTarget = false;
-                Debug.Log("找到植物目标: " + foodTarget.name);
-            }
-            else
-            {
-                Debug.LogWarning("未找到植物目标");
-                foodTarget = null;
-                isHaveFoodTarget = false;
-            }
-        }
-        else
+        if (ObjectStatisticsManager.Instance == null)
         {
             Debug.LogError("ObjectStatisticsManager.Instance 为空");
             foodTarget = null;
             isHaveFoodTarget = false;
+            return;
         }
+
+        // 正在攻击当前猎物时不改目标；离开或目标消失后，再优先选择喜好动物。
+        if (isTouchFoodTarget && foodTarget != null)
+        {
+            return;
+        }
+
+        if (foodTarget != null && (string.IsNullOrEmpty(preferredAnimalSmallClass) || IsCurrentPreferredFood(preferredAnimalSmallClass)))
+        {
+            return;
+        }
+
+        GameObject selectedAnimal = ObjectStatisticsManager.Instance.GetPriorityTarget(
+            "Animal",
+            preferredAnimalSmallClass,
+            transform.position,
+            gameObject);
+
+        if (selectedAnimal == null)
+        {
+            Debug.LogWarning("未找到动物目标");
+            foodTarget = null;
+            isHaveFoodTarget = false;
+            return;
+        }
+
+        if (foodTarget != selectedAnimal)
+        {
+            foodTarget = selectedAnimal;
+            isTouchFoodTarget = false;
+        }
+
+        isHaveFoodTarget = true;
+        Debug.Log("找到动物目标: " + foodTarget.name);
+    }
+
+    private bool IsCurrentPreferredFood(string preferredSmallClass)
+    {
+        if (foodTarget == null)
+        {
+            return false;
+        }
+
+        IGetObjectClass objectClass = foodTarget.GetComponent<IGetObjectClass>();
+        return objectClass != null && objectClass.SmallClass == preferredSmallClass;
     }
 
     // 移动到水目标
@@ -238,8 +276,9 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
     {
         if (waterTarget != null)
         {
-            if (isTouchWaterTarget)
+            if (isTouchWaterTarget || IsWithinInteractionRange(waterTarget))
             {
+                isTouchWaterTarget = true;
                 OnTouchWaterTarget();
                 if (navMove != null)
                     navMove.PlayEatingAnimation();
@@ -259,12 +298,15 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
     // 吃食物逻辑
     public void EatFood()
     {
+        FindFoodTarget();
+
         if (foodTarget != null)
         {
-            Debug.Log("有植物目标，去吃");
+            Debug.Log("有动物目标，去攻击");
+            isTouchFoodTarget = IsWithinInteractionRange(foodTarget);
             if (isTouchFoodTarget)
             {
-                Debug.Log("碰到植物目标，吃植物");
+                Debug.Log("进入攻击范围，攻击动物");
                 OnTouchFoodTarget(); // 触发停止移动
                 
                 // 播放进食动画
@@ -297,15 +339,41 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
             }
             else
             {
-                Debug.Log("没碰到植物目标，去吃");
+                Debug.Log("没进入攻击范围，继续追击");
                 GoToFoodTarget();
             }
         }
         else
         {
-            Debug.Log("没有植物目标，去寻找");
+            Debug.Log("没有动物目标，去寻找");
             FindFoodTarget();
         }
+    }
+
+    private bool IsWithinInteractionRange(GameObject target)
+    {
+        if (target == null)
+        {
+            return false;
+        }
+
+        Collider[] colliders = target.GetComponentsInChildren<Collider>();
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider targetCollider = colliders[i];
+            if (targetCollider == null || !targetCollider.enabled)
+            {
+                continue;
+            }
+
+            float distance = Vector3.Distance(transform.position, targetCollider.ClosestPoint(transform.position));
+            if (distance <= interactionRange)
+            {
+                return true;
+            }
+        }
+
+        return Vector3.Distance(transform.position, target.transform.position) <= interactionRange;
     }
 
     // 重置状态

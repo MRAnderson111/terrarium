@@ -405,6 +405,57 @@ public class ObjectStatisticsManager : MonoBehaviour
     {
         return GetRandomObjectByBigClass("Animal", "动物");
     }
+
+    /// <summary>
+    /// 优先返回指定小类中距离最近的对象；场景中没有时，再从同一大类随机选择。
+    /// </summary>
+    public GameObject GetPriorityTarget(string bigClass, string preferredSmallClass, Vector3 origin, GameObject exclude = null)
+    {
+        GameObject nearestPreferred = null;
+        float nearestDistance = float.MaxValue;
+        List<GameObject> fallbackTargets = new List<GameObject>();
+        GameObject[] allGameObjects = FindObjectsOfType<GameObject>();
+
+        foreach (GameObject obj in allGameObjects)
+        {
+            if (obj == null || obj == exclude)
+            {
+                continue;
+            }
+
+            IGetObjectClass objectClass = obj.GetComponent<IGetObjectClass>();
+            if (objectClass == null || objectClass.BigClass != bigClass)
+            {
+                continue;
+            }
+
+            if (!string.IsNullOrEmpty(preferredSmallClass) && objectClass.SmallClass == preferredSmallClass)
+            {
+                float distance = (obj.transform.position - origin).sqrMagnitude;
+                if (distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    nearestPreferred = obj;
+                }
+            }
+            else
+            {
+                fallbackTargets.Add(obj);
+            }
+        }
+
+        if (nearestPreferred != null)
+        {
+            return nearestPreferred;
+        }
+
+        if (fallbackTargets.Count == 0)
+        {
+            return null;
+        }
+
+        return fallbackTargets[UnityEngine.Random.Range(0, fallbackTargets.Count)];
+    }
 #endregion
 
 #region 统计信息计算

@@ -17,11 +17,21 @@ public class NewAnimalBeHurt : MonoBehaviour, IBeHurt
 
     public void BeHurt(float hurtValue)
     {
+        if (hurtValue <= 0f)
+        {
+            return;
+        }
+
         currentHealth -= hurtValue;
+        DamageFlashEffect.PlayOn(gameObject);
         if (currentHealth <= 0)
         {
             currentHealth = 0;
-            GetComponent<IGetObjectClass>().Death();
+            IGetObjectClass objectClass = GetComponent<IGetObjectClass>();
+            if (objectClass != null)
+            {
+                objectClass.Death();
+            }
         }
     }
 
