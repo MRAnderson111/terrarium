@@ -96,7 +96,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 112000000, guid: 98f3950d8cd720d4db70979efd29d21c, type: 2}
+  m_LightingDataAsset: {fileID: 112000000, guid: 980a4def59b4ea64087c0d3e32715eb4, type: 2}
   m_LightingSettings: {fileID: 4890085278179872738, guid: ec6fca5104ccf4e04bd8fdf8ca93ba99, type: 2}
 --- !u!196 &4
 NavMeshSettings:
@@ -30467,13 +30467,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 611837130}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7476838, y: -0.08991214, z: 0.5213758, w: -0.401313}
-  m_LocalPosition: {x: 1.0881, y: 1.4337, z: 0.845}
+  m_LocalRotation: {x: -0.64604264, y: -0.33326563, z: 0.37891254, w: -0.5727025}
+  m_LocalPosition: {x: 1.0035324, y: 1.4268055, z: 0.8650212}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 689116208}
-  m_LocalEulerAnglesHint: {x: 136.063, y: 79.257, z: 23.229004}
+  m_LocalEulerAnglesHint: {x: 97.004, y: 62.197998, z: 1.5980072}
 --- !u!114 &611837132
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30508,8 +30508,8 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.93116105, b: 0.76862746, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 2
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -30552,8 +30552,8 @@ Light:
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 6570
-  m_UseColorTemperature: 0
+  m_ColorTemperature: 6800
+  m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
@@ -59950,11 +59950,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   environmentalDataChangedListeners:
-  - {fileID: 1242357364}
-  minColorTemperature: 1000
-  maxColorTemperature: 10000
-  minLightIntensity: 0
-  maxLightIntensity: 5
+  - {fileID: 611837133}
+  minColorTemperature: 4100
+  maxColorTemperature: 9500
+  minLightIntensity: 1.8
+  maxLightIntensity: 3
   environmentalData:
     sunshine: 0
     temperature: 0
@@ -63498,9 +63498,17 @@ PrefabInstance:
       value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 3787450274284789691, guid: 94ce017558679d643bb9041d13074cd1, type: 3}
+      propertyPath: maxLuminance
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3787450274284789691, guid: 94ce017558679d643bb9041d13074cd1, type: 3}
+      propertyPath: minLuminance
+      value: 1.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3787450274284789691, guid: 94ce017558679d643bb9041d13074cd1, type: 3}
       propertyPath: directionalLight
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 611837133}
     - target: {fileID: 8789957237343499020, guid: 94ce017558679d643bb9041d13074cd1, type: 3}
       propertyPath: m_Name
       value: DTimeManager
