@@ -4994,7 +4994,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &191081237
 Transform:
   m_ObjectHideFlags: 0
@@ -46464,7 +46464,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2088805055807268441}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3a821c3fcc2a1545a94be233a9e5b2c, type: 3}
   m_Name: 
@@ -46473,9 +46473,6 @@ MonoBehaviour:
   minVerticalAngle: -90
   maxVerticalAngle: 90
   smoothTime: 0.1
-  moveSpeed: 10
-  maxDistanceFromCenter: 20
-  planeCenter: {fileID: 0}
 --- !u!114 &910000002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110276,7 +110273,7 @@ Camera:
     height: 1
   near clip plane: 0.01
   far clip plane: 1000
-  field of view: 60
+  field of view: 57
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

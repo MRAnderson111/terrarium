@@ -67,6 +67,11 @@ public class S_UtilityAnimal : MonoBehaviour
             return;
         }
 
+        if (animal.IsFleeing)
+        {
+            return;
+        }
+
         if (Time.time >= nextDecisionTime)
         {
             ChooseAction();

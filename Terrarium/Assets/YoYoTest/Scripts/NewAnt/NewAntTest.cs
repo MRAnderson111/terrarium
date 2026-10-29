@@ -43,6 +43,20 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     public float moveSpeed = 2f;
     public float MoveSpeed => moveSpeed;
 
+    [Header("Flee")]
+    [Tooltip("被攻击时的移动速度，相对当前平时速度。")]
+    public float fleeSpeedMultiplier = 0.8f;
+    [Tooltip("每次朝远离捕食者的方向逃出的距离。")]
+    public float fleeDistance = 3f;
+    [Tooltip("最后一次受击后继续逃跑的时间，避免刚脱离接触就停住。")]
+    public float fleeHoldDuration = 0.6f;
+
+    private Vector3 fleeThreatPosition;
+    private float fleeUntil;
+    private bool fleeActive;
+
+    public bool IsFleeing => fleeActive && Time.time < fleeUntil;
+
     // 上一次的白天状态，用于检测状态变化
     private bool wasDayLastFrame = false;
     
@@ -89,6 +103,11 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
     void Update()
     {
         StateCheck();
+
+        if (TryFlee())
+        {
+            return;
+        }
 
         if (utilityAnimal != null && utilityAnimal.IsControllingBehavior)
         {
@@ -144,6 +163,75 @@ public class NewAntTest : MonoBehaviour,IGetObjectClass, INewAnt
         {
             FindAndEat();
         }
+    }
+
+    /// <summary>
+    /// 捕食者造成伤害时调用。猎物朝远离威胁的方向逃跑。
+    /// </summary>
+    public void FleeFrom(Vector3 threatPosition)
+    {
+        fleeThreatPosition = threatPosition;
+        fleeUntil = Time.time + Mathf.Max(0.05f, fleeHoldDuration);
+        if (fleeActive)
+        {
+            return;
+        }
+
+        fleeActive = true;
+        navMove ??= GetComponent<AnimalNavMove>();
+        walkManager ??= GetComponent<INewAntWalk>();
+        homeManager ??= GetComponent<INewAntHome>();
+
+        isSleeping = false;
+        walkManager?.StopWalking();
+        navMove?.StopEatingAnimation();
+        if (isInHome && homeManager != null)
+        {
+            homeManager.LeaveHome(this, SetInHome);
+        }
+
+        ApplyFleeDestination();
+    }
+
+    private bool TryFlee()
+    {
+        if (Time.time >= fleeUntil)
+        {
+            fleeActive = false;
+            return false;
+        }
+
+        ApplyFleeDestination();
+        return true;
+    }
+
+    private void ApplyFleeDestination()
+    {
+        navMove ??= GetComponent<AnimalNavMove>();
+        if (navMove == null)
+        {
+            return;
+        }
+
+        Vector3 away = transform.position - fleeThreatPosition;
+        away.y = 0f;
+        if (away.sqrMagnitude < 0.01f)
+        {
+            away = Vector3.forward;
+        }
+
+        navMove.StopEatingAnimation();
+        navMove.SetTarget(transform.position + away.normalized * Mathf.Max(0.5f, fleeDistance));
+    }
+
+    private void LateUpdate()
+    {
+        if (!IsFleeing || navMove == null || navMove.agent == null)
+        {
+            return;
+        }
+
+        navMove.agent.speed = moveSpeed * Mathf.Clamp(fleeSpeedMultiplier, 0.1f, 1f);
     }
 
     private void StateCheck()

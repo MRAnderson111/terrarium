@@ -61,6 +61,9 @@ MonoBehaviour:
   toSleepTime: 20
   toAwakeTime: 6
   moveSpeed: 5
+  fleeSpeedMultiplier: 0.8
+  fleeDistance: 3
+  fleeHoldDuration: 0.6
   bigClass: Killer
   smallClass: gecko
 --- !u!54 &6017526608214838873
@@ -102,6 +105,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68b7b0018cd6ce643be20f20331a0649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  preferredTemperature: 0.5
+  preferredHumidity: 0.5
+  preferredSunlight: 0.5
+  preferredAnimalSmallClass: LeafCuttingAnt
   waterTarget: {fileID: 0}
   currentWaterSatisfaction: 0
   isTouchWaterTarget: 0
@@ -113,6 +120,7 @@ MonoBehaviour:
   isFull: 0
   hurtForce: 10
   foodConsumptionRate: 30
+  interactionRange: 0.75
 --- !u!114 &3199726379695570567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -125,6 +133,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53762c6776f908d4c83e019db3ba6c87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  preferredTemperature: 0.5
+  preferredHumidity: 0.5
+  preferredSunlight: 0.5
+  preferredPlantSmallClass: 
   waterTarget: {fileID: 0}
   currentWaterSatisfaction: 0
   isTouchWaterTarget: 0
@@ -149,6 +161,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   homePrefab: {fileID: 2109754380365222939, guid: 3045c0b7770c8624ab3d34f727bc33c8, type: 3}
   homeSearchRange: 50
+  homeYOffset: 0.1
 --- !u!114 &-7230120652267141824
 MonoBehaviour:
   m_ObjectHideFlags: 0

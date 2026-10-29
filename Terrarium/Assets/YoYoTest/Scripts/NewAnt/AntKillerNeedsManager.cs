@@ -301,8 +301,13 @@ public class AntKillerNeedsManager : MonoBehaviour, INewAntNeeds
                 IBeHurt beHurtComponent = foodTarget.GetComponent<IBeHurt>();
                 if (beHurtComponent != null)
                 {
-                    // 扣植物的血
+                    // 扣猎物的血，并让它朝远离捕食者的方向逃跑
                     beHurtComponent.BeHurt(hurtForce * Time.deltaTime);
+                    NewAntTest prey = foodTarget.GetComponent<NewAntTest>();
+                    if (prey != null)
+                    {
+                        prey.FleeFrom(transform.position);
+                    }
                     // 增加饱腹感（相当于营养度）
                     currentFullness += foodConsumptionRate * Time.deltaTime * GetGrowthRateMultiplier();
                     if (currentFullness >= 100)

@@ -60,6 +60,9 @@ MonoBehaviour:
   toSleepTime: 20
   toAwakeTime: 6
   moveSpeed: 5
+  fleeSpeedMultiplier: 0.8
+  fleeDistance: 3
+  fleeHoldDuration: 0.6
   bigClass: Animal
   smallClass: Cricket
 --- !u!54 &6017526608214838873
@@ -104,7 +107,7 @@ MonoBehaviour:
   preferredTemperature: 0.612
   preferredHumidity: 0.612
   preferredSunlight: 0.5
-  preferredPlantSmallClass: 
+  preferredPlantSmallClass: Asplenium
   waterTarget: {fileID: 0}
   currentWaterSatisfaction: 0
   isTouchWaterTarget: 0

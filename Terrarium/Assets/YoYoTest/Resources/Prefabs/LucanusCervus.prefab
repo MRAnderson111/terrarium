@@ -61,6 +61,9 @@ MonoBehaviour:
   toSleepTime: 20
   toAwakeTime: 6
   moveSpeed: 5
+  fleeSpeedMultiplier: 0.8
+  fleeDistance: 3
+  fleeHoldDuration: 0.6
   bigClass: Killer
   smallClass: Scorpion
 --- !u!54 &6017526608214838873
@@ -105,7 +108,7 @@ MonoBehaviour:
   preferredTemperature: 0.5
   preferredHumidity: 0.615
   preferredSunlight: 0.376
-  preferredAnimalSmallClass: 
+  preferredAnimalSmallClass: LeafCuttingAnt
   waterTarget: {fileID: 0}
   currentWaterSatisfaction: 0
   isTouchWaterTarget: 0
@@ -133,7 +136,7 @@ MonoBehaviour:
   preferredTemperature: 0.5
   preferredHumidity: 0.5
   preferredSunlight: 0.5
-  preferredPlantSmallClass: 
+  preferredPlantSmallClass: Asplenium
   waterTarget: {fileID: 0}
   currentWaterSatisfaction: 0
   isTouchWaterTarget: 0
