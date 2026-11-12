@@ -184,6 +184,10 @@ public class EnvironmentalParaManager : MonoBehaviour
         ApplySliderValue(temperatureSlider, environmentalData.temperature);
         ApplySliderValue(humiditySlider, environmentalData.humidity);
         
+        // 水滴是全屏湿度视觉层，不能拦截 UI 射线，否则种植点选会被挡住。
+        if (waterDropImage != null)
+            waterDropImage.raycastTarget = false;
+
         // 初始化时更新所有灯光
         UpdateLightingFromEnvironmentalData();
         UpdateWaterDropFromEnvironmentalData();
@@ -268,6 +272,7 @@ public class EnvironmentalParaManager : MonoBehaviour
             return;
         }
 
+        waterDropImage.raycastTarget = false;
         float normalizedHumidity = Mathf.Clamp01(environmentalData.humidity);
         float alphaByte = Mathf.Lerp(minWaterDropAlpha, maxWaterDropAlpha, normalizedHumidity);
         Color color = waterDropImage.color;
